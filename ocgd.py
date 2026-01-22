@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Project: Project Template
-# Title: Project Template Main Class ----
+# Project: Orange County US Census Geodemographics (OCGD)
+# Title: OCGD Project Template Main Class ----
 # Author: Dr. Kostas Alexandridis, GISP
 # Date: January 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +21,7 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class ClassTemplate:
+class OCGD:
     """
     A class containing functions and methods for the Project Template.
     Attributes:

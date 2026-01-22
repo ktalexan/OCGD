@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Project: Project Template
+# Project: Orange County US Census Geodemographics (OCGD)
 # Part 1: Raw Data Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
 # Version: 2026.1, Date: January 2026
@@ -19,7 +19,7 @@ import datetime as dt
 import pytz
 import pandas as pd
 from dotenv import load_dotenv
-from classTemplate import classTemplate
+from ocgd import OCGD
 
 # Load environment variables from .env file
 load_dotenv()
@@ -31,18 +31,16 @@ load_dotenv()
 print("\n2. Create project metadata and directories")
 
 # Initialize the OCUP class
-clt = ClassTemplate(part = 1, version = 2026.1)
+ogd = OCGD(part = 1, version = 2026.1)
 
 # Create project variables
-part = clt.part
-version = clt.version
-
+part = ogd.part
+version = ogd.version
 # Create project metadata
-prj_meta = clt.prj_meta
+prj_meta = ogd.prj_meta
 
 # Create project directories
-prj_dirs = clt.prj_dirs
-
+prj_dirs = ogd.prj_dirs
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End of Script ----
