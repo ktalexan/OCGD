@@ -22,7 +22,7 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Class Containing the OCTL Processing Workflow Functions ----
+# Define the OCTL main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class OCTL:
     """Class Containing the OCTL Processing Workflow Functions.

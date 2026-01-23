@@ -1,17 +1,21 @@
 # Import necessary libraries
-import os, sys
-from datetime import datetime as dt
-from pathlib import Path
-import wmi
+import os
+import sys
+import datetime as dt
 import json
+from pathlib import Path
 import shutil
 import importlib
+import wmi
 import pandas as pd
 import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
-from octl import OCTL
+from dotenv import load_dotenv
+from ocgd import OCTL
 
+# Load environment variables from .env file
+load_dotenv()
 
 # Set pandas options
 pd.options.mode.copy_on_write = True
@@ -20,9 +24,8 @@ pd.options.mode.copy_on_write = True
 arcpy.env.workspace = os.getcwd()
 arcpy.env.overwriteOutput = True
 
-# Initialize the OCTL class object
-#importlib.reload(sys.modules['octl'])
-octl = OCTL(part = 1, version = 2026.1)
+# Initialize OCTL instance
+octl = OCTL(part= 1, version= 2026.1)
 
 # Get the project metadata and directories from the OCTL class object
 prj_meta = octl.prj_meta
