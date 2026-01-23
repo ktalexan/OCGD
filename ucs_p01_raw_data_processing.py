@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Project: Orange County American Community Survey (OCACS)
+# Project: Orange County US Census Geodemographics (OCGD)
 # Part 1: Raw Data Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
 # Version: 2026.1, Date: January 2026
@@ -19,7 +19,7 @@ import datetime as dt
 import pytz
 import pandas as pd
 from dotenv import load_dotenv
-from ocacs import OCACS
+from ocgd import OCucs
 
 # Load environment variables from .env file
 load_dotenv()
@@ -30,17 +30,17 @@ load_dotenv()
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\n2. Create project metadata and directories")
 
-# Initialize the OCUP class
-acs = OCACS(part = 1, version = 2026.1)
+# Initialize the OCucs class
+ucs = OCucs(part = 1, version = 2026.1)
 
 # Create project variables
-part = acs.part
-version = acs.version
+part = ucs.part
+version = ucs.version
 # Create project metadata
-prj_meta = acs.prj_meta
+prj_meta = ucs.prj_meta
 
 # Create project directories
-prj_dirs = acs.prj_dirs
+prj_dirs = ucs.prj_dirs
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End of Script ----

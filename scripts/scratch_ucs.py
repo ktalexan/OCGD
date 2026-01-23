@@ -12,7 +12,7 @@ import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import OCACS
+from ocgd import OCucs
 
 # Load environment variables from .env file
 load_dotenv()
@@ -24,9 +24,9 @@ pd.options.mode.copy_on_write = True
 arcpy.env.workspace = os.getcwd()
 arcpy.env.overwriteOutput = True
 
-# Initialize OCACS instance
-ocacs = OCACS(part= 1, version= 2026.1)
+# Initialize OCGD instance
+ucs = OCucs(part= 1, version= 2026.1)
 
-# Get the project metadata and directories from the OCACS class object
-prj_meta = ocacs.prj_meta
-prj_dirs = ocacs.prj_dirs
+# Get the project metadata and directories from the OCGD class object
+prj_meta = ucs.prj_meta
+prj_dirs = ucs.prj_dirs

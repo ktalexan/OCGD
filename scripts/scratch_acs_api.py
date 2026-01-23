@@ -118,12 +118,10 @@ print(json.dumps(data, indent=4))
 data2 = fetch_census(year = 2010, table_id = "S0101", geography = "county")
 print(json.dumps(data2, indent=4))
 
-
-
 def fetch_acs_variables(year: int):
     """Fetch ACS variable metadata using requests (external dependency)."""
     url = f"https://api.census.gov/data/{year}/acs/acs5/variables.json"
-    resp = requests.get(url)
+    resp = requests.get(url, timeout = 10)
     resp.raise_for_status()
     return resp.json()
 
@@ -134,4 +132,3 @@ print(json.dumps(acs_vars_2023, indent=4))
 import pandas as pd
 df = pd.DataFrame.from_dict(acs_vars_2023['variables'], orient='index')
 print(df)
-

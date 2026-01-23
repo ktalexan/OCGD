@@ -28,7 +28,7 @@ import pandas as pd
 import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
-from octl import OCTL
+from ocgd import OCtgl
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,17 +44,16 @@ arcpy.env.workspace = os.getcwd()
 arcpy.env.overwriteOutput = True
 
 # Initialize the OCTL class object
-octl = OCTL(part = 1, version = 2026.1)
+tgl = OCtgl(part = 1, version = 2026.1)
 
 # Get the project metadata and directories from the OCTL class object
-prj_meta = octl.prj_meta
-prj_dirs = octl.prj_dirs
-
+prj_meta = tgl.prj_meta
+prj_dirs = tgl.prj_dirs
 # Get the raw metadata
-# folder_metadata = octl.get_raw_data(remote = True, export = True)
+# folder_metadata = tgl.get_raw_data(remote = True, export = True)
 
 # Get the codebook from the OCTL class object
-# cb, cbdf = octl.load_cb(folder_metadata["year"],  cbdf = True)
+# cb, cbdf = tgl.load_cb(folder_metadata["year"],  cbdf = True)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 2. Process Shapefiles to Geodatabase ----
@@ -62,23 +61,22 @@ prj_dirs = octl.prj_dirs
 print("\n2. Process Shapefiles to Geodatabase\n")
 
 # Process the shapefiles and get the dictionary of feature classes and codes
-process_dict = octl.process_raw_data(year = 2010, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2011, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2012, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2013, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2014, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2015, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2016, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2017, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2018, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2019, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2020, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2021, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2022, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2023, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2024, remote = True, export = True)
-process_dict = octl.process_raw_data(year = 2025, remote = True, export = True)
-
+process_dict = tgl.process_raw_data(year = 2010, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2011, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2012, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2013, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2014, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2015, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2016, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2017, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2018, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2019, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2020, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2021, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2022, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2023, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2024, remote = True, export = True)
+process_dict = tgl.process_raw_data(year = 2025, remote = True, export = True)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 3. Update Master Codebook ----
@@ -86,7 +84,7 @@ process_dict = octl.process_raw_data(year = 2025, remote = True, export = True)
 print("\n3. Update Master Codebook\n")
 
 # Create or load the master codebook
-cb_master = octl.master_codebook(create = True)
+cb_master = tgl.master_codebook(create = True)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

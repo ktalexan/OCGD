@@ -12,7 +12,7 @@ import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import OCTL
+from ocgd import OCtgl
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,17 +25,16 @@ arcpy.env.workspace = os.getcwd()
 arcpy.env.overwriteOutput = True
 
 # Initialize OCTL instance
-octl = OCTL(part= 1, version= 2026.1)
+tgl = OCtgl(part= 1, version= 2026.1)
 
 # Get the project metadata and directories from the OCTL class object
-prj_meta = octl.prj_meta
-prj_dirs = octl.prj_dirs
-
+prj_meta = tgl.prj_meta
+prj_dirs = tgl.prj_dirs
 # Get the master codebook (load from JSON file)
-cb = octl.master_codebook(create = False)
+cb = tgl.master_codebook(create = False)
 
 # Get the feature list from the OCTL class object
-fl = octl.get_feature_list()
+fl = tgl.get_feature_list()
 
 check_fields = ["TLID", "LINEARID", "TFID", "AREAID", "HYDROID"]
 
@@ -57,4 +56,3 @@ for f in check_fields:
 
 # Print the check list with proper indentation
 print(json.dumps(check_list, indent=4))
-

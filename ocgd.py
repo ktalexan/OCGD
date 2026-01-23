@@ -24,13 +24,13 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the GDInit Class ----
+# Define the OCgdm Class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-class GDInit:
+class OCgdm:
     """
     A class to initialize the OCGD project structure.
-    The GDInit class provides methods to set up the project directories and metadata. It is called by other classes such as OCGD, OCACS, and OCTL to inherit common functionality.
+    The ProjectDirs class provides methods to set up the project directories and metadata. It is called by other classes such as OCGD, OCacs, and OCTL to inherit common functionality.
     """
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,10 +99,10 @@ class GDInit:
             "gis_ocgd_aprx": os.path.join(self.base_path, "gis", "ocgd", "ocgd.aprx"),
             "gis_ocgd_gdb": os.path.join(self.base_path, "gis", "ocgd", "ocgd.gdb"),
             "gis_ocgd_supporting_gdb": os.path.join(self.base_path, "gis", "ocgd_supporting.gdb"),
-            "gis_ocacs": os.path.join(self.base_path, "gis", "ocacs"),
-            "gis_ocacs_aprx": os.path.join(self.base_path, "gis", "ocacs", "ocacs.aprx"),
-            "gis_ocacs_gdb": os.path.join(self.base_path, "gis", "ocacs", "ocacs.gdb"),
-            "gis_ocacs_supporting_gdb": os.path.join(self.base_path, "gis", "ocacs_supporting.gdb"),
+            "gis_OCacs": os.path.join(self.base_path, "gis", "OCacs"),
+            "gis_OCacs_aprx": os.path.join(self.base_path, "gis", "OCacs", "OCacs.aprx"),
+            "gis_OCacs_gdb": os.path.join(self.base_path, "gis", "OCacs", "OCacs.gdb"),
+            "gis_OCacs_supporting_gdb": os.path.join(self.base_path, "gis", "OCacs_supporting.gdb"),
             "gis_octl": os.path.join(self.base_path, "gis", "octl"),
             "gis_octl_aprx": os.path.join(self.base_path, "gis", "octl", "octl.aprx"),
             "gis_octl_gdb": os.path.join(self.base_path, "gis", "octl", "octl.gdb"),
@@ -128,9 +128,9 @@ class GDInit:
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the OCGD main class ----
+# Define the OCucs main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCGD(GDInit):
+class OCucs(OCgdm):
     """
     A class containing functions and methods for the Project Template.
     Attributes:
@@ -230,11 +230,11 @@ class OCGD(GDInit):
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the OCACS main class ----
+# Define the OCacs main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCACS(GDInit):
+class OCacs(OCgdm):
     """
-    A class containing functions and methods for the OCACS Project.
+    A class containing functions and methods for the OCacs Project.
     Attributes:
         None
     Methods:
@@ -258,7 +258,7 @@ class OCACS(GDInit):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
         """
-        Initializes the OCACS class.
+        Initializes the OCacs class.
         """
         # Initialize the GDInit class with provided part/version
         super().__init__(part, version)
@@ -332,9 +332,9 @@ class OCACS(GDInit):
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the OCTL main class ----
+# Define the OCtgl main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCTL(GDInit):
+class OCtgl(OCgdm):
     """Class Containing the OCTL Processing Workflow Functions.
 
     This class encapsulates the workflow for processing Orange County Tiger Lines (OCTL)
