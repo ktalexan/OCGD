@@ -24,9 +24,113 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define the GDInit Class ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class GDInit:
+    """
+    A class to initialize the OCGD project structure.
+    The GDInit class provides methods to set up the project directories and metadata. It is called by other classes such as OCGD, OCACS, and OCTL to inherit common functionality.
+    """
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Initialize project structure ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
+        """
+        Initialize the OCGD project structure.
+        Args:
+            Nothing
+        Returns:
+            Nothing
+        Raises:
+            Nothing
+        Example:
+            >>> gd_init = GDInit()
+        Notes:
+            This function initializes the OCGD project structure.
+        """
+        # Set the part and version
+        self.part = part
+        self.version = version
+
+        # Set the base path and data date
+        self.base_path = os.getcwd()
+        self.data_date = dt.datetime.now().strftime("%B %Y")
+
+        # Create a prj_dirs variable calling the project_directories function
+        self.prj_dirs = self.project_directories(silent = False)
+
+        # Load the codebook
+        #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
+        #self.cb, self.df_cb = self.load_cb(silent = False)
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Project directories ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def project_directories(self, silent: bool = False) -> dict:
+        """
+        Function to generate project directories for the OCGD data processing project.
+        Args:
+            silent (bool, optional): Whether to print the project directories. Defaults to False.
+        Returns:
+            directories (dict): A dictionary containing the project directories.
+        Raises:
+            None
+        Example:
+            >>> prj_dirs = project_directories("/path/to/project")
+        Notes:
+            The project_directories function is used to generate project directories for the OCGD data processing project.
+        """
+        # Define the project directories
+        directories = {
+            "root": self.base_path,
+            "admin": os.path.join(self.base_path, "admin"),
+            "analysis": os.path.join(self.base_path, "analysis"),
+            "codebook": os.path.join(self.base_path, "codebook"),
+            "data": os.path.join(self.base_path, "data"),
+            "data_archived": os.path.join(self.base_path, "data", "archived"),
+            "data_processed": os.path.join(self.base_path, "data", "processed"),
+            "data_raw": os.path.join(self.base_path, "data", "raw"),
+            "documentation": os.path.join(self.base_path, "documentation"),
+            "gis": os.path.join(self.base_path, "gis"),
+            "gis_ocgd": os.path.join(self.base_path, "gis", "ocgd"),
+            "gis_ocgd_aprx": os.path.join(self.base_path, "gis", "ocgd", "ocgd.aprx"),
+            "gis_ocgd_gdb": os.path.join(self.base_path, "gis", "ocgd", "ocgd.gdb"),
+            "gis_ocgd_supporting_gdb": os.path.join(self.base_path, "gis", "ocgd_supporting.gdb"),
+            "gis_ocacs": os.path.join(self.base_path, "gis", "ocacs"),
+            "gis_ocacs_aprx": os.path.join(self.base_path, "gis", "ocacs", "ocacs.aprx"),
+            "gis_ocacs_gdb": os.path.join(self.base_path, "gis", "ocacs", "ocacs.gdb"),
+            "gis_ocacs_supporting_gdb": os.path.join(self.base_path, "gis", "ocacs_supporting.gdb"),
+            "gis_octl": os.path.join(self.base_path, "gis", "octl"),
+            "gis_octl_aprx": os.path.join(self.base_path, "gis", "octl", "octl.aprx"),
+            "gis_octl_gdb": os.path.join(self.base_path, "gis", "octl", "octl.gdb"),
+            "gis_octl_supporting_gdb": os.path.join(self.base_path, "gis", "octl_supporting.gdb"),
+            "gis_archived": os.path.join(self.base_path, "gis", "archived"),
+            "graphics": os.path.join(self.base_path, "graphics"),
+            "metadata": os.path.join(self.base_path, "metadata"),
+            "metadata_archived": os.path.join(self.base_path, "metadata", "archived"),
+            "notebooks": os.path.join(self.base_path, "notebooks"),
+            "notebooks_archived": os.path.join(self.base_path, "notebooks", "archived"),
+            "scripts": os.path.join(self.base_path, "scripts"),
+            "scripts_archived": os.path.join(self.base_path, "scripts", "archived")
+        }
+
+        # Print the project directories
+        if not silent:
+            print("Project Directories:")
+            for key, value in directories.items():
+                print(f"- {key}: {value}")
+
+        # Return the project directories
+        return directories
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the OCGD main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCGD:
+class OCGD(GDInit):
     """
     A class containing functions and methods for the Project Template.
     Attributes:
@@ -50,25 +154,20 @@ class OCGD:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def __init__(self, part: int, version: float):
+    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
         """
         Initializes the OCGD class.
         """
-        self.part = part
-        self.version = version
-        self.base_path = os.getcwd()
-        self.data_date = dt.datetime.now().strftime("%B %Y")
+        # Initialize the GDInit class with provided part/version
+        super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
         self.prj_meta = self.project_metadata(silent = False)
 
-        # Create a prj_dirs variable calling the project_directories function
-        self.prj_dirs = self.project_directories(silent = False)
-
         # Load the codebook
         #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
         #self.cb, self.df_cb = self.load_cb(silent = False)
-        
+
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Project metadata ----
@@ -123,67 +222,17 @@ class OCGD:
         # If not silent, print the metadata
         if not silent:
             print(
-                f"\nProject Metadata:\n- Name: {metadata["name"]}\n- Title: {metadata["title"]}\n- Description: {metadata["description"]}\n- Version: {metadata["version"]}\n- Author: {metadata["author"]}"
+                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}"
             )
 
         # Return the metadata
         return metadata
 
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Project directories ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def project_directories(self, silent: bool = False) -> dict:
-        """
-        Function to generate project directories for the OCSWITRS data processing project.
-        Args:
-            silent (bool, optional): Whether to print the project directories. Defaults to False.
-        Returns:
-            prj_dirs (dict): A dictionary containing the project directories.
-        Raises:
-            None
-        Example:
-            >>> prj_dirs = projectDirectories("/path/to/project")
-        Notes:
-            The project_directories function is used to generate project directories for the OCSWITRS data processing project.
-        """
-        prj_dirs = {
-            "root": self.base_path,
-            "admin": os.path.join(self.base_path, "admin"),
-            "analysis": os.path.join(self.base_path, "analysis"),
-            "codebook": os.path.join(self.base_path, "codebook"),
-            "data": os.path.join(self.base_path, "data"),
-            "data_archived": os.path.join(self.base_path, "data", "archived"),
-            "data_processed": os.path.join(self.base_path, "data", "processed"),
-            "data_raw": os.path.join(self.base_path, "data", "raw"),
-            "documentation": os.path.join(self.base_path, "documentation"),
-            "gis": os.path.join(self.base_path, "gis"),
-            "gis_agp": os.path.join(self.base_path, "gis", "ocgd"),
-            "gis_agp_aprx": os.path.join(self.base_path, "gis", "ocgd", "ocgd.aprx"),
-            "gis_agp_gdb": os.path.join(self.base_path, "gis", "ocgd", "ocgd.gdb"),
-            "gis_supporting_gdb": os.path.join(self.base_path, "gis", "ocgd_supporting.gdb"),
-            "gis_archived": os.path.join(self.base_path, "gis", "archived"),
-            "graphics": os.path.join(self.base_path, "graphics"),
-            "metadata": os.path.join(self.base_path, "metadata"),
-            "metadata_archived": os.path.join(self.base_path, "metadata", "archived"),
-            "notebooks": os.path.join(self.base_path, "notebooks"),
-            "notebooks_archived": os.path.join(self.base_path, "notebooks", "archived"),
-            "scripts": os.path.join(self.base_path, "scripts"),
-            "scripts_archived": os.path.join(self.base_path, "scripts", "archived")
-        }
-        # Print the project directories
-        if not silent:
-            print("Project Directories:")
-            for key, value in prj_dirs.items():
-                print(f"- {key}: {value}")
-        # Return the project directories
-        return prj_dirs
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the OCACS main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCACS:
+class OCACS(GDInit):
     """
     A class containing functions and methods for the OCACS Project.
     Attributes:
@@ -207,20 +256,15 @@ class OCACS:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def __init__(self, part: int, version: float):
+    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
         """
         Initializes the OCACS class.
         """
-        self.part = part
-        self.version = version
-        self.base_path = os.getcwd()
-        self.data_date = dt.datetime.now().strftime("%B %Y")
+        # Initialize the GDInit class with provided part/version
+        super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
         self.prj_meta = self.project_metadata(silent = False)
-
-        # Create a prj_dirs variable calling the project_directories function
-        self.prj_dirs = self.project_directories(silent = False)
 
         # Load the codebook
         #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
@@ -280,66 +324,17 @@ class OCACS:
         # If not silent, print the metadata
         if not silent:
             print(
-                f"\nProject Metadata:\n- Name: {metadata["name"]}\n- Title: {metadata["title"]}\n- Description: {metadata["description"]}\n- Version: {metadata["version"]}\n- Author: {metadata["author"]}"
+                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}"
             )
 
         # Return the metadata
         return metadata
 
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Project directories ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def project_directories(self, silent: bool = False) -> dict:
-        """
-        Function to generate project directories for the OCSWITRS data processing project.
-        Args:
-            silent (bool, optional): Whether to print the project directories. Defaults to False.
-        Returns:
-            prj_dirs (dict): A dictionary containing the project directories.
-        Raises:
-            None
-        Example:
-            >>> prj_dirs = projectDirectories("/path/to/project")
-        Notes:
-            The project_directories function is used to generate project directories for the OCSWITRS data processing project.
-        """
-        prj_dirs = {
-            "root": self.base_path,
-            "admin": os.path.join(self.base_path, "admin"),
-            "analysis": os.path.join(self.base_path, "analysis"),
-            "codebook": os.path.join(self.base_path, "codebook"),
-            "data": os.path.join(self.base_path, "data"),
-            "data_archived": os.path.join(self.base_path, "data", "archived"),
-            "data_processed": os.path.join(self.base_path, "data", "processed"),
-            "data_raw": os.path.join(self.base_path, "data", "raw"),
-            "documentation": os.path.join(self.base_path, "documentation"),
-            "gis": os.path.join(self.base_path, "gis"),
-            "gis_agp": os.path.join(self.base_path, "gis", "ocacs"),
-            "gis_agp_aprx": os.path.join(self.base_path, "gis", "ocacs", "ocacs.aprx"),
-            "gis_agp_gdb": os.path.join(self.base_path, "gis", "ocacs", "ocacs.gdb"),
-            "gis_supporting_gdb": os.path.join(self.base_path, "gis", "ocacs_supporting.gdb"),
-            "gis_archived": os.path.join(self.base_path, "gis", "archived"),
-            "graphics": os.path.join(self.base_path, "graphics"),
-            "metadata": os.path.join(self.base_path, "metadata"),
-            "metadata_archived": os.path.join(self.base_path, "metadata", "archived"),
-            "notebooks": os.path.join(self.base_path, "notebooks"),
-            "notebooks_archived": os.path.join(self.base_path, "notebooks", "archived"),
-            "scripts": os.path.join(self.base_path, "scripts"),
-            "scripts_archived": os.path.join(self.base_path, "scripts", "archived")     
-        }
-        # Print the project directories
-        if not silent:
-            print("Project Directories:")
-            for key, value in prj_dirs.items():
-                print(f"- {key}: {value}")
-        # Return the project directories
-        return prj_dirs
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the OCTL main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCTL:
+class OCTL(GDInit):
     """Class Containing the OCTL Processing Workflow Functions.
 
     This class encapsulates the workflow for processing Orange County Tiger Lines (OCTL)
@@ -350,20 +345,15 @@ class OCTL:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def __init__(self, part: int, version: float):
+    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
         """
         Initialize the OCTL class.
         """
-        self.part = part
-        self.version = version
-        self.base_path = os.getcwd()
-        self.data_date = dt.datetime.now().strftime("%B %Y")
+        # Initialize the GDInit class with provided part/version
+        super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
         self.prj_meta = self.project_metadata(silent = False)
-
-        # Create a prj_dirs variable calling the project_directories function
-        self.prj_dirs = self.project_directories(silent = False)
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -467,63 +457,11 @@ class OCTL:
         # If not silent, print the metadata
         if not silent:
             print(
-                f"\nProject Metadata:\n- Name: {metadata["name"]}\n- Title: {metadata["title"]}\n- Description: {metadata["description"]}\n- Version: {metadata["version"]}\n- Author: {metadata["author"]}"
+                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}"
             )
         
         # Return the metadata
         return metadata
-
-
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Project directories ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
-    def project_directories(self, silent: bool = False) -> dict:
-        """
-        Function to generate project directories for the OCTL data processing project.
-        Args:
-            silent (bool): If True, suppresses the print output. Default is False.
-        Returns:
-            prj_dirs (dict): A dictionary containing the project directories.
-        Raises:
-            ValueError: if base_path is not a string
-        Example:
-            >>> prj_dirs = self.project_directories()
-        Notes:
-            This function creates a dictionary of project directories based on the base path.
-            The function also checks if the base path exists and raises an error if it does not.
-        """
-        prj_dirs = {
-            "root": self.base_path,
-            "admin": os.path.join(self.base_path, "admin"),
-            "analysis": os.path.join(self.base_path, "analysis"),
-            "codebook": os.path.join(self.base_path, "codebook"),
-            "data": os.path.join(self.base_path, "data"),
-            "data_archived": os.path.join(self.base_path, "data", "archived"),
-            "data_processed": os.path.join(self.base_path, "data", "processed"),
-            "data_raw": os.path.join(self.base_path, "data", "raw"),
-            "documentation": os.path.join(self.base_path, "documentation"),
-            "gis": os.path.join(self.base_path, "gis"),
-            "gis_agp": os.path.join(self.base_path, "gis", "octl"),
-            "gis_agp_aprx": os.path.join(self.base_path, "gis", "octl", "octl.aprx"),
-            "gis_agp_gdb": os.path.join(self.base_path, "gis", "octl", "octl.gdb"),
-            "gis_supporting_gdb": os.path.join(self.base_path, "gis", "octl_supporting.gdb"),
-            "graphics": os.path.join(self.base_path, "graphics"),
-            "metadata": os.path.join(self.base_path, "metadata"),
-            "metadata_archived": os.path.join(self.base_path, "metadata", "archived"),
-            "notebooks": os.path.join(self.base_path, "notebooks"),
-            "notebooks_archived": os.path.join(self.base_path, "notebooks", "archived"),
-            "scripts": os.path.join(self.base_path, "scripts"),
-            "scripts_archived": os.path.join(self.base_path, "scripts", "archived")
-        }
-
-        # Print the project directories
-        if not silent:
-            print("\nProject Directories:")
-            for key, value in prj_dirs.items():
-                print(f"- {key}: {value}")
-        
-        # Return the project directories
-        return prj_dirs
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1589,7 +1527,7 @@ class OCTL:
                 print(f"Metadata for year {year} exported to {json_path}")
 
             # Export updated metadata to JSON file
-            json_path = os.path.join(self.prj_dirs["metadata"], f"folder_metadata.json")
+            json_path = os.path.join(self.prj_dirs["metadata"], "folder_metadata.json")
             with open(json_path, "w", encoding = "utf-8") as json_file:
                 json.dump(metadata, json_file, indent=4)
                 print(f"Metadata for year {year} exported to {json_path}")

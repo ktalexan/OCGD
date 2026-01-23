@@ -13,7 +13,6 @@ from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
 from ocgd import OCGD, OCACS, OCTL
-
 # Load environment variables from .env file
 load_dotenv()
 
@@ -23,6 +22,8 @@ pd.options.mode.copy_on_write = True
 # Set environment workspace to the current working directory
 arcpy.env.workspace = os.getcwd()
 arcpy.env.overwriteOutput = True
+
+#gd = GDInit(part= 1, version= 2026.1)
 
 # Initialize OCGD, OCACS, and OCTL instances
 ocgd = OCGD(part= 1, version= 2026.1)
@@ -35,8 +36,5 @@ prj_meta = {
     "ocacs": ocacs.prj_meta,
     "octl": octl.prj_meta
 }
-prj_dirs = {
-    "ocgd": ocgd.prj_dirs,
-    "ocacs": ocacs.prj_dirs,
-    "octl": octl.prj_dirs
-}
+# The project directories are the same for all classes since they inherit from GDInit, so we can just get it from one of them.
+prj_dirs = ocgd.prj_dirs
