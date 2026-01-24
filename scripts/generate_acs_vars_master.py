@@ -82,7 +82,8 @@ def parse_markdown(md_text: str):
                 "attributes": "",
             }
 
-            data[current_category][var] = entry
+            # Use the normalized name (with _###E) as the JSON key per instructions
+            data[current_category][name_replaced] = entry
 
     return data
 
