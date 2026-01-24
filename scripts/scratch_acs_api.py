@@ -17,6 +17,9 @@ prj_meta = acs.prj_meta
 prj_dirs = acs.prj_dirs
 
 
+geoids_co = acs.get_geoids("2010", "CO")
+geoids_cs = acs.get_geoids("2023", "CS")
+
 
 # Original URL: https://api.census.gov/data/2023/acs/acs5/subject?get=NAME,S0101_C01_001E&for=county:059&in=state:06
 
@@ -149,26 +152,3 @@ print(df)
 
 
 
-
-def get_geoids(year: str, fc: str):
-    """Get the GEOID field name and unique values for a given year and feature class."""
-    path = os.path.join(prj_dirs["gis"], f"tgl{year}.gdb")
-    if not os.path.exists(path):
-        raise ValueError(f"Geodatabase for year {year} does not exist at path {path}.")
-    arcpy.env.workspace = path
-    if fc not in arcpy.ListFeatureClasses():
-        raise ValueError(f"Feature class {fc} does not exist in geodatabase {path}.")
-    for f in arcpy.ListFields(fc):
-        if f.name.startswith("GEOID"):
-            geoid_field = f.name
-            geoids = set()
-            with arcpy.da.SearchCursor(fc, geoid_field) as cursor:
-                for row in cursor:
-                    geoids.add(row[0])
-                    # Conver toe geoids to a sorted list
-            geoids = sorted(list(geoids))
-            return {"field": geoid_field, "values": geoids}
-    raise ValueError(f"No GEOID field found in feature class {fc}.")
-
-get_geoids("2010", "CO")
-get_geoids("2023", "CS")
