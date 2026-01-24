@@ -98,15 +98,15 @@ class OCgdm:
             "gis_ucs": os.path.join(self.base_path, "gis", "ucs"),
             "gis_ucs_aprx": os.path.join(self.base_path, "gis", "ucs", "ucs.aprx"),
             "gis_ucs_gdb": os.path.join(self.base_path, "gis", "ucs", "ucs.gdb"),
-            "gis_ucs_supporting_gdb": os.path.join(self.base_path, "gis", "ucs_supporting.gdb"),
+            "gis_ucs_sup_gdb": os.path.join(self.base_path, "gis", "ucs", "ucs_sup.gdb"),
             "gis_acs": os.path.join(self.base_path, "gis", "acs"),
             "gis_acs_aprx": os.path.join(self.base_path, "gis", "acs", "acs.aprx"),
             "gis_acs_gdb": os.path.join(self.base_path, "gis", "acs", "acs.gdb"),
-            "gis_acs_supporting_gdb": os.path.join(self.base_path, "gis", "acs_supporting.gdb"),
+            "gis_acs_sup_gdb": os.path.join(self.base_path, "gis", "acs", "acs_sup.gdb"),
             "gis_tgl": os.path.join(self.base_path, "gis", "tgl"),
             "gis_tgl_aprx": os.path.join(self.base_path, "gis", "tgl", "tgl.aprx"),
             "gis_tgl_gdb": os.path.join(self.base_path, "gis", "tgl", "tgl.gdb"),
-            "gis_tgl_supporting_gdb": os.path.join(self.base_path, "gis", "tgl", "tgl_supporting.gdb"),
+            "gis_tgl_sup_gdb": os.path.join(self.base_path, "gis", "tgl", "tgl_sup.gdb"),
             "gis_archived": os.path.join(self.base_path, "gis", "archived"),
             "graphics": os.path.join(self.base_path, "graphics"),
             "metadata": os.path.join(self.base_path, "metadata"),
@@ -131,7 +131,7 @@ class OCgdm:
 # Define the OCtgl main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class OCtgl(OCgdm):
-    """Class Containing the OCTL Processing Workflow Functions.
+    """Class Containing the OCGD Processing Workflow Functions.
 
     This class encapsulates the workflow for processing Orange County Tiger Lines (OCTL)
     data. It includes methods for initialization, main execution, and retrieving
@@ -279,7 +279,7 @@ class OCtgl(OCgdm):
             This function assumes that the input dictionary contains all necessary keys for each layer.
         """
         # Create standard entry values
-        entry_gdb = f"TL{year}.gdb"
+        entry_gdb = f"tgl{year}.gdb"
         entry_tags = "Orange County, California, OCTL, TigerLines"
         entry_credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services"
         entry_access = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works, OC Survey Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works/OC Survey Geospatial Applications</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
@@ -1427,7 +1427,7 @@ class OCtgl(OCgdm):
         Notes:
             This function creates a geodatabase.
         """
-        gdb_name = f"TL{year}.gdb"
+        gdb_name = f"tgl{year}.gdb"
         gdb_path = os.path.join(self.prj_dirs["gis"], gdb_name)
 
         if not arcpy.Exists(gdb_path):
@@ -1803,7 +1803,7 @@ class OCtgl(OCgdm):
         # Create the map metadata dictionary
         md_map = {
             "title": f"OCTL {year} Map",
-            "tags": f"Orange County, California, Tiger/Line, OCTL, TL{year}",
+            "tags": f"Orange County, California, Tiger/Line, OCTL, tgl{year}",
             "summary": f"Orange County Tiger Lines Map for {year}",
             "description": f"Orange County Tiger Lines {year} Map containing the most up-to-date spatial data for Orange County, California. This map is part of the Orange County Tiger Lines (OCTL) project, which provides comprehensive geospatial data for the county. The data includes roads, boundaries, hydrography, and other essential features derived from the U.S. Census Bureau's Tiger/Line shapefiles for {year}. Version: {self.version}, last updated on {self.data_date}.",
             "credits": "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services",
@@ -2106,6 +2106,53 @@ class OCacs(OCgdm):
 
         # Return the metadata
         return metadata
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Get geoids ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def get_geoids(self, year: str, fc: str):
+        """
+        Get the GEOID field name and unique values for a given year and feature class.
+        Args:
+            year (str): The year of the geodatabase.
+            fc (str): The feature class name.
+        Returns:
+            dict: A dictionary containing the GEOID field name and unique values.
+        Raises:
+            ValueError: If the geodatabase or feature class does not exist, or if no GEOID field is found.
+        Examples:
+            >>> geoids = get_geoids("2020", "TRACT")
+        Notes:
+            This function retrieves the GEOID field name and unique values from the specified feature class in the geodatabase for the given year.
+        """
+        # Set the workspace to the geodatabase for the specified year
+        path = os.path.join(self.prj_dirs["gis"], f"tgl{year}.gdb")
+        if not os.path.exists(path):
+            raise ValueError(f"Geodatabase for year {year} does not exist at path {path}.")
+        
+        # Set the arcpy workspace to the geodatabase
+        arcpy.env.workspace = path
+        if fc not in arcpy.ListFeatureClasses():
+            raise ValueError(f"Feature class {fc} does not exist in geodatabase {path}.")
+        
+        # Loop through the fields in the feature class to find the GEOID field
+        for f in arcpy.ListFields(fc):
+            # Check if the field name contains "GEOID"
+            if f.name.startswith("GEOID"):
+                geoid_field = f.name
+                geoids = set()
+                # Get the unique values for the GEOID field
+                with arcpy.da.SearchCursor(fc, geoid_field) as cursor:
+                    # Loop through the rows in the cursor
+                    for row in cursor:
+                        geoids.add(row[0])
+                # Convert the geoids to a sorted list
+                geoids = sorted(list(geoids))
+
+                # Return the GEOID field name and unique values
+                return {"field": geoid_field, "values": geoids}
+        raise ValueError(f"No GEOID field found in feature class {fc}.")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

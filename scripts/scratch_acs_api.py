@@ -1,8 +1,22 @@
+from arcgis._impl.common._spatial import arcpy
+import os
+import sys
 import urllib.request
 import urllib.parse
 import json
 import sys
 import requests
+import arcpy
+from arcgis.features import GeoAccessor, GeoSeriesAccessor
+from dotenv import load_dotenv
+load_dotenv()
+from ocgd import OCacs
+
+acs = OCacs(part= 1, version= 2026.1)
+prj_meta = acs.prj_meta
+prj_dirs = acs.prj_dirs
+
+
 
 # Original URL: https://api.census.gov/data/2023/acs/acs5/subject?get=NAME,S0101_C01_001E&for=county:059&in=state:06
 
@@ -132,3 +146,29 @@ print(json.dumps(acs_vars_2023, indent=4))
 import pandas as pd
 df = pd.DataFrame.from_dict(acs_vars_2023['variables'], orient='index')
 print(df)
+
+
+
+
+def get_geoids(year: str, fc: str):
+    """Get the GEOID field name and unique values for a given year and feature class."""
+    path = os.path.join(prj_dirs["gis"], f"tgl{year}.gdb")
+    if not os.path.exists(path):
+        raise ValueError(f"Geodatabase for year {year} does not exist at path {path}.")
+    arcpy.env.workspace = path
+    if fc not in arcpy.ListFeatureClasses():
+        raise ValueError(f"Feature class {fc} does not exist in geodatabase {path}.")
+    for f in arcpy.ListFields(fc):
+        if f.name.startswith("GEOID"):
+            geoid_field = f.name
+            geoids = set()
+            with arcpy.da.SearchCursor(fc, geoid_field) as cursor:
+                for row in cursor:
+                    geoids.add(row[0])
+                    # Conver toe geoids to a sorted list
+            geoids = sorted(list(geoids))
+            return {"field": geoid_field, "values": geoids}
+    raise ValueError(f"No GEOID field found in feature class {fc}.")
+
+get_geoids("2010", "CO")
+get_geoids("2023", "CS")
