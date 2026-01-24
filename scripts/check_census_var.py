@@ -1,65 +1,88 @@
-import argparse
+#!/usr/bin/env python3
+"""
+check_census_var.py
+
+Given a year and a Census variable key, fetch the variable metadata from
+the Census API variables endpoint and print a JSON object with the
+relevant fields (label, concept, predicateType, group, limit, attributes).
+
+Usage: python check_census_var.py 2019 B01001_001E
+
+This script is written to be importable; call `get_variable_metadata(year, key)`
+from other scripts to programmatically obtain metadata.
+"""
+from __future__ import annotations
+
 import json
 import sys
-from typing import Dict, Optional
+from functools import lru_cache
+from typing import Any, Dict, Optional
 
-import requests
+try:
+    import requests
+except Exception:
+    requests = None
 
 
-def get_census_variable_info(year: str, var: str, timeout: int = 20) -> Optional[Dict]:
-    """Fetch variable metadata from the Census API for a given year and variable.
+@lru_cache(maxsize=8)
+def _fetch_variables_for_year(year: int) -> Optional[Dict[str, Any]]:
+    """Fetch and return the variables.json dict for the given ACS year.
 
-    Args:
-        year: Year portion to insert into the API URL (e.g. '2010').
-        var: Variable name to look up (e.g. 'B01001_001E').
-        timeout: Request timeout in seconds.
-
-    Returns:
-        A dict with the variable metadata (keys: name, label, concept, predicateType,
-        group, limit, attributes) or `None` if the variable is not found.
-
-    Raises:
-        requests.RequestException: On network / HTTP errors.
-        ValueError: If the response JSON is malformed.
+    Returns the parsed JSON dictionary or None on failure.
     """
     url = f"https://api.census.gov/data/{year}/acs/acs5/variables.json"
-    r = requests.get(url, timeout=timeout)
-    r.raise_for_status()
-    payload = r.json()
-    variables = payload.get("variables", {})
-    v = variables.get(var)
-    if not v:
+    try:
+        if requests:
+            resp = requests.get(url, timeout=30)
+            resp.raise_for_status()
+            return resp.json().get("variables", {})
+        # fallback to urllib
+        from urllib.request import urlopen
+
+        with urlopen(url, timeout=30) as fh:
+            data = json.load(fh)
+            return data.get("variables", {})
+    except Exception:
         return None
 
+
+def get_variable_metadata(year: int, var_key: str) -> Optional[Dict[str, Any]]:
+    """Return metadata for `var_key` in the given `year`.
+
+    The returned dict contains at least: label, concept, predicateType,
+    group, limit, attributes. Returns None if the variable is not present
+    for that year or on fetch error.
+    """
+    vars_for_year = _fetch_variables_for_year(year)
+    if not vars_for_year:
+        return None
+    meta = vars_for_year.get(var_key)
+    if not meta:
+        return None
+    # Extract expected keys with safe defaults
     return {
-        "name": var,
-        "label": v.get("label"),
-        "concept": v.get("concept"),
-        "predicateType": v.get("predicateType"),
-        "group": v.get("group"),
-        "limit": v.get("limit"),
-        "attributes": v.get("attributes"),
+        "label": meta.get("label", ""),
+        "concept": meta.get("concept", ""),
+        "predicateType": meta.get("predicateType", ""),
+        "group": meta.get("group", ""),
+        "limit": meta.get("limit", ""),
+        "attributes": meta.get("attributes", {}),
     }
 
 
-def _cli():
-    p = argparse.ArgumentParser(description="Check Census variable metadata for a given year")
-    p.add_argument("year", help="Year portion for the API URL (e.g. 2010)")
-    p.add_argument("var", help="Variable name to look up (e.g. B01001_001E)")
-    args = p.parse_args()
-
-    try:
-        res = get_census_variable_info(args.year, args.var)
-    except Exception as e:
-        print("ERROR:", e)
-        sys.exit(2)
-
-    if res is None:
-        print(f"{args.var} not found for year {args.year}")
-        sys.exit(1)
-
-    print(json.dumps(res, indent=2))
+def _cli_main(argv: list[str]) -> int:
+    if len(argv) != 3:
+        print("Usage: check_census_var.py YEAR VAR_KEY", file=sys.stderr)
+        return 2
+    year = int(argv[1])
+    var_key = argv[2]
+    meta = get_variable_metadata(year, var_key)
+    if meta is None:
+        # No output when not found; exit 1 for programmatic use
+        return 1
+    print(json.dumps(meta, ensure_ascii=False))
+    return 0
 
 
 if __name__ == "__main__":
-    _cli()
+    raise SystemExit(_cli_main(sys.argv))
