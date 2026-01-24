@@ -36,8 +36,8 @@ def parse_markdown(md_text: str):
         if not line:
             continue
 
-        # First-level heading: "# CODE: Category Name"
-        m = re.match(r"^#\s*[^:]+:\s*(.+)$", line)
+        # First-level heading: "# CODE: Category Name" (match single '#')
+        m = re.match(r"^#\s+[^:]+:\s*(.+)$", line)
         if m:
             current_category = m.group(1).strip()
             data.setdefault(current_category, {})
@@ -45,7 +45,7 @@ def parse_markdown(md_text: str):
             continue
 
         # Second-level heading: "## CODE: Group Name (N variables)"
-        m2 = re.match(r"^##\s*([^:]+):\s*(.+?)\s*\((\d+)[^)]+\)", line)
+        m2 = re.match(r"^##\s+([^:]+):\s*(.+?)\s*\((\d+)[^)]*\)", line)
         if m2:
             group_code = m2.group(1).strip()
             group_name = m2.group(2).strip()
