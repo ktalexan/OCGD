@@ -95,18 +95,18 @@ class OCgdm:
             "data_raw": os.path.join(self.base_path, "data", "raw"),
             "documentation": os.path.join(self.base_path, "documentation"),
             "gis": os.path.join(self.base_path, "gis"),
-            "gis_ocgd": os.path.join(self.base_path, "gis", "ocgd"),
-            "gis_ocgd_aprx": os.path.join(self.base_path, "gis", "ocgd", "ocgd.aprx"),
-            "gis_ocgd_gdb": os.path.join(self.base_path, "gis", "ocgd", "ocgd.gdb"),
-            "gis_ocgd_supporting_gdb": os.path.join(self.base_path, "gis", "ocgd_supporting.gdb"),
-            "gis_OCacs": os.path.join(self.base_path, "gis", "OCacs"),
-            "gis_OCacs_aprx": os.path.join(self.base_path, "gis", "OCacs", "OCacs.aprx"),
-            "gis_OCacs_gdb": os.path.join(self.base_path, "gis", "OCacs", "OCacs.gdb"),
-            "gis_OCacs_supporting_gdb": os.path.join(self.base_path, "gis", "OCacs_supporting.gdb"),
-            "gis_octl": os.path.join(self.base_path, "gis", "octl"),
-            "gis_octl_aprx": os.path.join(self.base_path, "gis", "octl", "octl.aprx"),
-            "gis_octl_gdb": os.path.join(self.base_path, "gis", "octl", "octl.gdb"),
-            "gis_octl_supporting_gdb": os.path.join(self.base_path, "gis", "octl_supporting.gdb"),
+            "gis_ucs": os.path.join(self.base_path, "gis", "ucs"),
+            "gis_ucs_aprx": os.path.join(self.base_path, "gis", "ucs", "ucs.aprx"),
+            "gis_ucs_gdb": os.path.join(self.base_path, "gis", "ucs", "ucs.gdb"),
+            "gis_ucs_supporting_gdb": os.path.join(self.base_path, "gis", "ucs_supporting.gdb"),
+            "gis_acs": os.path.join(self.base_path, "gis", "acs"),
+            "gis_acs_aprx": os.path.join(self.base_path, "gis", "acs", "acs.aprx"),
+            "gis_acs_gdb": os.path.join(self.base_path, "gis", "acs", "acs.gdb"),
+            "gis_acs_supporting_gdb": os.path.join(self.base_path, "gis", "acs_supporting.gdb"),
+            "gis_tgl": os.path.join(self.base_path, "gis", "tgl"),
+            "gis_tgl_aprx": os.path.join(self.base_path, "gis", "tgl", "tgl.aprx"),
+            "gis_tgl_gdb": os.path.join(self.base_path, "gis", "tgl", "tgl.gdb"),
+            "gis_tgl_supporting_gdb": os.path.join(self.base_path, "gis", "tgl", "tgl_supporting.gdb"),
             "gis_archived": os.path.join(self.base_path, "gis", "archived"),
             "graphics": os.path.join(self.base_path, "graphics"),
             "metadata": os.path.join(self.base_path, "metadata"),
@@ -125,210 +125,6 @@ class OCgdm:
 
         # Return the project directories
         return directories
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the OCucs main class ----
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCucs(OCgdm):
-    """
-    A class containing functions and methods for the Project Template.
-    Attributes:
-        None
-    Methods:
-        project_metadata(part: int, version: float, silent: bool = False) -> dict:
-            Generates project metadata for the OCUP data processing project.
-        project_directories(silent: bool = False) -> dict:
-            Generates project directories for the OCSWITRS data processing project.
-    Returns:
-        None
-    Raises:
-        None
-    Examples:
-        >>> metadata = project_metadata(1, 1)
-        >>> prj_dirs = project_directories()
-    Notes:
-        This class is used to generate project metadata and directories for the project.
-    """
-
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Class initialization ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
-        """
-        Initializes the OCGD class.
-        """
-        # Initialize the GDInit class with provided part/version
-        super().__init__(part, version)
-
-        # Create a prj_meta variable calling the project_metadata function
-        self.prj_meta = self.project_metadata(silent = False)
-
-        # Load the codebook
-        #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
-        #self.cb, self.df_cb = self.load_cb(silent = False)
-
-
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Project metadata ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def project_metadata(self, silent: bool = False) -> dict:
-        """
-        Function to generate project metadata for the OCUP data processing project.
-        Args:
-            silent (bool, optional): Whether to print the metadata information. Defaults to False.
-        Returns:
-            prj_meta (dict): A dictionary containing the project metadata.
-        Raises:
-            ValueError: If part is not an integer, or if version is not numeric.
-        Example:
-            >>> metadata = project_metadata(1, 1)
-        Notes:
-            The project_metadata function is used to generate project metadata for the OCUP data processing project.
-        """
-
-        # Match the part to a specific step and description (with default case)
-        match self.part:
-            case 1:
-                step = "Part 1: Raw Data Processing"
-                desc = "Importing the raw data files and perform initial geocoding"
-            case 2:
-                step = "Part 2: Imported Data Geocoding"
-                desc = "Geocoding the imported data and preparing it for GIS processing."
-            case 3:
-                step = "Part 3: GIS Data Processing"
-                desc = "GIS Geoprocessing and formatting of the OCUP data."
-            case 4:
-                step = "Part 4: GIS Map Processing"
-                desc = "Creating maps and visualizations of the OCUP data."
-            case 5:
-                step = "Part 5: GIS Data Sharing"
-                desc = "Exporting and sharing the GIS data to ArcGIS Online."
-            case _:
-                step = "Part 0: General Data Processing"
-                desc = "General data processing and analysis (default)."
-
-        # Create a dictionary to hold the metadata
-        metadata = {
-            "name": "OCTL Tiger/Line Data Processing",
-            "title": step,
-            "description": desc,
-            "version": self.version,
-            "date": self.data_date,
-            "author": "Dr. Kostas Alexandridis, GISP",
-            "years": "",
-        }
-
-        # If not silent, print the metadata
-        if not silent:
-            print(
-                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}"
-            )
-
-        # Return the metadata
-        return metadata
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the OCacs main class ----
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCacs(OCgdm):
-    """
-    A class containing functions and methods for the OCacs Project.
-    Attributes:
-        None
-    Methods:
-        project_metadata(part: int, version: float, silent: bool = False) -> dict:
-            Generates project metadata for the OCUP data processing project.
-        project_directories(silent: bool = False) -> dict:
-            Generates project directories for the OCSWITRS data processing project.
-    Returns:
-        None
-    Raises:
-        None
-    Examples:
-        >>> metadata = project_metadata(1, 1)
-        >>> prj_dirs = project_directories()
-    Notes:
-        This class is used to generate project metadata and directories for the project.
-    """
-
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Class initialization ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
-        """
-        Initializes the OCacs class.
-        """
-        # Initialize the GDInit class with provided part/version
-        super().__init__(part, version)
-
-        # Create a prj_meta variable calling the project_metadata function
-        self.prj_meta = self.project_metadata(silent = False)
-
-        # Load the codebook
-        #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
-        #self.cb, self.df_cb = self.load_cb(silent = False)
-        
-
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Project metadata ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def project_metadata(self, silent: bool = False) -> dict:
-        """
-        Function to generate project metadata for the OCUP data processing project.
-        Args:
-            silent (bool, optional): Whether to print the metadata information. Defaults to False.
-        Returns:
-            prj_meta (dict): A dictionary containing the project metadata.
-        Raises:
-            ValueError: If part is not an integer, or if version is not numeric.
-        Example:
-            >>> metadata = project_metadata(1, 1)
-        Notes:
-            The project_metadata function is used to generate project metadata for the OCUP data processing project.
-        """
-
-        # Match the part to a specific step and description (with default case)
-        match self.part:
-            case 1:
-                step = "Part 1: Raw Data Processing"
-                desc = "Importing the raw data files and perform initial geocoding"
-            case 2:
-                step = "Part 2: Imported Data Geocoding"
-                desc = "Geocoding the imported data and preparing it for GIS processing."
-            case 3:
-                step = "Part 3: GIS Data Processing"
-                desc = "GIS Geoprocessing and formatting of the OCUP data."
-            case 4:
-                step = "Part 4: GIS Map Processing"
-                desc = "Creating maps and visualizations of the OCUP data."
-            case 5:
-                step = "Part 5: GIS Data Sharing"
-                desc = "Exporting and sharing the GIS data to ArcGIS Online."
-            case _:
-                step = "Part 0: General Data Processing"
-                desc = "General data processing and analysis (default)."
-
-        # Create a dictionary to hold the metadata
-        metadata = {
-            "name": "OCTL Tiger/Line Data Processing",
-            "title": step,
-            "description": desc,
-            "version": self.version,
-            "date": self.data_date,
-            "author": "Dr. Kostas Alexandridis, GISP",
-            "years": "",
-        }
-
-        # If not silent, print the metadata
-        if not silent:
-            print(
-                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}"
-            )
-
-        # Return the metadata
-        return metadata
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2208,6 +2004,210 @@ class OCtgl(OCgdm):
         
         # Return the feature list
         return feature_list
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define the OCacs main class ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class OCacs(OCgdm):
+    """
+    A class containing functions and methods for the OCacs Project.
+    Attributes:
+        None
+    Methods:
+        project_metadata(part: int, version: float, silent: bool = False) -> dict:
+            Generates project metadata for the OCUP data processing project.
+        project_directories(silent: bool = False) -> dict:
+            Generates project directories for the OCSWITRS data processing project.
+    Returns:
+        None
+    Raises:
+        None
+    Examples:
+        >>> metadata = project_metadata(1, 1)
+        >>> prj_dirs = project_directories()
+    Notes:
+        This class is used to generate project metadata and directories for the project.
+    """
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Class initialization ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
+        """
+        Initializes the OCacs class.
+        """
+        # Initialize the GDInit class with provided part/version
+        super().__init__(part, version)
+
+        # Create a prj_meta variable calling the project_metadata function
+        self.prj_meta = self.project_metadata(silent = False)
+
+        # Load the codebook
+        #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
+        #self.cb, self.df_cb = self.load_cb(silent = False)
+        
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Project metadata ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def project_metadata(self, silent: bool = False) -> dict:
+        """
+        Function to generate project metadata for the OCUP data processing project.
+        Args:
+            silent (bool, optional): Whether to print the metadata information. Defaults to False.
+        Returns:
+            prj_meta (dict): A dictionary containing the project metadata.
+        Raises:
+            ValueError: If part is not an integer, or if version is not numeric.
+        Example:
+            >>> metadata = project_metadata(1, 1)
+        Notes:
+            The project_metadata function is used to generate project metadata for the OCUP data processing project.
+        """
+
+        # Match the part to a specific step and description (with default case)
+        match self.part:
+            case 1:
+                step = "Part 1: Raw Data Processing"
+                desc = "Importing the raw data files and perform initial geocoding"
+            case 2:
+                step = "Part 2: Imported Data Geocoding"
+                desc = "Geocoding the imported data and preparing it for GIS processing."
+            case 3:
+                step = "Part 3: GIS Data Processing"
+                desc = "GIS Geoprocessing and formatting of the OCUP data."
+            case 4:
+                step = "Part 4: GIS Map Processing"
+                desc = "Creating maps and visualizations of the OCUP data."
+            case 5:
+                step = "Part 5: GIS Data Sharing"
+                desc = "Exporting and sharing the GIS data to ArcGIS Online."
+            case _:
+                step = "Part 0: General Data Processing"
+                desc = "General data processing and analysis (default)."
+
+        # Create a dictionary to hold the metadata
+        metadata = {
+            "name": "OCTL Tiger/Line Data Processing",
+            "title": step,
+            "description": desc,
+            "version": self.version,
+            "date": self.data_date,
+            "author": "Dr. Kostas Alexandridis, GISP",
+            "years": "",
+        }
+
+        # If not silent, print the metadata
+        if not silent:
+            print(
+                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}"
+            )
+
+        # Return the metadata
+        return metadata
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define the OCucs main class ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class OCucs(OCgdm):
+    """
+    A class containing functions and methods for the Project Template.
+    Attributes:
+        None
+    Methods:
+        project_metadata(part: int, version: float, silent: bool = False) -> dict:
+            Generates project metadata for the OCUP data processing project.
+        project_directories(silent: bool = False) -> dict:
+            Generates project directories for the OCSWITRS data processing project.
+    Returns:
+        None
+    Raises:
+        None
+    Examples:
+        >>> metadata = project_metadata(1, 1)
+        >>> prj_dirs = project_directories()
+    Notes:
+        This class is used to generate project metadata and directories for the project.
+    """
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Class initialization ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
+        """
+        Initializes the OCGD class.
+        """
+        # Initialize the GDInit class with provided part/version
+        super().__init__(part, version)
+
+        # Create a prj_meta variable calling the project_metadata function
+        self.prj_meta = self.project_metadata(silent = False)
+
+        # Load the codebook
+        #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
+        #self.cb, self.df_cb = self.load_cb(silent = False)
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Project metadata ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def project_metadata(self, silent: bool = False) -> dict:
+        """
+        Function to generate project metadata for the OCUP data processing project.
+        Args:
+            silent (bool, optional): Whether to print the metadata information. Defaults to False.
+        Returns:
+            prj_meta (dict): A dictionary containing the project metadata.
+        Raises:
+            ValueError: If part is not an integer, or if version is not numeric.
+        Example:
+            >>> metadata = project_metadata(1, 1)
+        Notes:
+            The project_metadata function is used to generate project metadata for the OCUP data processing project.
+        """
+
+        # Match the part to a specific step and description (with default case)
+        match self.part:
+            case 1:
+                step = "Part 1: Raw Data Processing"
+                desc = "Importing the raw data files and perform initial geocoding"
+            case 2:
+                step = "Part 2: Imported Data Geocoding"
+                desc = "Geocoding the imported data and preparing it for GIS processing."
+            case 3:
+                step = "Part 3: GIS Data Processing"
+                desc = "GIS Geoprocessing and formatting of the OCUP data."
+            case 4:
+                step = "Part 4: GIS Map Processing"
+                desc = "Creating maps and visualizations of the OCUP data."
+            case 5:
+                step = "Part 5: GIS Data Sharing"
+                desc = "Exporting and sharing the GIS data to ArcGIS Online."
+            case _:
+                step = "Part 0: General Data Processing"
+                desc = "General data processing and analysis (default)."
+
+        # Create a dictionary to hold the metadata
+        metadata = {
+            "name": "OCTL Tiger/Line Data Processing",
+            "title": step,
+            "description": desc,
+            "version": self.version,
+            "date": self.data_date,
+            "author": "Dr. Kostas Alexandridis, GISP",
+            "years": "",
+        }
+
+        # If not silent, print the metadata
+        if not silent:
+            print(
+                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}"
+            )
+
+        # Return the metadata
+        return metadata
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

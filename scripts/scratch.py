@@ -12,7 +12,7 @@ import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import OCucs, OCacs, OCtgl
+from ocgd import OCtgl, OCacs, OCucs
 # Load environment variables from .env file
 load_dotenv()
 
@@ -27,15 +27,15 @@ arcpy.env.overwriteOutput = True
 #gd = GDInit(part= 1, version= 2026.1)
 
 # Initialize OCucs, OCacs, and OCtgl instances
-ucs = OCucs(part= 1, version= 2026.1)
-acs = OCacs(part= 1, version= 2026.1)
 tgl = OCtgl(part= 1, version= 2026.1)
+acs = OCacs(part= 1, version= 2026.1)
+ucs = OCucs(part= 1, version= 2026.1)
 
 # Get the project metadata and directories from the OCucs, OCacs, and OCtgl class objects
 prj_meta = {
-    "ucs": ucs.prj_meta,
+    "tgl": tgl.prj_meta,
     "acs": acs.prj_meta,
-    "tgl": tgl.prj_meta
+    "ucs": ucs.prj_meta
 }
 # The project directories are the same for all classes since they inherit from ocgdm, so we can just get it from one of them.
-prj_dirs = ucs.prj_dirs
+prj_dirs = tgl.prj_dirs
