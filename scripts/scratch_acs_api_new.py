@@ -1,9 +1,9 @@
-from __future__ import annotations
+#from __future__ import annotations
 import os
 import json
 from typing import List, Dict, Optional, Union
-from fontTools.misc.plistlib import Data
-import requests
+#from fontTools.misc.plistlib import Data
+#import requests
 import pandas as pd
 from dotenv import load_dotenv
 load_dotenv()
@@ -18,7 +18,7 @@ prj_dirs = acs.prj_dirs
 
 year = 2010
 sample_vars = acs.get_acs_list(year, "Demographic")
-df_co_d = acs.acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CO")
+df_co_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CO")
 print(df_co_d)
 
 df_cs_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CS")

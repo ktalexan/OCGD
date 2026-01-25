@@ -9,12 +9,14 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Import necessary libraries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+from __future__ import annotations
 import os
 import sys
 import datetime as dt
 from pathlib import Path
 import json
 from typing import Union
+#from fontTools.misc.plistlib import Data
 import wmi
 import pytz
 import pandas as pd
@@ -2365,7 +2367,7 @@ class OCacs(OCgdm):
                 raise ValueError(f"Unsupported geography: {geography}")
 
         # Process each chunk and merge results
-        print(f"Processing {len(chunks)} chunk(s) of variables...")
+        print(f"Processing {len(chunks)}x{chunk_size} chunk(s) of variables...")
         for chunk in chunks:
             get_vars = ",".join(["GEO_ID"] + chunk)
             # Build params as a list of tuples so repeated keys (e.g. multiple
@@ -2416,7 +2418,7 @@ class OCacs(OCgdm):
                 merged[geo_id].update(filtered)
         
         # Get the merged response list
-        print("Merging and filtering results...")
+        print("Merging chunk(s) and filtering results...")
         merged_list = list(merged.values())
         len_merged = len(merged_list)
         len_geoids = len(geoids["values"])
