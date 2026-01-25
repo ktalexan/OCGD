@@ -18,6 +18,7 @@ from typing import Union
 import wmi
 import pytz
 import pandas as pd
+import requests
 import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
@@ -60,6 +61,9 @@ class OCgdm:
 
         # Create a prj_dirs variable calling the project_directories function
         self.prj_dirs = self.project_directories(silent = False)
+
+        # Get the available ACS5 years
+        self.acs5_years = self.get_available_acs5_years()
 
         # Load the codebook
         #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
@@ -125,6 +129,43 @@ class OCgdm:
 
         # Return the project directories
         return directories
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Get available ACS5 years ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
+    def get_available_acs5_years(self):
+        """
+        Get the available years for ACS5 data from the Census API.
+        Args:
+            None
+        Returns:
+            years (list): A list of available years for ACS5 data.
+        Raises:
+            None
+        Example:
+            >>> years = get_available_acs5_years()
+        Notes:
+            This function gets the available years for ACS5 data from the Census API.
+        """
+        # The discovery API lists all available endpoints
+        url = "https://api.census.gov/data.json"
+        response = requests.get(url, timeout = 20)
+        datasets = response.json()['dataset']
+        
+        # Filter for acs5 endpoints
+        years = []
+        for ds in datasets:
+            # We look for the specific acs5 path in the distribution links
+            if "acs5" in ds.get("c_dataset", ""):
+                # Extract the year from the identifier or title
+                # Example identifier: "https://api.census.gov/data/2022/acs/acs5"
+                year = ds.get("c_vintage")
+                if year and year >= 2010:
+                    years.append(year)
+        
+        # Return sorted unique years
+        return sorted(list(set(years)))
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2046,7 +2087,6 @@ class OCacs(OCgdm):
         # Load the codebook
         #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
         #self.cb, self.df_cb = self.load_cb(silent = False)
-        
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Project metadata ----
@@ -2065,7 +2105,7 @@ class OCacs(OCgdm):
         Notes:
             The project_metadata function is used to generate project metadata for the OCUP data processing project.
         """
-
+        
         # Match the part to a specific step and description (with default case)
         match self.part:
             case 1:
@@ -2086,7 +2126,7 @@ class OCacs(OCgdm):
             case _:
                 step = "Part 0: General Data Processing"
                 desc = "General data processing and analysis (default)."
-
+        
         # Create a dictionary to hold the metadata
         metadata = {
             "name": "OCTL Tiger/Line Data Processing",
@@ -2095,17 +2135,56 @@ class OCacs(OCgdm):
             "version": self.version,
             "date": self.data_date,
             "author": "Dr. Kostas Alexandridis, GISP",
-            "years": "",
+            "years": self.acs5_years
         }
 
         # If not silent, print the metadata
         if not silent:
             print(
-                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}"
+                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}\n- Date: {metadata['date']}\n- Available ACS5 Years: {metadata['years']}\n"
             )
 
         # Return the metadata
         return metadata
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Get ACS variable list ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def get_acs_list(self, year: int, category: str):
+        """
+        Get ACS variable list for a given year and category.
+        Args:
+            year (int): The ACS year (e.g., 2010, 2023).
+            category (str): The variable category (e.g., "Demographic", "Social", "Economic", "Housing").
+        Returns:
+            list: List of ACS variable strings including GEO_ID.
+        Raises:
+            ValueError: If the year is not in the available ACS5 years.
+        Example:
+            >>> get_acs_list(2010, "Demographic")
+            ['B01001_001E', 'B01001_002E', 'B01001_003E', ...]
+        Note:
+            The actual variable codes will depend on the contents of the codebook for that year.
+        """
+        
+        # Make sure the year is in the acs5_years list
+        if year not in self.acs5_years:
+            raise ValueError(f"Year {year} is not in the available ACS5 years: {self.acs5_years}")
+        
+        # Define the codebook path for that year
+        cb_acs_path = os.path.join(self.prj_dirs["codebook"], f"acs_variables_{year}.json")
+        
+        # Load the ACS variables codebook for that year
+        cb_acs = {}
+        if os.path.exists(cb_acs_path):
+            with open(cb_acs_path, "r", encoding = "utf-8") as f:
+                cb_acs = json.load(f)
+        
+        # Get the variable list for the given category
+        var_list = list(cb_acs[category].keys())
+        
+        # Return the variable string
+        return var_list
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

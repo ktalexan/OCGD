@@ -11,7 +11,7 @@ Perform the following steps to the content of the markdown file:
     3. Lines of variable definitions formatted as "VariableName (Alias);".
 
 - I want to create a new JSON structure from the variable definitions without changing the contents of the markdown file. The new JSON structure should have the following structure with the following specifications:
-    1. The JSON structure should have firs level keys as the category names (from first level headings, omitting the code).
+    1. The JSON structure should have firs level keys as the category names (from first level headings, omitting the part before the colon).
     2. Seperate the content of the variable definitions into individual lines by splitting at each ";" character when preciding a parenthesis close ")".
     3. For each line, trim any leading or trailing whitespace.
     4. Each line now contains a variable name, followed by an alias in parentheses.
@@ -26,10 +26,10 @@ Perform the following steps to the content of the markdown file:
         - "description": An empty string.
         - "type": An empty string.
         - "category": The category name from the first level heading, omitting the part in parentheses.
-        - "group_category": The group category name from the second level heading without the part in parentheses.
+        - "group_category": The group category name from the second level heading without the part before the colon and the part in parentheses.
         - "group_count": The number in the second level heading parentheses. Should be an integer.
         - "group": the variable name part before the "_".
-        - "group_code": An empty string.
+        - "group_code": The group code extracted from the second level heading from the part before the colon.
         - "limit": An empty string.
         - "attributes": An empty string.
 

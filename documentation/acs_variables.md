@@ -1,4 +1,4 @@
-# D: Demographic Characteristics
+# D: Demographic
 
 ## D01: Sex And Age (49 variables)
 
@@ -24,7 +24,7 @@ B03002e1 (Total population); B03002e2 (Not Hispanic or Latino); B03002e3 (Not Hi
 
 B05003e8 (Male, 18 years and over); B05003e9 (Male, Native US Citizen, 18 years and over); B05003e11 (Male, Foreign-born Naturalized US Citizen, 18 years and over); B05003e12 (Male, Foreign-born, not a US Citizen, 18 years and over); B05003e19 (Female, 18 years and over); B05003e20 (Female, Native US Citizem, 18 years and over); B05003e22 (Female, Foreign-born, Naturalized US Citizen, 18 years and over); B05003e23 (Female, Foreign-born, not a US Citizen, 18 years and over).
 
-# S: Social Characteristics
+# S: Social
 
 ## S01: Households by Type (17 variables)
 
@@ -102,7 +102,7 @@ B04007e1 (Total population); B04007e2 (Population with ancestry specified); B040
 
 B28008e1 (Population in households); B28008e2 (Has a computer); B28008e4 (With a broadband subscription); B28008e9 (Without internet subscription); B28008e10 (No computer); B28010e1 (Total households); B28010e3 (Households with desktop or laptop); B28010e4 (Households with smartphone, tablet, or other portable wireless computer); B28010e5 (Households without a computer); B28011e2 (Households with an internet subscription); B28011e4 (Households with a broadband connection (cable, fiber optic, DSL)); B28011e5 (Households with satellite internet service); B28011e6 (Households without internet access).
 
-# E: Economic Characteristics
+# E: Economic
 
 ## E01: Employment Status (7 variables)
 
@@ -180,7 +180,7 @@ B17010e1 (All families); B17010e2 (All families below poverty level); B17010e3 (
 
 B17011e1 (Families below poverty: aggregate income deficit (past 12 months)); B17011e2 (Married couple families below poverty: aggregate income deficit); B17011e4 (Male householder, no wife present below poverty: aggregrate income deficit); B17011e5 (Female householder, no husband present below poverty: aggregate income deficit).
 
-# H: Housing Characteristics
+# H: Housing
 
 ## H01: Housing occupancy (3 variables)
 

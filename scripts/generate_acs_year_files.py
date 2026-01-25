@@ -21,7 +21,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 MASTER_PATH = ROOT / "codebook" / "acs_variables_master.json"
 
 try:
