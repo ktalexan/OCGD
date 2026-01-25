@@ -2,7 +2,9 @@ from __future__ import annotations
 import os
 import json
 from typing import List, Dict, Optional, Union
+from fontTools.misc.plistlib import Data
 import requests
+import pandas as pd
 from dotenv import load_dotenv
 load_dotenv()
 from ocgd import OCacs
@@ -13,303 +15,120 @@ acs = OCacs(part=1, version=2026.1)
 prj_meta = acs.prj_meta
 prj_dirs = acs.prj_dirs
 
-# https://api.census.gov/data/2010/acs/acs5?get=NAME,B00001_001E&for=county%20subdivision:*&in=state:06&in=county:059&key=YOUR_KEY_HERE
 
-def fetch_acs_api(
-	year: int,
-	variables: List[str],
-	geography: str = "CO",
-	chunk_size: int = 49,
-) -> List[Dict[str, str]]:
-	"""Fetch ACS data for a given year and list of variables.
+year = 2010
+sample_vars = acs.get_acs_list(year, "Demographic")
+df_co_d = acs.acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CO")
+print(df_co_d)
 
-	This function will chunk requests when `variables` is large and merge
-	results by `GEO_ID` so the caller receives a single record per geography
-	with all requested variables.
+df_cs_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CS")
+print(df_cs_d)
 
-	Args:
-		year: ACS year (e.g., 2010).
-		variables: List of ACS variable codes (e.g., ["B01003_001E"]).
-		for_clause: Value for the `for` parameter (e.g., "county:059").
-		in_clause: Value for the `in` parameter (e.g., "state:06").
-		chunk_size: Number of variables per API request (default 50).
+df_pl_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "PL")
+print(df_pl_d)
 
-	Returns:
-		List of dictionaries mapping header->value for each geography.
+# Not working
+df_zc_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "ZC")
+print(df_zc_d)
+
+df_cd_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CD")
+print(df_cd_d)
+
+df_ll_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "LL")
+print(df_ll_d)
+
+df_lu_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "LU")
+print(df_lu_d)
+
+df_se_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SE")
+print(df_se_d)
+
+df_ss_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SS")
+print(df_ss_d)
+
+df_su_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SU")
+print(df_su_d)
+
+df_ua_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "UA")
+print(df_ua_d)
+
+df_pu_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "PU")
+print(df_pu_d)
+
+df_bg_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "BG")
+print(df_bg_d)
+
+df_tr_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "TR")
+print(df_tr_d)
+
+
+
+def get_master_dataframe():
 	"""
-	api_key = os.getenv("CENSUS_API_KEY1")
-	if not api_key:
-		raise RuntimeError("Environment variable CENSUS_API_KEY1 is not set")
+	Fetch sample ACS data across all years, variable categories, and geographies.
+	Args:
+		None
+	Raises:
+		None
+	Returns:
+		master_df (pd.DataFrame): Master DataFrame containing ACS data.
+	Example:
+		>>> master_df = get_master_dataframe()
+	Note: 
+		This function may take a while to run as it fetches data for multiple years, categories, and geographies.
+	"""
 
-	if not isinstance(variables, (list, tuple)):
-		raise TypeError("variables must be a list or tuple of ACS variable codes")
+	# List of ACS geographies to fetch
+	acs_geographices = [
+		"CO",  # County
+		"CS",  # County Subdivision
+		"PL",  # Cities or Places
+		"ZC",  # Zip Code Tabulation Area
+		"CD",  # Congressional District
+		"LL",  # State Assembly Legislative Districts (Lower)
+		"LU",  # State Senate Legislative Districts (Upper)
+		"SE",  # Elementary School District
+		"SS",  # Secondary School District
+		"SU",  # Unified School District
+		"UA",  # Urban Area
+		"PU",  # Public Use Microdata Area
+		"BG",  # Block Group
+		"TR"   # Census Tract
+	]
 
-	base_url = f"https://api.census.gov/data/{year}/acs/acs5"
+	# Use a nested dictionary to accumulate results (years -> category -> geography -> DataFrame)
+	master_data: Dict[str, Dict[str, Dict[str, Optional[pd.DataFrame]]]] = {}
 
-	# Census API accepts a maximum of 50 fields per request including GEO_ID.
-	# Ensure we chunk variables so that each request has at most 49 variables
-	# plus the GEO_ID field.
-	chunk_size = min(int(chunk_size), 49)
-	# Prepare chunks (exclude GEO_ID from chunking)
-	def _chunk_list_local(items: List[str], size: int) -> List[List[str]]:
-		return [items[i : i + size] for i in range(0, len(items), size)]
+	# Loop through each ACS year, variable category, and geography to fetch data
+	for year in acs.acs5_years:
+		print(f"\nFetching sample ACS data for year {year}...")
+		master_data[str(year)] = {}
 
-	chunks = _chunk_list_local(list(variables), chunk_size)
+		# Loop through variable categories
+		for level in ["Demographic", "Social", "Economic", "Housing"]:
+			print(f" Variable Category: {level}")
+			master_data[str(year)][level] = {}
 
-	merged: Dict[str, Dict[str, str]] = {}
+			# Get sample variables for the category
+			sample_vars = acs.get_acs_list(year, level)
 
-	match geography:
-		case "CO":
-			print("Fetching county data")
-			geoids = acs.get_geoids(str(year), "CO")
-			for_clause = "county:059"
-			in_clause = "state:06"
-		case "CS":
-			print("Fetching county subdivision data")
-			geoids = acs.get_geoids(str(year), "CS")
-			for_clause = "county subdivision:*"
-			in_clause = ["state:06", "county:059"]
+			# Loop through geographies
+			for geography in acs_geographices:
+				print(f"- Geography: {geography}")
+				# Fetch the DataFrame for this combination
+				df = acs.fetch_acs_tables(year=year, variables=sample_vars, geography=geography)
+				master_data[str(year)][level][geography] = df
 
-	for chunk in chunks:
-		get_vars = ",".join(["GEO_ID"] + chunk)
-		# Build params as a list of tuples so repeated keys (e.g. multiple
-		# 'in=' parameters) are preserved in the query string.
-		params_list = [("get", get_vars), ("key", api_key)]
+				if df is None:
+					print("  Retrieved no records (None returned).")
+				else:
+					print(f"  Retrieved {df.shape[0]} records with {df.shape[1]} variables.")
 
-		# 'for' is a single value (string)
-		if for_clause:
-			params_list.append(("for", for_clause))
+	# Return the nested dict of results
+	return master_data
 
-		# Support multiple 'in' values by repeating the 'in' parameter.
-		if in_clause:
-			if isinstance(in_clause, (list, tuple)):
-				for val in in_clause:
-					params_list.append(("in", val))
-			else:
-				params_list.append(("in", in_clause))
-
-		resp = requests.get(base_url, params=params_list, timeout=60)
-		resp.raise_for_status()
-
-		try:
-			data = resp.json()
-		except ValueError:
-			raise RuntimeError("Invalid JSON response from Census API")
-
-		if not data or len(data) < 2:
-			continue
-
-		headers = data[0]
-		for row in data[1:]:
-			rec = dict(zip(headers, row))
-			geo_id = rec.get("GEO_ID")
-			if geo_id is None:
-				# skip malformed row
-				continue
-			if geo_id not in merged:
-				merged[geo_id] = {}
-			# Only keep GEO_ID and variables requested by the caller
-			allowed = set(variables)
-			filtered = {k: v for k, v in rec.items() if k == "GEO_ID" or k in allowed}
-			merged[geo_id].update(filtered)
-	
-	# Get the merged response list
-	merged_list = list(merged.values())
-
-	# If any of the merged_ids are not in the geoids["values"], remove it from the merged_list
-	final_list = [rec for rec in merged_list if rec["GEO_ID"].split("US")[-1] in geoids["values"]]
-
-	# Count of final_list and geoids
-	len_final = len(final_list)
-	len_geoids = len(geoids["values"])
-
-	# Get counts of variables in each record (excluding GEO_ID)
-	raw_counts =[len(d) - 1 for d in final_list]
-	# Make sure all counts are the same
-	if len(set(raw_counts)) == 1:
-		print(f"Response has {len_final} records (of {len_geoids} in the TigerLine geodatabase) with {raw_counts[0]} variables each.")
-	elif len(set(raw_counts)) > 1:
-		print("Warning: Inconsistent variable counts in final_list")
-	
-	# Return list of filtered records
-	return final_list
+# Get the master DataFrame by calling the function
+master_df = get_master_dataframe()
 
 
-sample_vars = acs.get_acs_list(2010, "Demographic")
-res = fetch_acs_api(year = 2010, variables = sample_vars, geography = "CO")
-print(json.dumps(res[:3], indent = 4))
-
-res = fetch_acs_api(year = 2010, variables = sample_vars, geography = "CS")
-print(json.dumps(res[:3], indent = 4))
-
-
-
-
-def fetch_census(year: int, table_id: str, var_id: str = None, geography: str = "county"):
-    """Fetch JSON from the Census API using urllib (no external deps).
-
-    Args:
-        get_vars: comma-separated variables for `get` param.
-        for_clause: the `for` query value (e.g., 'county:059').
-        in_clause: the `in` query value (e.g., 'state:06').
-
-    Returns:
-        Parsed JSON response.
-
-    Raises:
-        urllib.error.HTTPError on HTTP failures.
-        json.JSONDecodeError if response isn't valid JSON.
-    """
-    year = str(year)
-    geoids = dict()
-
-    # If var_id is provided, construct get_vars accordingly
-    get_vars = f"NAME,group({table_id})"
-    if var_id:
-        get_vars = f"NAME,{table_id}_{var_id}"
-
-    base = f"https://api.census.gov/data/{year}/acs/acs5/subject"
-
-    match geography:
-        case "CO":
-            print("Fetching county data")
-            geoids = acs.get_geoids(str(year), "CO")
-            params = {
-                "get": get_vars,
-                "for": "county:059",
-                "in": "state:06"
-            }
-        case "CS":
-            print("Fetching county subdivision data")
-            geoids = acs.get_geoids(str(year), "CS")
-            params = {
-                "get": get_vars,
-                "for": "county subdivision:*",
-                "in": ["state:06", "county:059"]
-            }
-        case "TR":
-            print("Fetching census tract data")
-            geoids = acs.get_geoids(str(year), "TR")
-            params = {
-                "get": get_vars,
-                "for": "tract:*",
-                "in": ["state:06", "county:059"]
-            }
-        case "PL":
-            print("Fetching cities or places data")
-            geoids = acs.get_geoids(str(year), "PL")
-            params = {
-                "get": get_vars,
-                "for": "place:*",
-                "in": "state:06"
-            }
-        case "CD":
-            print("Fetching congressional district data")
-            geoids = acs.get_geoids(str(year), "CD")
-            params = {
-                "get": get_vars,
-                "for": "congressional district:*",
-                "in": "state:06"
-            }
-        case "ZC":
-            print("Fetching zip code tabulation areas data")
-            geoids = acs.get_geoids(str(year), "ZC")
-            params = {
-                "get": get_vars,
-                "for": "zip code tabulation area:*"
-            }
-        case "LL":
-            print("Fetching state assembly legislative districts (lower) data")
-            geoids = acs.get_geoids(str(year), "LL")
-            params = {
-                "get": get_vars,
-                "for": "state assembly district:*",
-                "in": "state:06"
-            }
-        case "LU":
-            print("Fetching state senate legislative districts (upper) data")
-            geoids = acs.get_geoids(str(year), "LU")
-            params = {
-                "get": get_vars,
-                "for": "state senate district:*",
-                "in": "state:06"
-            }
-        case "SE":
-            print("Fetching elementary school district data")
-            geoids = acs.get_geoids(str(year), "SE")
-            params = {
-                "get": get_vars,
-                "for": "school district (unified):*",
-                "in": ["state:06", "county:059"]
-            }
-        case "SS":
-            print("Fetching secondary school district data")
-            geoids = acs.get_geoids(str(year), "SS")
-            params = {
-                "get": get_vars,
-                "for": "school district (secondary):*",
-                "in": ["state:06", "county:059"]
-            }
-        case "SU":
-            print("Fetching unified school district data")
-            geoids = acs.get_geoids(str(year), "SU")
-            params = {
-                "get": get_vars,
-                "for": "school district (unified):*",
-                "in": ["state:06", "county:059"]
-            }
-        case "UA":
-            print("Fetching urban area data")
-            geoids = acs.get_geoids(str(year), "UA")
-            params = {
-                "get": get_vars,
-                "for": "urban area:*",
-                "in": "state:06"
-            }
-        case "PU":
-            print("Fetching public use microdata area data")
-            geoids = acs.get_geoids(str(year), "PU")
-            params = {
-                "get": get_vars,
-                "for": "public use microdata area:*",
-                "in": "state:06"
-            }
-        case "BG":
-            print("Fetching block group data")
-            geoids = acs.get_geoids(str(year), "BG")
-            params = {
-                "get": get_vars,
-                "for": "block group:*",
-                "in": ["state:06", "county:059"]
-            }
-        case _:
-            raise ValueError(f"Unsupported geography: {geography}")
-
-    # Use doseq=True so sequence values (like multiple `in` clauses)
-    # produce repeated query keys: &in=state:06&in=county:059
-    url = base + "?" + urllib.parse.urlencode(params, doseq=True)
-    try:
-        with urllib.request.urlopen(url) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            text = resp.read().decode(charset)
-            raw = json.loads(text)
-            # Census API returns a top-level list where the first sublist
-            # is the headers and subsequent sublists are rows of values.
-            if isinstance(raw, list) and len(raw) >= 1 and all(isinstance(r, list) for r in raw):
-                headers = raw[0]
-                rows = raw[1:]
-                return [dict(zip(headers, row)) for row in rows]
-            return raw
-    except urllib.error.HTTPError as e:
-        print(f"HTTP Error: {e.code} {e.reason}", file=sys.stderr)
-        try:
-            body = e.read().decode("utf-8", errors="replace")
-            print(body, file=sys.stderr)
-        except (UnicodeDecodeError, ValueError, TypeError, AttributeError):
-            pass
-        raise
-
-
-data = fetch_census(year = 2023, table_id = "S0101", var_id = "C01_001E", geography = "county")
-print(json.dumps(data, indent=4))
 

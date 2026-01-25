@@ -2234,6 +2234,237 @@ class OCacs(OCgdm):
         raise ValueError(f"No GEOID field found in feature class {fc}.")
 
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Fetch ACS tables ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def fetch_acs_tables(self, year: int, variables: list[str], geography: str = "CO") -> pd.DataFrame:
+        """
+        Fetch ACS data for a given year and list of variables.
+        This function will chunk requests when `variables` is large and merge
+        results by `GEOID` so the caller receives a single record per geography
+        with all requested variables.
+        Args:
+            year (int): The ACS year (e.g., 2010, 2023).
+            variables (List[str]): List of ACS variable codes to fetch.
+            geography (str): The geography type (e.g., "CO" for county, "TR" for tract). Defaults to "CO".
+        Returns:
+            DataFrame containing the requested ACS data for each geography.
+        Raises:
+            RuntimeError: If the CENSUS_API_KEY1 environment variable is not set.
+        Example:
+            >>> df_acs = fetch_acs_tables(2020, ["B01001_001E", "B01001_002E"], geography = "TR")
+        Notes:
+            This function fetches ACS data from the Census API, handling large variable
+            requests by chunking them and merging results based on GEOID.
+        """
+        # Get Census API key from environment variable
+        api_key = os.getenv("CENSUS_API_KEY1")
+        if not api_key:
+            raise RuntimeError("Environment variable CENSUS_API_KEY1 is not set")
+
+        # Validate variables parameter
+        if not isinstance(variables, (list, tuple)):
+            raise TypeError("variables must be a list or tuple of ACS variable codes")
+
+        # Base URL for ACS5 API
+        base_url = f"https://api.census.gov/data/{year}/acs/acs5"
+
+        # Census API accepts a maximum of 50 fields per request including GEOID.
+        # Ensure we chunk variables so that each request has at most 49 variables
+        # plus the GEOID field.
+        chunk_size = 40
+
+        # Prepare chunks (exclude GEOID from chunking)
+        def _chunk_list_local(items: list[str], size: int) -> list[list[str]]:
+            return [items[i : i + size] for i in range(0, len(items), size)]
+
+        # Get the chunks
+        chunks = _chunk_list_local(list(variables), chunk_size)
+        if len(chunks) > 1:
+            print(f"Total variables: {len(variables)} split into {len(chunks)} chunk(s)")
+
+        # Dictionary to hold merged results by GEO_ID
+        merged: dict[str, dict[str, str]] = {}
+
+        # Determine for_clause and in_clause based on geography
+        for_clause: str = ""
+        in_clause: Union[str, list[str]] = ""
+        print(f"Fetching data for geography: {geography}")
+        match geography:
+            case "CO":
+                print("Fetching county data")
+                geoids = self.get_geoids(str(year), "CO")
+                for_clause = "county:059"
+                in_clause = "state:06"
+            case "CS":
+                print("Fetching county subdivision data")
+                geoids = self.get_geoids(str(year), "CS")
+                for_clause = "county subdivision:*"
+                in_clause = ["state:06", "county:059"]
+            case "TR":
+                print("Fetching census tract data")
+                geoids = self.get_geoids(str(year), "TR")
+                for_clause = "tract:*"
+                in_clause = ["state:06", "county:059"]
+            case "PL":
+                print("Fetching cities or places data")
+                geoids = self.get_geoids(str(year), "PL")
+                for_clause = "place:*"
+                in_clause = "state:06"
+            case "CD":
+                print("Fetching congressional district data")
+                geoids = self.get_geoids(str(year), "CD")
+                for_clause = "congressional district:*"
+                in_clause = "state:06"
+            case "ZC":
+                print("Fetching zip code tabulation areas data")
+                geoids = self.get_geoids(str(year), "ZC")
+                for_clause = "zip code tabulation area:*"
+                in_clause = ""
+            case "LL":
+                print("Fetching state assembly legislative districts (lower) data")
+                geoids = self.get_geoids(str(year), "LL")
+                for_clause = "state legislative district (lower chamber):*"
+                in_clause = "state:06"
+            case "LU":
+                print("Fetching state senate legislative districts (upper) data")
+                geoids = self.get_geoids(str(year), "LU")
+                for_clause = "state legislative district (upper chamber):*"
+                in_clause = "state:06"
+            case "SE":
+                print("Fetching elementary school district data")
+                geoids = self.get_geoids(str(year), "SE")
+                for_clause = "school district (elementary):*"
+                in_clause = "state:06"
+            case "SS":
+                print("Fetching secondary school district data")
+                geoids = self.get_geoids(str(year), "SS")
+                for_clause = "school district (secondary):*"
+                in_clause = "state:06"
+            case "SU":
+                print("Fetching unified school district data")
+                geoids = self.get_geoids(str(year), "SU")
+                for_clause = "school district (unified):*"
+                in_clause = "state:06"
+            case "UA":
+                print("Fetching urban area data")
+                geoids = self.get_geoids(str(year), "UA")
+                for_clause = "urban area:*"
+                in_clause = ""
+            case "PU":
+                print("Fetching public use microdata area data")
+                geoids = self.get_geoids(str(year), "PU")
+                for_clause = "public use microdata area:*"
+                in_clause = "state:06"
+            case "BG":
+                print("Fetching block group data")
+                geoids = self.get_geoids(str(year), "BG")
+                for_clause = "block group:*"
+                in_clause = ["state:06", "county:059", "tract:*"]
+            case _:
+                raise ValueError(f"Unsupported geography: {geography}")
+
+        # Process each chunk and merge results
+        print(f"Processing {len(chunks)} chunk(s) of variables...")
+        for chunk in chunks:
+            get_vars = ",".join(["GEO_ID"] + chunk)
+            # Build params as a list of tuples so repeated keys (e.g. multiple
+            # 'in=' parameters) are preserved in the query string.
+            params_list = [("get", get_vars), ("key", api_key)]
+
+            # 'for' is a single value (string)
+            if for_clause:
+                params_list.append(("for", for_clause))
+
+            # Support multiple 'in' values by repeating the 'in' parameter.
+            if in_clause:
+                if isinstance(in_clause, (list, tuple)):
+                    for val in in_clause:
+                        params_list.append(("in", val))
+                else:
+                    params_list.append(("in", in_clause))
+
+            resp = requests.get(base_url, params = params_list, timeout = 60)
+            if resp.status_code != 200:
+                print(f"Error fetching data: {resp.status_code} {resp.text}")
+                #resp.raise_for_status()
+                if resp.status_code == 400:
+                    print("Bad Request - likely due to invalid parameters. Check if the geography exists for the specified year.")
+                    print("Returning None.")
+                    return None
+
+            try:
+                data = resp.json()
+            except Exception as exc:
+                raise RuntimeError(f"Invalid JSON response from Census API (status={resp.status_code}): {resp.text[:500]}") from exc
+
+            if not data or len(data) < 2:
+                continue
+
+            headers = data[0]
+            for row in data[1:]:
+                rec = dict(zip(headers, row))
+                geo_id = rec.get("GEO_ID")
+                if geo_id is None:
+                    # skip malformed row
+                    continue
+                if geo_id not in merged:
+                    merged[geo_id] = {}
+                # Only keep GEO_ID and variables requested by the caller
+                allowed = set(variables)
+                filtered = {k: v for k, v in rec.items() if k == "GEO_ID" or k in allowed}
+                merged[geo_id].update(filtered)
+        
+        # Get the merged response list
+        print("Merging and filtering results...")
+        merged_list = list(merged.values())
+        len_merged = len(merged_list)
+        len_geoids = len(geoids["values"])
+
+        if len_merged > len_geoids:
+            print(f"- The results have more records ({len_merged}) than the TigerLine geodatabase ({len_geoids}). Filtering results.")
+        elif len_merged < len_geoids:
+            print(f"- The results have fewer records ({len_merged}) than the TigerLine geodatabase ({len_geoids}). Only the available records will be returned.")
+
+        # If any of the merged_ids are not in the geoids["values"], remove it from the merged_list
+        final_list = [rec for rec in merged_list if rec["GEO_ID"].split("US")[-1] in geoids["values"]]
+
+        # Count of final_list and geoids
+        len_final = len(final_list)
+        len_geoids = len(geoids["values"])
+
+        # Get counts of variables in each record (excluding GEO_ID)
+        raw_counts =[len(d) - 1 for d in final_list]
+        # Make sure all counts are the same
+        if len(set(raw_counts)) == 1:
+            print(f"Response has {len_final} records (of {len_geoids} in the TigerLine geodatabase) with {raw_counts[0]} variables each.")
+        elif len(set(raw_counts)) > 1:
+            print("Warning: Inconsistent variable counts in final_list")
+
+        # Convert the results to a DataFrame
+        df = pd.DataFrame(final_list)
+        
+        # Replace the value of the GEO_ID column with only the part after 'US' and rename the column to just the GEOID
+        # Check if GEO_ID is part of the DataFrame columns
+        if "GEO_ID" in df.columns:
+            # get the column name index
+            geo_id_index = df.columns.get_loc("GEO_ID")
+            # Use the index to update the column values
+            df.iloc[:, geo_id_index] = df.iloc[:, geo_id_index].str.split("US").str[-1]
+            # Rename the column by index
+            df.rename(columns={df.columns[geo_id_index]: "GEOID"}, inplace = True)
+            
+        if df.shape[0] == 0:
+            print("No records found after filtering. Returning None.")
+            return None
+        
+        # Log the final DataFrame shape
+        print(f"Returning DataFrame with {df.shape[0]} rows and {df.shape[1]} columns.")
+
+        # Return list of filtered records
+        return df
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the OCucs main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
