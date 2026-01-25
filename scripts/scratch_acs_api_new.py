@@ -134,16 +134,13 @@ def fetch_acs_api(
 	# Return list of filtered records
 	return final_list
 
-sample_vars = acs.get_acs_list(2010, "Demographic")[:20]
-res = fetch_acs_api(year = 2010, variables = sample_vars, geography = "CO")
-print(json.dumps(res[:3], indent=2))
 
 sample_vars = acs.get_acs_list(2010, "Demographic")
 res = fetch_acs_api(year = 2010, variables = sample_vars, geography = "CO")
-print(json.dumps(res[:3], indent=2))
+print(json.dumps(res[:3], indent = 4))
 
 res = fetch_acs_api(year = 2010, variables = sample_vars, geography = "CS")
-print(json.dumps(res[:3], indent=2))
+print(json.dumps(res[:3], indent = 4))
 
 
 
