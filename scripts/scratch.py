@@ -13,6 +13,8 @@ from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
 from ocgd import OCtgl, OCacs, OCucs
+# Add new imports
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -39,3 +41,11 @@ prj_meta = {
 }
 # The project directories are the same for all classes since they inherit from ocgdm, so we can just get it from one of them.
 prj_dirs = tgl.prj_dirs
+
+"https://api.census.gov/data/2023/acs/acs5/variables.json"
+
+# New helper: fetch Census ACS variables JSON for a given year
+
+
+master_var_cb_2023 = get_census_variables(year = 2023, estimates_only = True, write_json = True)
+

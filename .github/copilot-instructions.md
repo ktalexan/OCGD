@@ -45,6 +45,9 @@
 - Use PascalCase for Python classes or class names, components, and exceptions
 - Use ALL_CAPS for constants and globals (e.g., `MAX_LENGTH`)
 - Always use docstrings for all public functions and classes and follow the google-style docstring format as described above.
+- Always add spaces before and after any operators, including when used in function arguments (e.g., `def func(a = 1, b = 2):`), when assigning values (e.g., `x = 10`), in expressions (e.g., `result = a + b`), when pasting code in the editor, when adding code from Copilot, and when modifying existing code.
+- Always add spaces after commas in lists and dictionaries (e.g., `my_list = [1, 2, 3]`, `my_dict = {'key1': 'value1', 'key2': 'value2'}`). 
+- Always add spaces around comparison operators (e.g., `if a == b:`).
 - Use `is` for comparison to `None` (e.g., `if variable is None:`)
 - Use `==` for comparison to other values (e.g., `if variable == value:`)
 - Use `with` statements for file handling to ensure proper resource management
@@ -59,5 +62,4 @@
 - Do not break long comma separated dictionary lists into multiple lines.
 - Always wrap lines in code.
 - Always use 4 spaces for indentation.
-- Always add spaces around operators, including `=`, `+`, `-`, `*`, `/`, and `%`.
 - Always add spaces after commas in lists, dictionaries, and function arguments.

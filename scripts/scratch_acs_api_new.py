@@ -16,52 +16,6 @@ prj_meta = acs.prj_meta
 prj_dirs = acs.prj_dirs
 
 
-year = 2010
-sample_vars = acs.get_acs_list(year, "Demographic")
-df_co_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CO")
-print(df_co_d)
-
-df_cs_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CS")
-print(df_cs_d)
-
-df_pl_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "PL")
-print(df_pl_d)
-
-# Not working
-df_zc_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "ZC")
-print(df_zc_d)
-
-df_cd_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CD")
-print(df_cd_d)
-
-df_ll_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "LL")
-print(df_ll_d)
-
-df_lu_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "LU")
-print(df_lu_d)
-
-df_se_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SE")
-print(df_se_d)
-
-df_ss_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SS")
-print(df_ss_d)
-
-df_su_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SU")
-print(df_su_d)
-
-df_ua_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "UA")
-print(df_ua_d)
-
-df_pu_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "PU")
-print(df_pu_d)
-
-df_bg_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "BG")
-print(df_bg_d)
-
-df_tr_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "TR")
-print(df_tr_d)
-
-
 
 def get_master_dataframe():
 	"""
