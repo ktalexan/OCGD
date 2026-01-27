@@ -42,7 +42,6 @@ The following fields are included for each of the demographic groups:
 ### 🏷️ D01: Total Population (1 variable)
 
 >🆔 B01003_001E: Total Population
-<br/>
 [<div align="right"><< Back to List</div>](#geodemographic-tables-by-group)
 
 ### 🏷️ D02: Sex and Age (49 variables)
@@ -96,7 +95,6 @@ The following fields are included for each of the demographic groups:
 🆔 B01001_047E: Female: 75 to 79 years
 🆔 B01001_048E: Female: 80 to 84 years
 🆔 B01001_049E: Female: 85 years and over
-<br/>
 [<div align="right"><< Back to List</div>](#geodemographic-tables-by-group)
 
 ### 🏷️ D03: Median Age by Sex and Race (12 variables)
@@ -113,7 +111,6 @@ The following fields are included for each of the demographic groups:
 🆔 B01002G_001E: Median age: Two or More Races
 🆔 B01002H_001E: Median age: White Alone, not Hispanic or Latino
 🆔 B01002I_001E: Median age: Hispanic or Latino
-<br>
 [<div align="right"><< Back to List</div>](#geodemographic-tables-by-group)
 
 ### 🏷️ D04: Race (8 variables)
@@ -126,7 +123,6 @@ The following fields are included for each of the demographic groups:
 🆔 B02001_006E: Race: Native Hawaiian and Other Pacific Islander alone
 🆔 B02001_007E: Race: Some Other Race alone
 🆔 B02001_008E: Race: Two or More Races
-<br>
 [<div align="right"><< Back to List</div>](#geodemographic-tables-by-group)
 
 ### 🏷️ D05: Race Alone or in Combination with Other Races (7 variables)
@@ -138,7 +134,6 @@ The following fields are included for each of the demographic groups:
 🆔 B02012_001E: Native Hawaiian and Other Pacific Islander
 🆔 B02013_001E: Some Other Race
 🆔 B02014_001E: Two or More Races
-<br>
 [<div align="right"><< Back to List</div>](#geodemographic-tables-by-group)
 
 ### 🏷️ D06: Hispanic or Latino (21 variables)
@@ -164,7 +159,6 @@ The following fields are included for each of the demographic groups:
 🆔 B03002_019E: Hispanic or Latino: Two or more races
 🆔 B03002_020E: Hispanic or Latino: Two or more races: Two races including Some other race
 🆔 B03002_021E: Hispanic or Latino: Two or more races: Two races excluding Some other race, and three or more races
-<br>
 [<div align="right"><< Back to List</div>](#geodemographic-tables-by-group)
 
 ### 🏷️ D07: Citizen Voting Age Population (10 variables)
@@ -179,7 +173,6 @@ The following fields are included for each of the demographic groups:
 🆔 B05003_021E: Female: 18 years and over: Foreign-born
 🆔 B05003_022E: Female: 18 years and over: Foreign-born: Naturalized US citizen
 🆔 B05003_023E: Female: 18 years and over: Foreign-born: Not a US citizen
-<br>
 [<div align="right"><< Back to List</div>](#geodemographic-tables-by-group)
 
 
