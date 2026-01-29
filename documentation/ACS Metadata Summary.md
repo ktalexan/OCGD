@@ -572,8 +572,198 @@
 🆔 C16002_013E: Other languages: Limited English speaking household
 🆔 C16002_014E: Other languages: Not a limited English speaking household
 
-### 🏷️ S20: 
-<br>
+### 🏷️ S20: Language Spoken at Home (134 variables)
+
+🆔 B16004_001E: Population 5 years and over
+🆔 B16004_002E: 5 to 17 years
+🆔 B16004_003E: 5 to 17 years: Speak only English
+🆔 B16004_004E: 5 to 17 years: Speak Spanish
+🆔 B16004_005E: 5 to 17 years: Speak Spanish: Speak English very well
+🆔 B16004_006E: 5 to 17 years: Speak Spanish: Speak English well
+🆔 B16004_007E: 5 to 17 years: Speak Spanish: Speak English not well
+🆔 B16004_008E: 5 to 17 years: Speak Spanish: Speak English not at all
+🆔 B16004_009E: 5 to 17 years: Speak other IndoEuropean languages
+🆔 B16004_010E: 5 to 17 years: Speak other IndoEuropean languages: Speak English very well
+🆔 B16004_011E: 5 to 17 years: Speak other IndoEuropean languages: Speak English well
+🆔 B16004_012E: 5 to 17 years: Speak other IndoEuropean languages: Speak English not well
+🆔 B16004_013E: 5 to 17 years: Speak other IndoEuropean languages: Speak English not at all
+🆔 B16004_014E: 5 to 17 years: Speak Asian and Pacific Island languages
+🆔 B16004_015E: 5 to 17 years: Speak Asian and Pacific Island languages: Speak English very well
+🆔 B16004_016E: 5 to 17 years: Speak Asian and Pacific Island languages: Speak English well
+🆔 B16004_017E: 5 to 17 years: Speak Asian and Pacific Island languages: Speak English not well
+🆔 B16004_018E: 5 to 17 years: Speak Asian and Pacific Island languages: Speak English not at all
+🆔 B16004_019E: 5 to 17 years: Speak other languages
+🆔 B16004_020E: 5 to 17 years: Speak other languages: Speak English very well
+🆔 B16004_021E: 5 to 17 years: Speak other languages: Speak English well
+🆔 B16004_022E: 5 to 17 years: Speak other languages: Speak English not well
+🆔 B16004_023E: 5 to 17 years: Speak other languages: Speak English not at all
+🆔 B16004_024E: 18 to 64 years
+🆔 B16004_025E: 18 to 64 years: Speak only English
+🆔 B16004_026E: 18 to 64 years: Speak Spanish
+🆔 B16004_027E: 18 to 64 years: Speak Spanish: Speak English very well
+🆔 B16004_028E: 18 to 64 years: Speak Spanish: Speak English well
+🆔 B16004_029E: 18 to 64 years: Speak Spanish: Speak English not well
+🆔 B16004_030E: 18 to 64 years: Speak Spanish: Speak English not at all
+🆔 B16004_031E: 18 to 64 years: Speak other IndoEuropean languages
+🆔 B16004_032E: 18 to 64 years: Speak other IndoEuropean languages: Speak English very well
+🆔 B16004_033E: 18 to 64 years: Speak other IndoEuropean languages: Speak English well
+🆔 B16004_034E: 18 to 64 years: Speak other IndoEuropean languages: Speak English not well
+🆔 B16004_035E: 18 to 64 years: Speak other IndoEuropean languages: Speak English not at all
+🆔 B16004_036E: 18 to 64 years: Speak Asian and Pacific Island languages
+🆔 B16004_037E: 18 to 64 years: Speak Asian and Pacific Island languages: Speak English very well
+🆔 B16004_038E: 18 to 64 years: Speak Asian and Pacific Island languages: Speak English well
+🆔 B16004_039E: 18 to 64 years: Speak Asian and Pacific Island languages: Speak English not well
+🆔 B16004_040E: 18 to 64 years: Speak Asian and Pacific Island languages: Speak English not at all
+🆔 B16004_041E: 18 to 64 years: Speak other languages
+🆔 B16004_042E: 18 to 64 years: Speak other languages: Speak English very well
+🆔 B16004_043E: 18 to 64 years: Speak other languages: Speak English well
+🆔 B16004_044E: 18 to 64 years: Speak other languages: Speak English not well
+🆔 B16004_045E: 18 to 64 years: Speak other languages: Speak English not at all
+🆔 B16004_046E: 65 years and over
+🆔 B16004_047E: 65 years and over: Speak only English
+🆔 B16004_048E: 65 years and over: Speak Spanish
+🆔 B16004_049E: 65 years and over: Speak Spanish: Speak English very well
+🆔 B16004_050E: 65 years and over: Speak Spanish: Speak English well
+🆔 B16004_051E: 65 years and over: Speak Spanish: Speak English not well
+🆔 B16004_052E: 65 years and over: Speak Spanish: Speak English not at all
+🆔 B16004_053E: 65 years and over: Speak other IndoEuropean languages
+🆔 B16004_054E: 65 years and over: Speak other IndoEuropean languages: Speak English very well
+🆔 B16004_055E: 65 years and over: Speak other IndoEuropean languages: Speak English well
+🆔 B16004_056E: 65 years and over: Speak other IndoEuropean languages: Speak English not well
+🆔 B16004_057E: 65 years and over: Speak other IndoEuropean languages: Speak English not at all
+🆔 B16004_058E: 65 years and over: Speak Asian and Pacific Island languages
+🆔 B16004_059E: 65 years and over: Speak Asian and Pacific Island languages: Speak English very well
+🆔 B16004_060E: 65 years and over: Speak Asian and Pacific Island languages: Speak English well
+🆔 B16004_061E: 65 years and over: Speak Asian and Pacific Island languages: Speak English not well
+🆔 B16004_062E: 65 years and over: Speak Asian and Pacific Island languages: Speak English not at all
+🆔 B16004_063E: 65 years and over: Speak other languages
+🆔 B16004_064E: 65 years and over: Speak other languages: Speak English very well
+🆔 B16004_065E: 65 years and over: Speak other languages: Speak English well
+🆔 B16004_066E: 65 years and over: Speak other languages: Speak English not well
+🆔 B16004_067E: 65 years and over: Speak other languages: Speak English not at all
+
+### 🏷️ S21: Ancestry (6 variables)
+
+🆔 B04007_002E: Ancestry specified
+🆔 B04007_003E: Ancestry specified: Single ancestry
+🆔 B04007_004E: Ancestry specified: Multiple ancestry
+🆔 B04007_005E: Ancestry not specified
+🆔 B04007_006E: Ancestry not specified: Ancestry unclassified
+🆔 B04007_007E: Ancestry not specified: Ancestry not reported
+
+### 🏷️ S22: People Reporting Ancestry (109 variables)
+
+🆔 B04006_001E: Total people reporting ancestry
+🆔 B04006_002E: Afghan
+🆔 B04006_003E: Albanian
+🆔 B04006_004E: Alsatian
+🆔 B04006_005E: American
+🆔 B04006_006E: Arab
+🆔 B04006_007E: Arab: Egyptian
+🆔 B04006_008E: Arab: Iraqi
+🆔 B04006_009E: Arab: Jordanian
+🆔 B04006_010E: Arab: Lebanese
+🆔 B04006_011E: Arab: Moroccan
+🆔 B04006_012E: Arab: Palestinian
+🆔 B04006_013E: Arab: Syrian
+🆔 B04006_014E: Arab: Arab
+🆔 B04006_015E: Arab: Other Arab
+🆔 B04006_016E: Armenian
+🆔 B04006_017E: AssyrianChaldeanSyriac
+🆔 B04006_018E: Australian
+🆔 B04006_019E: Austrian
+🆔 B04006_020E: Basque
+🆔 B04006_021E: Belgian
+🆔 B04006_022E: Brazilian
+🆔 B04006_023E: British
+🆔 B04006_024E: Bulgarian
+🆔 B04006_025E: Cajun
+🆔 B04006_026E: Canadian
+🆔 B04006_027E: Carpatho Rusyn
+🆔 B04006_028E: Celtic
+🆔 B04006_029E: Croatian
+🆔 B04006_030E: Cypriot
+🆔 B04006_031E: Czech
+🆔 B04006_032E: Czechoslovakian
+🆔 B04006_033E: Danish
+🆔 B04006_034E: Dutch
+🆔 B04006_035E: Eastern European
+🆔 B04006_036E: English
+🆔 B04006_037E: Estonian
+🆔 B04006_038E: European
+🆔 B04006_039E: Finnish
+🆔 B04006_040E: French except Basque
+🆔 B04006_041E: French Canadian
+🆔 B04006_042E: German
+🆔 B04006_043E: German Russian
+🆔 B04006_044E: Greek
+🆔 B04006_045E: Guyanese
+🆔 B04006_046E: Hungarian
+🆔 B04006_047E: Icelander
+🆔 B04006_048E: Iranian
+🆔 B04006_049E: Irish
+🆔 B04006_050E: Israeli
+🆔 B04006_051E: Italian
+🆔 B04006_052E: Latvian
+🆔 B04006_053E: Lithuanian
+🆔 B04006_054E: Luxembourger
+🆔 B04006_055E: Macedonian
+🆔 B04006_056E: Maltese
+🆔 B04006_057E: New Zealander
+🆔 B04006_058E: Northern European
+🆔 B04006_059E: Norwegian
+🆔 B04006_060E: Pennsylvania German
+🆔 B04006_061E: Polish
+🆔 B04006_062E: Portuguese
+🆔 B04006_063E: Romanian
+🆔 B04006_064E: Russian
+🆔 B04006_065E: Scandinavian
+🆔 B04006_066E: ScotchIrish
+🆔 B04006_067E: Scottish
+🆔 B04006_068E: Serbian
+🆔 B04006_069E: Slavic
+🆔 B04006_070E: Slovak
+🆔 B04006_071E: Slovene
+🆔 B04006_072E: Soviet Union
+🆔 B04006_073E: Subsaharan African
+🆔 B04006_074E: Subsaharan African: Cape Verdean
+🆔 B04006_075E: Subsaharan African: Ethiopian
+🆔 B04006_076E: Subsaharan African: Ghanaian
+🆔 B04006_077E: Subsaharan African: Kenyan
+🆔 B04006_078E: Subsaharan African: Liberian
+🆔 B04006_079E: Subsaharan African: Nigerian
+🆔 B04006_080E: Subsaharan African: Senegalese
+🆔 B04006_081E: Subsaharan African: Sierra Leonean
+🆔 B04006_082E: Subsaharan African: Somali
+🆔 B04006_083E: Subsaharan African: South African
+🆔 B04006_084E: Subsaharan African: Sudanese
+🆔 B04006_085E: Subsaharan African: Ugandan
+🆔 B04006_086E: Subsaharan African: Zimbabwean
+🆔 B04006_087E: Subsaharan African: African
+🆔 B04006_088E: Subsaharan African: Other Subsaharan African
+🆔 B04006_089E: Swedish
+🆔 B04006_090E: Swiss
+🆔 B04006_091E: Turkish
+🆔 B04006_092E: Ukrainian
+🆔 B04006_093E: Welsh
+🆔 B04006_094E: West Indian except Hispanic groups
+🆔 B04006_095E: West Indian except Hispanic groups: Bahamian
+🆔 B04006_096E: West Indian except Hispanic groups: Barbadian
+🆔 B04006_097E: West Indian except Hispanic groups: Belizean
+🆔 B04006_098E: West Indian except Hispanic groups: Bermudan
+🆔 B04006_099E: West Indian except Hispanic groups: British West Indian
+🆔 B04006_100E: West Indian except Hispanic groups: Dutch West Indian
+🆔 B04006_101E: West Indian except Hispanic groups: Haitian
+🆔 B04006_102E: West Indian except Hispanic groups: Jamaican
+🆔 B04006_103E: West Indian except Hispanic groups: Trinidadian and Tobagonian
+🆔 B04006_104E: West Indian except Hispanic groups: US Virgin Islander
+🆔 B04006_105E: West Indian except Hispanic groups: West Indian
+🆔 B04006_106E: West Indian except Hispanic groups: Other West Indian
+🆔 B04006_107E: Yugoslavian
+🆔 B04006_108E: Other groups
+🆔 B04006_109E: Unclassified or not reported
+
+### 
 
 ## 📚 Economic
 

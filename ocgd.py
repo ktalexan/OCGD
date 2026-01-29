@@ -16,15 +16,14 @@ import datetime as dt
 from pathlib import Path
 import json
 import re
-from typing import Union
+import logging
+import unicodedata
+from typing import Union, Optional, Dict, Any
 #from fontTools.misc.plistlib import Data
 import wmi
 import pytz
 import pandas as pd
 import requests
-import logging
-import unicodedata
-from typing import Optional, Dict, Any
 import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
@@ -2180,359 +2179,169 @@ class OCacs(OCgdm):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Census variables codebook ----
+    ## fx: ACS variables codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def cb_census_var(
-        self,
-        session: Optional[requests.Session] = None,
-        retries: int = 3,
-        timeout: float = 10.0,
-        estimates_only: bool = True,
-        year: Optional[int] = None,
-    ) -> Dict[int, Dict[str, Any]]:
-        """Retrieve the ACS 5-year variables JSON from the Census API for a year.
-        Args:
-            session: Optional requests.Session for connection reuse.
-            retries: Number of retries on transient failures.
-            timeout: Request timeout in seconds.
-            estimates_only: If True, only include estimate variables (ending with 'E').
-        Returns:
-            Parsed JSON as a dictionary.
-        Raises:
-            ValueError: If year is not a reasonable integer.
-            requests.RequestException: If all request attempts fail.
-        Examples:
-            >>> vars_2023 = census_var_cb(2023)
-            >>> vars_2015 = census_var_cb(2015, estimates_only=False)
-        Notes:
-            This function retrieves the ACS 5-year variables JSON from the Census API for a specified year
+    def acs_cb_variables(self, year: Optional[int] = None, session: Optional[requests.Session] = None) -> pd.DataFrame:
         """
-        # Determine which years to process: either the provided year
-        # (validated against available ACS5 years) or all available years
+        Fetch ACS variables from the U.S. Census Bureau API for specified years
+        Args:
+            year (Optional[int], optional): Specific year to fetch variables for. If None, fetches for all available years. Defaults to None.
+            session (Optional[requests.Session], optional): An optional requests session for making API calls. Defaults to None.
+        Returns:
+            pd.DataFrame: A DataFrame containing the ACS variables for the specified years.
+        Raises:
+            ValueError: If the provided year is not an integer or not in the list of available years.
+        Example:
+            >>> df_vars = acs_cb_variables(year=2020)
+        Notes:
+            This function fetches ACS variables from the U.S. Census Bureau API for specified years.
+        """
+        # Get the list of available ACS years
+        years = self.acs5_years
+        # If the year is provided and is integer
         if year is not None:
-            if year not in self.acs5_years:
-                raise ValueError(
-                    f"Year {year} is not in the available ACS5 years: {self.acs5_years}"
+            if isinstance(year, int) and year in years:
+                years = [year]
+            if not isinstance(year, int):
+                raise ValueError("Year must be an integer.")
+            if year not in years:
+                raise ValueError(f"Year must be one of the following: {years}")
+
+        # Create a master dataframe to hold all years' data
+        master_df = pd.DataFrame()
+
+        for acs_year in years:
+            print(f"Fetching ACS variables for year {acs_year}...")
+            # Construct the API URL for the specified year
+            api_url = f"https://api.census.gov/data/{acs_year}/acs/acs5/variables.json"
+            s = session or requests.Session()
+
+            # Make the API request and parse the JSON response
+            resp = s.get(api_url)
+            resp.raise_for_status()
+            data = resp.json()
+
+            # Extract variables from the response
+            variables = data.get("variables", {})
+
+            # Keep only variables that start with a letter, followed by a digit,
+            # and end with a capital 'E' (e.g. 'B01001_001E').
+            pattern = re.compile(r'^[A-Za-z]\d.*E$')
+
+            # Filter variables based on the pattern
+            filtered_vars = {k: v for k, v in variables.items() if pattern.match(k)}
+
+            # Convert the filtered variables dictionary to a pandas DataFrame and add the API year as a column
+            df = pd.DataFrame.from_dict(filtered_vars, orient="index")
+            # store year as string to avoid dtype conflicts when merging multiple years
+            df["year"] = str(acs_year)
+
+            # Move the index (variable names) into a regular column named 'variable' so the variable names appear as the first column in the returned DataFrame.
+            df = df.reset_index().rename(columns={"index": "variable"})
+
+            # Add comparison-cleaned columns for `variable` and `label` to ease later comparisons
+            # variable: strip leading/trailing spaces
+            df["_cmp_variable"] = df["variable"].astype(str).str.strip()
+            # label: remove spaces and colons, convert to lower
+            if "label" in df.columns:
+                df["_cmp_label"] = df["label"].astype(str).str.replace(r"[ :]", "", regex=True).str.lower()
+
+            # Clean the 'label' column per user rules
+            if "label" in df.columns:
+                # Vectorized cleaning using pandas string methods
+                df["label"] = (
+                    df["label"].astype(str)
+                    .str.replace("!!", ": ", regex = False)
+                    .str.normalize("NFKD")
+                    .str.encode("ascii", "ignore")
+                    .str.decode("ascii")
+                    .str.replace(r"[^A-Za-z0-9\s,.:;]", "", regex = True)
+                    .str.replace(r":+", ":", regex = True)
+                    .str.replace(r"\s+", " ", regex = True)
+                    .str.strip(" \t\n\r.,;:")
                 )
-            years = [year]
-        else:
-            years = self.acs5_years
 
-        # Prepare a mapping to hold each year's variables separately
-        per_year_vars: dict[int, dict] = {}
+                # Rename the 'predicateType' column to 'type' for clarity
+                if "predicateType" in df.columns:
+                    df = df.rename(columns={"predicateType": "type"})
 
-        # Loop through each census year and write out a separate file per year
-        for year in years:
-            # Construct the API URL
-            url = f"https://api.census.gov/data/{year}/acs/acs5/variables.json"
+                # Add additional metadata columns
+                df["oid"] = pd.Series(0, index=df.index, dtype="int")
+                df["used"] = pd.Series(False, index=df.index, dtype="bool")
+                df["alias"] = df["label"].str.replace(r"^Estimate\s*", "", regex = True).str.strip(" :")
+                df["level"] = pd.Series(None, index=df.index, dtype="object")
+                df["level_group"] = pd.Series(None, index=df.index, dtype="object")
+                df["category"] = pd.Series(None, index=df.index, dtype="object")
+                df["note"] = pd.Series(None, index=df.index, dtype="object")
 
-            # Set up logging and prepare to attempt requests; only add the year
-            # to the master dictionary after a successful fetch.
-            logger = logging.getLogger(__name__)
-            sess = session or requests.Session()
-            last_exc: Optional[Exception] = None
-            resp_dict: Optional[dict] = None
+                # Reorder columns and ensure the 'year' column is preserved.
+                cols_order = ["variable", "group", "year", "oid", "alias", "used", "level", "level_group", "category", "label", "concept", "type", "limit", "attributes", "note"]
+                # Keep only columns that actually exist in the dataframe (prevents KeyError)
+                cols_order = [c for c in cols_order if c in df.columns]
+                df = df[cols_order]
 
-            for attempt in range(1, retries + 1):
-                try:
-                    resp = sess.get(url, timeout=timeout)
-                    resp.raise_for_status()
-                    # Parse the response JSON
-                    resp_dict = resp.json()["variables"]
-                    print(f"Successfully fetched Census variables for year {year}")
+            # If a 'group' column exists, sort by group then variable, then reset index
+            if "group" in df.columns:
+                df = df.sort_values(by=["group", "variable"]).reset_index(drop = True)
 
-                    # For each variable in the response, add additional metadata keys
-                    for var in resp_dict.values():
-                        var["used"] = False
-                        var["alias"] = None
-                        var["level"] = None
-                        var["category"] = None
-                        var["note"] = None
-                        # Normalize labels: replace double-bang separators with a single space
-                        if "label" in var and isinstance(var["label"], str):
-                            var_label_content = var["label"]
-                            var_label_content = var_label_content.replace("!!", " ")
-                            # Guard against empty labels
-                            if var_label_content:
-                                # If the label ends with punctuation like colon/semicolon/comma/period, remove it
-                                if var_label_content[-1] in [":", ";", ",", "."]:
-                                    var_label_content = var_label_content[:-1]
-                                # Remove all colons or semicolons within the string
-                                var_label_content = var_label_content.replace(":", "").replace(";", "")
-                                # Trim whitespace
-                                var_label_content = var_label_content.strip()
-                                # Remove diacritics (accents) by normalizing and removing combining marks
-                                normalized = unicodedata.normalize("NFKD", var_label_content)
-                                var_label_content = "".join(ch for ch in normalized if not unicodedata.combining(ch))
-                            # Assign the cleaned label back to the variable
-                            var["label"] = var_label_content
-                        # Add the var["label"] string to the var["alias"]. If the var["label"] starts with "Estimate" remove that word from the beginning of the string before assigning to var["alias"]
-                        if "label" in var and isinstance(var["label"], str):
-                            label_content = var["label"]
-                            if label_content.startswith("Estimate"):
-                                label_content = label_content[len("Estimate"):].strip()
-                            var["alias"] = label_content
-
-                    if estimates_only:
-                        # keep only estimate variables that start with a capital
-                        # letter followed by a digit and end with 'E', plus
-                        # control keys used by the variables JSON
-                        pattern = re.compile(r'^[A-Z]\d.*E$')
-                        resp_dict = {
-                            k: v
-                            for k, v in resp_dict.items()
-                            if pattern.match(k)
-                        }
-
-                    # Successful fetch, break out of retry loop
-                    break
-
-                except requests.RequestException as exc:
-                    last_exc = exc
-                    logger.warning(
-                        "Attempt %d/%d failed fetching %s: %s", attempt, retries, url, exc
-                    )
-                    # Only log an error on the final attempt; otherwise retry
-                    if attempt == retries:
-                        logger.error("Failed to fetch Census variables after %d attempts: %s", retries, last_exc)
-
-            # After attempts, if we have variables for the year, prepare and
-            # write a separate JSON file for that year.
-            if resp_dict is not None:
-                # Sort only the outer variable keys and normalize control keys
-                special_keys = ["for", "in", "ucgid"]
-                sorted_cb_year: dict[str, dict] = {}
-                for var_key in sorted(resp_dict.keys()):
-                    meta = resp_dict[var_key]
-                    sorted_meta = dict(meta)
-                    for k in special_keys:
-                        if k in sorted_meta:
-                            val = sorted_meta.pop(k)
-                            sorted_meta[k] = val
-                    sorted_cb_year[var_key] = sorted_meta
-
-                # write the year's dictionary to a JSON file
-                out_path = os.path.join(self.prj_dirs["codebook"], f"acs_cb_vars_{year}.json")
-                with open(out_path, "w", encoding = "utf-8") as f:
-                    json.dump(sorted_cb_year, f, indent = 4)
-
-                # store in the per-year mapping to return to caller
-                per_year_vars[year] = sorted_cb_year
-                print(f"Wrote Census variables for year {year} to {out_path}")
+            print("Data fetched. Processing Master DataFrame...")
+            # Check if master_df is empty
+            if master_df.empty:
+                # Append the current year's dataframe to the master dataframe
+                master_df = pd.concat([master_df, df], ignore_index=True)
+                # Ensure master_df has comparison columns
+                master_df["_cmp_variable"] = master_df["variable"].astype(str).str.strip()
+                if "label" in master_df.columns:
+                    master_df["_cmp_label"] = master_df["label"].astype(str).str.replace(r"[ :]", "", regex = True).str.lower()
             else:
-                # All attempts failed; raise the last exception to surface the error
-                if last_exc is not None:
-                    raise last_exc
+                # For each of the records in the current year's dataframe (df), check if the variable already exists in the master dataframe (master_df) in the "variable" column, and if yes, check if the label is the same. If both are the same, do not add the record, but add the year to the existing record's "year" column as a comma-separated list. If the variable exists but the label is different, add the new record as a new row, and add a note to the "note" column of the master_df "same variable, different label". If the variable does not exist, add the new record as a new row.
+                for _, row in df.iterrows():
+                    var = row["variable"]
+                    label = row.get("label", None)
 
-        # After writing annual dictionaries, optionally compile a master
-        # dictionary that aggregates variables across years.
-        master_path = os.path.join(self.prj_dirs["codebook"], "acs_cb_vars_master.json")
+                    # Cleaned comparison values
+                    var_cmp = str(var).strip()
+                    label_cmp = str(label).replace(" ", "").replace(":", "").lower() if label is not None else ""
 
-        def _prepend_year_list(entry: dict, y: int) -> None:
-            years_list = entry.get("year") or []
-            if not years_list or years_list[0] != y:
-                years_list.insert(0, y)
-            entry["year"] = years_list
+                    existing_rows = master_df[master_df["_cmp_variable"] == var_cmp]
 
-        def _note_label_change(entry: dict, year_changed: int, new_label: str) -> None:
-            note_entry = f"{year_changed}: {new_label}"
-            existing = entry.get("note")
-            if not existing:
-                entry["note"] = note_entry
-            else:
-                entry["note"] = f"{note_entry}; {existing}"
-
-        def _clean_label(lbl: str) -> str:
-            if not lbl or not isinstance(lbl, str):
-                return lbl
-            s = lbl.replace("!!", " ")
-            if s:
-                if s[-1] in [":", ";", ",", "."]:
-                    s = s[:-1]
-                s = s.replace(":", "").replace(";", "").strip()
-                normalized = unicodedata.normalize("NFKD", s)
-                s = "".join(ch for ch in normalized if not unicodedata.combining(ch))
-            return s
-
-        # Helper to build master from a mapping of per-year dicts
-        def _build_master(from_years: list[int], per_year_map: dict[int, dict]) -> dict:
-            master: dict = {}
-            # Start with the last year in the provided year list
-            start_year = from_years[-1]
-            if start_year not in per_year_map:
-                # fallback to last available year in per_year_map
-                if per_year_map:
-                    start_year = sorted(per_year_map.keys())[-1]
-                else:
-                    return {}
-
-            # Initialize master with all vars from the start (most recent) year
-            for k, v in per_year_map[start_year].items():
-                m = dict(v)
-                # ensure label cleaned
-                if "label" in m:
-                    m["label"] = _clean_label(m.get("label"))
-                m["year"] = [start_year]
-                master[k] = m
-
-            # Process preceding years (older to newest prepended)
-            for y in reversed(from_years):
-                if y == start_year:
-                    continue
-                if y not in per_year_map:
-                    continue
-                for k, v in per_year_map[y].items():
-                    if k not in master:
-                        m = dict(v)
-                        if "label" in m:
-                            m["label"] = _clean_label(m.get("label"))
-                        m["year"] = [y]
-                        master[k] = m
-                    else:
-                        # Prepend year to existing year list
-                        _prepend_year_list(master[k], y)
-                        # If label differs, add to note
-                        existing_label = master[k].get("label")
-                        # Clean both existing and new labels before comparison
-                        existing_label_clean = _clean_label(existing_label) if existing_label is not None else None
-                        label_y = _clean_label(v.get("label"))
-                        if label_y and existing_label_clean and label_y != existing_label_clean:
-                            _note_label_change(master[k], y, label_y)
-
-            # return sorted by keys
-            sorted_master = {kk: master[kk] for kk in sorted(master.keys())}
-            return sorted_master
-
-        # If user requested all years (year is None) then compile master
-        if year is None:
-            try:
-                master_dict = _build_master(self.acs5_years, per_year_vars)
-                # write master
-                with open(master_path, "w", encoding="utf-8") as mf:
-                    json.dump(master_dict, mf, indent=4)
-                print(f"Wrote master Census variables to {master_path}")
-            except Exception as exc:
-                logging.getLogger(__name__).warning("Failed compiling master variables: %s", exc)
-
-        else:
-            # Single-year run: load existing master and update, or create it
-            y = year
-            if os.path.exists(master_path):
-                try:
-                    with open(master_path, "r", encoding="utf-8") as mf:
-                        master_existing = json.load(mf)
-                        # Clean existing labels in master to ensure consistent comparisons
-                        for me in master_existing.values():
-                            if "label" in me:
-                                me["label"] = _clean_label(me.get("label"))
-                except Exception:
-                    master_existing = {}
-
-                # Ensure we have the year's variables loaded
-                year_vars = per_year_vars.get(y)
-                if year_vars is None:
-                    # try to load annual file from codebook
-                    annual_path = os.path.join(self.prj_dirs["codebook"], f"acs_cb_vars_{y}.json")
-                    if os.path.exists(annual_path):
-                        with open(annual_path, "r", encoding="utf-8") as af:
-                            year_vars = json.load(af)
-
-                if year_vars:
-                    # Update master_existing with year_vars following rules
-                    for k, v in year_vars.items():
-                        if k not in master_existing:
-                            m = dict(v)
-                            if "label" in m:
-                                m["label"] = _clean_label(m.get("label"))
-                            m["year"] = [y]
-                            master_existing[k] = m
+                    if not existing_rows.empty:
+                        # Variable exists, check for label using cleaned comparison
+                        match_idx = existing_rows[existing_rows["_cmp_label"] == label_cmp].index
+                        if len(match_idx) > 0:
+                            # Same label, update year (handle None/NaN and avoid duplicates)
+                            idx = match_idx[0]
+                            existing_years = master_df.loc[idx, "year"]
+                            new_year = str(row["year"]) if not pd.isna(row["year"]) else ""
+                            if pd.isna(existing_years) or str(existing_years).strip() == "":
+                                master_df.loc[idx, "year"] = new_year
+                            else:
+                                existing_list = [y.strip() for y in str(existing_years).split(",") if y.strip()]
+                                if new_year and new_year not in existing_list:
+                                    master_df.loc[idx, "year"] = f"{existing_years}, {new_year}"
                         else:
-                            # Prepend year to year list
-                            entry = master_existing[k]
-                            years_list = entry.get("year") or []
-                            if not years_list or years_list[0] != y:
-                                years_list.insert(0, y)
-                            entry["year"] = years_list
-                            # Check label change
-                            existing_label = entry.get("label")
-                            # Clean both existing and new labels before comparison
-                            existing_label_clean = _clean_label(existing_label) if existing_label is not None else None
-                            label_y = _clean_label(v.get("label"))
-                            if label_y and existing_label_clean and label_y != existing_label_clean:
-                                _note_label_change(entry, y, label_y)
-
-                    # Sort and write back master
-                    sorted_master = {kk: master_existing[kk] for kk in sorted(master_existing.keys())}
-                    with open(master_path, "w", encoding="utf-8") as mf:
-                        json.dump(sorted_master, mf, indent=4)
-                    print(f"Updated master Census variables at {master_path} with year {y}")
-                else:
-                    # Year variables unavailable locally; leave master unchanged
-                    logging.getLogger(__name__).warning("Year %s variables not available to update master.", y)
-
-            else:
-                # Master doesn't exist: build it by loading all annual files
-                assembled: dict[int, dict] = {}
-                for yy in self.acs5_years:
-                    annual_path = os.path.join(self.prj_dirs["codebook"], f"acs_cb_vars_{yy}.json")
-                    if os.path.exists(annual_path):
-                        with open(annual_path, "r", encoding="utf-8") as af:
-                            try:
-                                assembled[yy] = json.load(af)
-                            except Exception:
-                                assembled[yy] = {}
-
-                master_dict = _build_master(self.acs5_years, assembled)
-                with open(master_path, "w", encoding="utf-8") as mf:
-                    json.dump(master_dict, mf, indent=4)
-                print(f"Created master Census variables at {master_path}")
-
-        # Return the per-year mapping of variables
-        # Additionally, if the master JSON exists, export it as an Excel
-        # file where each row is a variable key and columns are the
-        # subkeys found in the master dictionary.
-        try:
-            if os.path.exists(master_path):
-                with open(master_path, "r", encoding="utf-8") as mf:
-                    master_for_xlsx = json.load(mf)
-
-                # collect all subkeys used across variables
-                all_subkeys: set = set()
-                for entry in master_for_xlsx.values():
-                    if isinstance(entry, dict):
-                        all_subkeys.update(entry.keys())
-
-                # build rows: first column is variable name (key)
-                cols = ["variable"] + sorted(all_subkeys)
-                rows = []
-                for var_key, meta in master_for_xlsx.items():
-                    row = {"variable": var_key}
-                    if not isinstance(meta, dict):
-                        # Non-dict meta, just put string representation
-                        row.update({k: None for k in all_subkeys})
+                            # Different label, add new row with note and comparison cols
+                            new_row = row.copy()
+                            new_row["note"] = "same variable, different label"
+                            # ensure comparison columns are present for the new row
+                            new_row["_cmp_variable"] = var_cmp
+                            new_row["_cmp_label"] = label_cmp
+                            master_df = pd.concat([master_df, pd.DataFrame([new_row])], ignore_index=True)
                     else:
-                        for sk in all_subkeys:
-                            val = meta.get(sk)
-                            # flatten lists to comma-separated strings
-                            if isinstance(val, list):
-                                try:
-                                    val = ",".join(str(x) for x in val)
-                                except Exception:
-                                    val = str(val)
-                            row[sk] = val
-                    rows.append(row)
+                        # Variable does not exist, add new row (include comparison cols)
+                        new_row = row.copy()
+                        new_row["_cmp_variable"] = var_cmp
+                        new_row["_cmp_label"] = label_cmp
+                        master_df = pd.concat([master_df, pd.DataFrame([new_row])], ignore_index=True)
 
-                df_master = pd.DataFrame(rows, columns=cols)
-                excel_path = os.path.splitext(master_path)[0] + ".xlsx"
-                try:
-                    df_master.to_excel(excel_path, index=False)
-                    print(f"Wrote master Census variables Excel to {excel_path}")
-                except Exception as exc:
-                    logging.getLogger(__name__).warning("Failed writing master Excel: %s", exc)
-        except Exception as exc:
-            logging.getLogger(__name__).warning("Failed exporting master JSON to Excel: %s", exc)
+        # After processing all years, sort the master_df by variable and reset index
+        master_df = master_df.sort_values(by=["variable"]).reset_index(drop=True)
 
-        return per_year_vars
+        # Save the master dataframe to an Excel file in the codebook directory
+        output_path = os.path.join(self.prj_dirs["codebook"], "acs_cb_variables_master.xlsx")
+        master_df.to_excel(output_path)
+
+        return master_df
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2860,7 +2669,7 @@ class OCacs(OCgdm):
                 continue
             # Find the category and variable in the codebook
             found = False
-            for category, vars_dict in cb_acs.items():
+            for vars_dict in cb_acs.values():
                 if col in vars_dict:
                     var_type = vars_dict[col]["type"]
                     found = True
@@ -2936,6 +2745,7 @@ class OCacs(OCgdm):
         """
 
         # Determine the years to process
+        years = []
         if process_year is None and all_years:
             print("Processing ACS data for all years...")
             # Get the years to process
@@ -3030,7 +2840,7 @@ class OCacs(OCgdm):
                     for field in arcpy.ListFields(fc_path):
                         # Find the variable in the codebook to get the alias
                         found = False
-                        for category, vars_dict in cb_acs.items():
+                        for vars_dict in cb_acs.values():
                             if field.name in vars_dict:
                                 field_alias = vars_dict[field.name]["alias"]
                                 found = True

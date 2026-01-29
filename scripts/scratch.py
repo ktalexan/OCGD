@@ -47,5 +47,4 @@ prj_dirs = tgl.prj_dirs
 # New helper: fetch Census ACS variables JSON for a given year
 
 
-master_var_cb_2023 = get_census_variables(year = 2023, estimates_only = True, write_json = True)
-
+#master_var_cb_2023 = get_census_variables(year = 2023, estimates_only = True, write_json = True)

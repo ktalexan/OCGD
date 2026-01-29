@@ -20,7 +20,6 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
 from ocgd import OCacs
 
-
 # Load environment variables from .env file
 load_dotenv()
 
@@ -46,92 +45,14 @@ prj_dirs = acs.prj_dirs
 
 
 
-def fetch_acs(year: int = 2023, session: Optional[requests.Session] = None) -> pd.DataFrame:
-    """
-    Fetch ACS variables metadata for a given year from the Census API.
-    Args:
-        year: Four-digit year (e.g. 2019).
-        session: Optional `requests.Session` for connection reuse.
-    Returns:
-        pandas.DataFrame: index is variable name, columns are variable properties.
-    """
-
-    api_url = f"https://api.census.gov/data/{year}/acs/acs5/variables.json"
-    s = session or requests.Session()
-
-    resp = s.get(api_url)
-    resp.raise_for_status()
-
-    data = resp.json()
-
-    variables = data.get("variables", {})
-
-    # Keep only variables that start with a letter, followed by a digit,
-    # and end with a capital 'E' (e.g. 'B01001_001E').
-    pattern = re.compile(r'^[A-Za-z]\d.*E$')
-
-    filtered_vars = {k: v for k, v in variables.items() if pattern.match(k)}
-
-    df = pd.DataFrame.from_dict(filtered_vars, orient="index")
-
-    # Move the index (variable names) into a regular column named 'variable' so the variable names appear as the first column in the returned DataFrame.
-    df = df.reset_index().rename(columns={"index": "variable"})
-
-    # Clean the 'label' column per user rules
-    if "label" in df.columns:
-        # Vectorized cleaning using pandas string methods
-        df["label"] = (
-            df["label"].astype(str)
-            .str.replace("!!", ": ", regex = False)
-            .str.normalize("NFKD")
-            .str.encode("ascii", "ignore")
-            .str.decode("ascii")
-            .str.replace(r"[^A-Za-z0-9\s,.:;]", "", regex = True)
-            .str.replace(r":+", ":", regex = True)
-            .str.replace(r"\s+", " ", regex = True)
-            .str.strip(" \t\n\r.,;:")
-        )
-
-        # Rename the 'predicateType' column to 'type' for clarity
-        if "predicateType" in df.columns:
-            df = df.rename(columns={"predicateType": "type"})
-
-        # Add additional metadata columns
-        df["oid"] = pd.Series(0, index=df.index, dtype="int")
-        df["used"] = pd.Series(False, index=df.index, dtype="bool")
-        df["alias"] = df["label"].str.replace(r"^Estimate\s*", "", regex = True).str.strip(" :")
-        df["level"] = pd.Series(None, index=df.index, dtype="object")
-        df["level_group"] = pd.Series(None, index=df.index, dtype="object")
-        df["category"] = pd.Series(None, index=df.index, dtype="object")
-        df["note"] = pd.Series(None, index=df.index, dtype="object")
-
-        # Reorder columns
-        cols_order = ["variable", "group", "oid", "alias", "used", "level", "level_group", "category", "label", "concept", "type", "limit", "attributes", "note"]
-        df = df[cols_order]
-
-    # If a 'group' column exists, sort by group then variable, then reset index
-    if "group" in df.columns:
-        df = df.sort_values(by=["group", "variable"]).reset_index(drop = True)
-
-    # Save the dataframe to an Excel file in the codebook directory
-    output_path = os.path.join(prj_dirs["codebook"], "acs_cb_vars.xlsx")
-    df.to_excel(output_path)
-
-    return df
-
-year = 2023
 # Fetch ACS variables metadata for the target year and show a preview
-df_vars = fetch_acs(year)
-print(df_vars.head())
-df_vars.columns
-df_vars
+df_vars_master = acs.acs_cb_variables(year= None)
+print(df_vars_master.head())
+df_vars_master.columns
+df_vars_master
 
 # print the values of the third row of the df_vars_2010 dataframe
-print(df_vars.iloc[4])
-
-# Also convert and export to JSON format
-json_output_path = os.path.join(prj_dirs["codebook"], "acs_cb_vars.json")
-df_vars.to_json(json_output_path, orient="records", indent=4)
+print(df_vars_master.iloc[4])
 
 
 # sample_vars = acs.get_acs_list(year, "Demographic")

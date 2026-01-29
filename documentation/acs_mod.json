@@ -527,7 +527,7 @@
             "B16004_066E": "65 years and over, speak other languages, speak English 'not well'",
             "B16004_067E": "65 years and over, speak other languages, speak English 'not at all'"
         },
-        "S21: Ancestry": {
+        "S21-22: Ancestry": {
             "B04007_001E": "Total population",
             "B04007_002E": "Population with ancestry specified",
             "B04007_003E": "Population with single ancestry specified",
@@ -643,7 +643,7 @@
             "B04006_108E": "Other groups",
             "B04006_109E": "Unclassified or not reported"
         },
-        "S22: Computers and Internet Use": {
+        "S23: Computers and Internet Use": {
             "B28008_001E": "Total households",
             "B28008_001E": "Population in households",
             "B28008_002E": "Has a computer",
