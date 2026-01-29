@@ -30,6 +30,108 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define the DualOutput class for logging
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class DualOutput:
+    """
+    A class to duplicate console output to a log file.
+    """
+    def __init__(self, filename: Optional[str] = None):
+        self._orig = None
+        self._log = None
+        self._filename = filename
+        self._start_time = None
+        self._end_time = None
+        self._duration = None
+
+    def _open_log(self, filename: str):
+        path = os.path.join(os.getcwd(), "tests", os.path.basename(filename))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        return open(path, "a", encoding="utf-8")
+
+    def enable(self, meta: Optional[dict] = None, filename: Optional[str] = None):
+        if self._orig is not None:
+            return
+        fn = filename or self._filename or "output.log"
+        self._orig = sys.stdout
+        self._log = self._open_log(fn)
+        sys.stdout = self
+        self._start_time = dt.datetime.now()
+        print("---- Start of log ----")
+        print(f"Filename: {fn}")
+        if meta is not None:
+            project_name = meta.get("name")
+            if project_name is not None:
+                print(f"Project Name: {project_name}")
+            project_title = meta.get("title")
+            if project_title is not None:
+                print(f"Project Title: {project_title}")
+            version = meta.get("version")
+            if version is not None:
+                print(f"Version: {version}")
+        print(f"Date: {dt.datetime.now().strftime('%B %d, %Y')}")
+        print("Author: Dr. Kostas Alexandridis, GISP")
+        print(f"Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n\n")
+
+    def disable(self):
+        self._end_time = dt.datetime.now()
+        print(f"\n\nLogging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
+        self._duration = self._end_time - self._start_time
+        if self._duration.total_seconds() < 60:
+            print(f"Elapsed Time: {self._duration.total_seconds():.0f} seconds")
+        else:
+            # Display time in days, hours, minutes and seconds
+            days, remainder = divmod(self._duration.total_seconds(), 86400)
+            hours, remainder = divmod(remainder, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            # Only show non-zero values
+            if days > 0:
+                print(f"Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
+            elif hours > 0:
+                print(f"Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
+            elif minutes > 0:
+                print(f"Elapsed Time: {int(minutes)} minutes and {int(seconds)} seconds")
+            else:
+                print(f"Elapsed Time: {int(seconds)} seconds")
+        print("---- End of log ----\n")
+        
+        if self._orig is None:
+            return
+        sys.stdout = self._orig
+        try:
+            if self._log:
+                self._log.close()
+        finally:
+            self._orig = None
+            self._log = None
+
+    def __enter__(self):
+        self.enable(self._filename)
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        self.disable()
+
+    def write(self, message):
+        if self._orig:
+            self._orig.write(message)
+        if self._log:
+            try:
+                self._log.write(message)
+            except Exception:
+                pass
+
+    def flush(self):
+        if self._orig:
+            self._orig.flush()
+        if self._log:
+            try:
+                self._log.flush()
+            except Exception:
+                pass
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the OCgdm Class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -56,6 +158,9 @@ class OCgdm:
         Notes:
             This function initializes the OCGD project structure.
         """
+        # Create a DualOutput instance for logging
+        self.logger = DualOutput()
+
         # Set the part and version
         self.part = part
         self.version = version
@@ -2284,7 +2389,7 @@ class OCacs(OCgdm):
             if "group" in df.columns:
                 df = df.sort_values(by=["group", "variable"]).reset_index(drop = True)
 
-            print("Data fetched. Processing Master DataFrame...")
+            print("- Data fetched. Processing Master DataFrame...")
             # Check if master_df is empty
             if master_df.empty:
                 # Append the current year's dataframe to the master dataframe
@@ -2340,6 +2445,7 @@ class OCacs(OCgdm):
         # Save the master dataframe to an Excel file in the codebook directory
         output_path = os.path.join(self.prj_dirs["codebook"], "acs_cb_variables_master.xlsx")
         master_df.to_excel(output_path)
+        print(f"Master ACS variables DataFrame saved to {output_path}")
 
         return master_df
 

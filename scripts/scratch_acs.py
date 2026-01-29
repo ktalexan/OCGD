@@ -18,7 +18,7 @@ import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import OCacs
+from ocgd import DualOutput, OCacs
 
 # Load environment variables from .env file
 load_dotenv()
@@ -37,22 +37,17 @@ acs = OCacs(part= 1, version= 2026.1)
 prj_meta = acs.prj_meta
 prj_dirs = acs.prj_dirs
 
-# Create and setup the master variable codebook
-#cb_census_var = acs.cb_census_var(estimates_only = True)
 
-# Process ACS data for all years
-#acs.process_acs_data(process_year = 2010, all_years = False)            
-
-
-
-# Fetch ACS variables metadata for the target year and show a preview
+# Example usage of the DualOutput logger within the OCacs class
+logger = acs.logger
+logger.enable(meta = acs.prj_meta, filename = f"cb_variables_{acs.version}.log")
+print(f"ACS CB Variable Log\n")
 df_vars_master = acs.acs_cb_variables(year= None)
+print("\nExample preview of ACS CB Variables DataFrame:")
 print(df_vars_master.head())
-df_vars_master.columns
-df_vars_master
-
-# print the values of the third row of the df_vars_2010 dataframe
-print(df_vars_master.iloc[4])
+print("\nExample row data of ACS CB Variables DataFrame:")
+print(df_vars_master.iloc[1])
+logger.disable()
 
 
 # sample_vars = acs.get_acs_list(year, "Demographic")
