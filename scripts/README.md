@@ -1,19 +1,5 @@
-# scripts
+# OCGD Scripts Repository Folder
 
-This folder contains helper scripts for generating and maintaining
-ACS variable JSON files.
-
-- `generate_acs_vars_by_year.py` — generates `codebook/acs_variables_{year}.json`
-  files for years 2010–2023 by copying `codebook/acs_variables_master.json`.
-  If a `check_census_var.py` script is present in the repo, the generator
-  will attempt to call it to validate and update variables for each year.
-
-Usage:
-```bash
-python scripts/generate_acs_vars_by_year.py
-```
-
-If you have a `check_census_var.py` script, place it in the repo root or
-in `scripts/` so the generator can find and use it.
-# Scripts Folder
-
+This folder contains reusable scripts and functions that are utilized across various parts of the project. These scripts are designed to be modular and can be imported or executed as needed to perform specific tasks or operations within the project workflow.
+They may include utility functions, data processing routines, or other common functionalities that support the overall project objectives.
+These scripts are intended to enhance code reusability, maintainability, and efficiency throughout the project lifecycle.

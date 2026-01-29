@@ -1,0 +1,8 @@
+{
+    "<PROJECT_TITLE>": "OCGD",
+    "<PROJECT_SUBTITLE>": "Orange County Geodemographics (OCGD) Project",
+    "<PROJECT_DESCRIPTION>": "This is a repository for the Orange County Geodemographics (OCGD) Project. It contains code and tools for the OCGD project. The OCGD project is a collaborative effort between the County of Orange and the Digital Twin Consortium (DTC) to develop a digital twin of Orange County. It contains three levels of code and data processing: Orange County Census Data (OCUCS), Orange County American Community Survey (OCACS) Data, and Orange County Tiger/Lines Processing Data (OCTL).",
+    "<PROJECT_TAGS>": "GitHub, Python, ArcGIS, GIS, Digital Twin, OCDT, Orange County, California, Transportation, Urban Planning, AI, Machine Learning, Data Science, Publications, Research, Geodemographics, Census Data, American Community Survey, Tiger/Lines",
+    "<FOLDER>": "The folder name where the project files are stored.",
+    "<REPO_TYPE>": "geospatial"
+}
