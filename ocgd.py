@@ -113,7 +113,7 @@ class DualOutput:
         self._start_time = dt.datetime.now()
 
         if self._filetype == "markdown":
-            print(f"\n> [!NOTE]\n>Log ID: {logid}\nDate: {dt.datetime.now().strftime('%B %d, %Y')}\nLogging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
+            print(f"\n> [!NOTE]\n> - Log ID: {logid}\n> - Date: {dt.datetime.now().strftime('%B %d, %Y')}\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
         else:
             print(f"---- Start of log ID: {logid} ----")
             print(f"Date: {dt.datetime.now().strftime('%B %d, %Y')}")
@@ -125,13 +125,13 @@ class DualOutput:
     def disable(self):
         self._end_time = dt.datetime.now()
         if self._filetype == "markdown":
-            print(f"\n> [!NOTE]\n> Logging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
+            print(f"\n> [!NOTE]\n> - Logging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
         else:
             print(f"\n\nLogging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
         self._duration = self._end_time - self._start_time
         if self._duration.total_seconds() < 60:
             if self._filetype == "markdown":
-                print(f"> Elapsed Time: {self._duration.total_seconds():.0f} seconds")
+                print(f"> - Elapsed Time: {self._duration.total_seconds():.0f} seconds")
             else:
                 print(f"Elapsed Time: {self._duration.total_seconds():.0f} seconds")
                 print("---- End of log ----\n")
@@ -143,25 +143,25 @@ class DualOutput:
             # Only show non-zero values
             if days > 0:
                 if self._filetype == "markdown":
-                    print(f"> Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
+                    print(f"> - Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
                 else:
                     print(f"Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
                     print("---- End of log ----\n")
             elif hours > 0:
                 if self._filetype == "markdown":
-                    print(f"> Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
+                    print(f"> - Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
                 else:
                     print(f"Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
                     print("---- End of log ----\n")
             elif minutes > 0:
                 if self._filetype == "markdown":
-                    print(f"> Elapsed Time: {int(minutes)} minutes and {int(seconds)} seconds\n")
+                    print(f"> - Elapsed Time: {int(minutes)} minutes and {int(seconds)} seconds\n")
                 else:
                     print(f"Elapsed Time: {int(minutes)} minutes and {int   (seconds)} seconds")
                     print("---- End of log ----\n")
             else:
                 if self._filetype == "markdown":
-                    print(f"> Elapsed Time: {int(seconds)} seconds\n")
+                    print(f"> - Elapsed Time: {int(seconds)} seconds\n")
                 else:
                     print(f"Elapsed Time: {int(seconds)} seconds")
                     print("---- End of log ----\n")
