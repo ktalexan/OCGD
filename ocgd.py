@@ -77,7 +77,7 @@ class DualOutput:
             with open(path, "w", encoding="utf-8") as f:
                 # If it is a markdown file, write the header as the meta.get("project_name")
                 if self._filetype == "markdown":
-                    f.write(f"# {self.project_name}\n- Title: {self.project_title}\n- Version: {self.project_version}\n- Author: {self.project_author}\nFilename: **{os.path.basename(filename)}**\n")
+                    f.write(f"# {self.project_name}\n- Title: {self.project_title}\n- Version: {self.project_version}\n- Author: {self.project_author}\n- Filename: **{os.path.basename(filename)}**\n")
                 elif self._filetype == "log":
                     # Wtite the project name and title in uppercase
                     f.write(f"Project Name: {self.project_name.upper()}\nProject Title: {self.project_title.upper()}\nVersion: {self.project_version}\nAuthor: {self.project_author}\nFilename: {os.path.basename(filename)}\n\n")
@@ -113,9 +113,7 @@ class DualOutput:
         self._start_time = dt.datetime.now()
 
         if self._filetype == "markdown":
-            print(f"\n> [!NOTE]\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}")
-            print(f"> - Log ID: {logid}")
-            print(f"> - Date: {dt.datetime.now().strftime('%B %d, %Y')}\n")
+            print(f"\n> [!NOTE]\n>Log ID: {logid}\nDate: {dt.datetime.now().strftime('%B %d, %Y')}\nLogging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
         else:
             print(f"---- Start of log ID: {logid} ----")
             print(f"Date: {dt.datetime.now().strftime('%B %d, %Y')}")
@@ -127,13 +125,13 @@ class DualOutput:
     def disable(self):
         self._end_time = dt.datetime.now()
         if self._filetype == "markdown":
-            print(f"\n> [!NOTE]\n> - Logging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
+            print(f"\n> [!NOTE]\n> Logging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
         else:
             print(f"\n\nLogging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
         self._duration = self._end_time - self._start_time
         if self._duration.total_seconds() < 60:
             if self._filetype == "markdown":
-                print(f"> - Elapsed Time: {self._duration.total_seconds():.0f} seconds")
+                print(f"> Elapsed Time: {self._duration.total_seconds():.0f} seconds")
             else:
                 print(f"Elapsed Time: {self._duration.total_seconds():.0f} seconds")
                 print("---- End of log ----\n")
@@ -145,25 +143,25 @@ class DualOutput:
             # Only show non-zero values
             if days > 0:
                 if self._filetype == "markdown":
-                    print(f"> - Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
+                    print(f"> Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
                 else:
                     print(f"Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
                     print("---- End of log ----\n")
             elif hours > 0:
                 if self._filetype == "markdown":
-                    print(f"> - Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
+                    print(f"> Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
                 else:
                     print(f"Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
                     print("---- End of log ----\n")
             elif minutes > 0:
                 if self._filetype == "markdown":
-                    print(f"> - Elapsed Time: {int(minutes)} minutes and {int(seconds)} seconds\n")
+                    print(f"> Elapsed Time: {int(minutes)} minutes and {int(seconds)} seconds\n")
                 else:
                     print(f"Elapsed Time: {int(minutes)} minutes and {int   (seconds)} seconds")
                     print("---- End of log ----\n")
             else:
                 if self._filetype == "markdown":
-                    print(f"> - Elapsed Time: {int(seconds)} seconds\n")
+                    print(f"> Elapsed Time: {int(seconds)} seconds\n")
                 else:
                     print(f"Elapsed Time: {int(seconds)} seconds")
                     print("---- End of log ----\n")
