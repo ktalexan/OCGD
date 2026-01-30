@@ -12,7 +12,7 @@
 from __future__ import annotations
 import os
 import sys
-import datetime as dt
+import datetime
 from pathlib import Path
 import json
 import re
@@ -88,7 +88,7 @@ class DualOutput:
     ## fx: Enable logging ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def enable(self, meta: Optional[dict] = None, filename: Optional[str] = None):
-        logid = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
+        logid = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         if self._orig is not None:
             return
         # Prefer provided meta, otherwise use stored meta
@@ -110,21 +110,21 @@ class DualOutput:
         self._orig = sys.stdout
         self._log = self._open_log(meta, fn)
         sys.stdout = self
-        self._start_time = dt.datetime.now()
+        self._start_time = datetime.datetime.now()
 
         if self._filetype == "markdown":
             print("----\n")
-            print(f"\n> [!NOTE]\n> - Log ID: {logid}\n> - Date: {dt.datetime.now().strftime('%B %d, %Y')}\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
+            print(f"\n> [!NOTE]\n> - Log ID: {logid}\n> - Date: {datetime.datetime.now().strftime('%B %d, %Y')}\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
         else:
             print(f"---- Start of log ID: {logid} ----")
-            print(f"Date: {dt.datetime.now().strftime('%B %d, %Y')}")
+            print(f"Date: {datetime.datetime.now().strftime('%B %d, %Y')}")
             print(f"Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n\n")
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Disable logging ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def disable(self):
-        self._end_time = dt.datetime.now()
+        self._end_time = datetime.datetime.now()
         if self._filetype == "markdown":
             print(f"\n> [!NOTE]\n> - Logging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
         else:
@@ -205,7 +205,8 @@ class DualOutput:
         if self._log:
             try:
                 self._log.write(message)
-            except Exception:
+            except (OSError, UnicodeEncodeError):
+                # Ignore known I/O/encoding errors when writing to the log; allow other exceptions to propagate
                 pass
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -217,7 +218,8 @@ class DualOutput:
         if self._log:
             try:
                 self._log.flush()
-            except Exception:
+            except OSError:
+                # Ignore known I/O errors when flushing the log; allow other exceptions to propagate
                 pass
 
 
@@ -234,7 +236,7 @@ class OCgdm:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Initialize project structure ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
+    def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
         Initialize the OCGD project structure.
         Args:
@@ -257,14 +259,16 @@ class OCgdm:
 
         # Set the base path and data date
         self.base_path = os.getcwd()
-        self.data_date = dt.datetime.now().strftime("%B %Y")
+        self.data_date = datetime.datetime.now().strftime("%B %Y")
 
         # Create a prj_dirs variable calling the project_directories function
         self.prj_dirs = self.project_directories(silent = False)
+
         # Attach project directories to logger so it's available to all logger methods
         try:
             self.logger.meta = self.prj_dirs
-        except Exception:
+        except AttributeError:
+            # Logger does not support 'meta' attribute; ignore safely
             pass
 
         # Get the available ACS5 years
@@ -390,7 +394,7 @@ class OCtgl(OCgdm):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
+    def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
         Initialize the OCTL class.
         """
@@ -2282,7 +2286,7 @@ class OCacs(OCgdm):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
+    def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
         Initializes the OCacs class.
         """
@@ -2444,7 +2448,7 @@ class OCacs(OCgdm):
             df["_cmp_variable"] = df["variable"].astype(str).str.strip()
             # label: remove spaces and colons, convert to lower
             if "label" in df.columns:
-                df["_cmp_label"] = df["label"].astype(str).str.replace(r"[ :]", "", regex=True).str.lower()
+                df["_cmp_label"] = df["label"].astype(str).str.replace(r"[ :]", "", regex=True).str.lower().str.strip()
 
             # Clean the 'label' column per user rules
             if "label" in df.columns:
@@ -2455,7 +2459,7 @@ class OCacs(OCgdm):
                     .str.normalize("NFKD")
                     .str.encode("ascii", "ignore")
                     .str.decode("ascii")
-                    .str.replace(r"[^A-Za-z0-9\s,.:;]", "", regex = True)
+                    .str.replace(r"[^A-Za-z0-9\\s,.:;\\-]", "", regex = True)
                     .str.replace(r":+", ":", regex = True)
                     .str.replace(r"\s+", " ", regex = True)
                     .str.strip(" \t\n\r.,;:")
@@ -2492,7 +2496,7 @@ class OCacs(OCgdm):
                 # Ensure master_df has comparison columns
                 master_df["_cmp_variable"] = master_df["variable"].astype(str).str.strip()
                 if "label" in master_df.columns:
-                    master_df["_cmp_label"] = master_df["label"].astype(str).str.replace(r"[ :]", "", regex = True).str.lower()
+                    master_df["_cmp_label"] = master_df["label"].astype(str).str.replace(r"[ :]", "", regex = True).str.lower().str.strip()
             else:
                 # For each of the records in the current year's dataframe (df), check if the variable already exists in the master dataframe (master_df) in the "variable" column, and if yes, check if the label is the same. If both are the same, do not add the record, but add the year to the existing record's "year" column as a comma-separated list. If the variable exists but the label is different, add the new record as a new row, and add a note to the "note" column of the master_df "same variable, different label". If the variable does not exist, add the new record as a new row.
                 for _, row in df.iterrows():
@@ -2501,7 +2505,7 @@ class OCacs(OCgdm):
 
                     # Cleaned comparison values
                     var_cmp = str(var).strip()
-                    label_cmp = str(label).replace(" ", "").replace(":", "").lower() if label is not None else ""
+                    label_cmp = str(label).replace(" ", "").replace(":", "").lower().strip() if label is not None else ""
 
                     existing_rows = master_df[master_df["_cmp_variable"] == var_cmp]
 
@@ -2522,7 +2526,7 @@ class OCacs(OCgdm):
                         else:
                             # Different label, add new row with note and comparison cols
                             new_row = row.copy()
-                            new_row["note"] = "same variable, different label"
+                            new_row["note"] = f"same variable ({var}), different label (existing: '{existing_rows.iloc[0]['label']}', new: '{label}')"
                             # ensure comparison columns are present for the new row
                             new_row["_cmp_variable"] = var_cmp
                             new_row["_cmp_label"] = label_cmp
@@ -2533,6 +2537,9 @@ class OCacs(OCgdm):
                         new_row["_cmp_variable"] = var_cmp
                         new_row["_cmp_label"] = label_cmp
                         master_df = pd.concat([master_df, pd.DataFrame([new_row])], ignore_index=True)
+
+        # Remove the comparison columns before returning/saving
+        master_df = master_df.drop(columns=["_cmp_variable", "_cmp_label"])
 
         # After processing all years, sort the master_df by variable and reset index
         master_df = master_df.sort_values(by=["variable"]).reset_index(drop=True)
@@ -3079,7 +3086,7 @@ class OCucs(OCgdm):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def __init__(self, part: int = 0, version: float = float(dt.datetime.now().year)):
+    def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
         Initializes the OCGD class.
         """

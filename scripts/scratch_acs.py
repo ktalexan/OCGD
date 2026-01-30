@@ -2,7 +2,7 @@
 from __future__ import annotations
 import os
 import sys
-import datetime as dt
+import datetime
 import json
 from pathlib import Path
 import logging
@@ -37,34 +37,15 @@ acs = OCacs(part= 1, version= 2026.1)
 prj_meta = acs.prj_meta
 prj_dirs = acs.prj_dirs
 
+# Run and log the ACS CB Variables fetch
 logger = acs.logger
-
-logger.enable(meta=prj_meta, filename='my_run.log')   # gd.prj_dirs already assigned to gd.logger.meta
-print("Doing work...")
-logger.disable()
-
-logger.enable(meta=prj_meta, filename='my_run.md')   # gd.prj_dirs already assigned to gd.logger.meta
-print("Doing work...")
-logger.disable()
-
-
-
-
-
-# Example usage of the DualOutput logger within the OCacs class
-logger = acs.logger
-logger.enable(meta = acs.prj_meta, filename = f"cb_variables_{acs.version}.log")
+logger.enable(meta = prj_meta, filename = f"cb_variables_{acs.version}.log")
 print("ACS CB Variable Log\n")
 df_vars_master = acs.acs_cb_variables(year= None)
 print("\nExample preview of ACS CB Variables DataFrame:")
 print(df_vars_master.head())
 print("\nExample row data of ACS CB Variables DataFrame:")
 print(df_vars_master.iloc[1])
-logger.disable()
-
-logger.enable(meta = acs.prj_meta, filename = f"test_{acs.version}.md")
-print("## ACS CB Variable Log\n")
-print("Example preview of ACS CB Variables DataFrame:")
 logger.disable()
 
 

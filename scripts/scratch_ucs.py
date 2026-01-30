@@ -1,7 +1,7 @@
 # Import necessary libraries
 import os
 import sys
-import datetime as dt
+import datetime
 import json
 from pathlib import Path
 import shutil
