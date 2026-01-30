@@ -30,55 +30,113 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the DualOutput class for logging
+# Define the DualOutput class for logging ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class DualOutput:
     """
     A class to duplicate console output to a log file.
     """
-    def __init__(self, filename: Optional[str] = None):
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Class initialization ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __init__(self, filename: Optional[str] = None, meta: Optional[dict] = None):
         self._orig = None
         self._log = None
         self._filename = filename
         self._start_time = None
         self._end_time = None
         self._duration = None
+        self._filetype = "log"  # Default filetype
+        # Store optional project metadata so other methods can access it
+        self.meta: Optional[dict] = meta
+        self.project_name: Optional[str] = meta.get("name") if meta else None
+        self.project_title: Optional[str] = meta.get("title") if meta else None
+        self.project_version: Optional[float] = meta.get("version") if meta else None
+        self.project_author: Optional[str] = meta.get("author") if meta else None
 
-    def _open_log(self, filename: str):
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Open log file ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def _open_log(self, meta: dict, filename: str):
+        # From the filename, determine if it's a .log, .txt, or .md file
+        if filename.endswith(".md"):
+            self._filetype = "markdown"
+        elif filename.endswith(".log") or filename.endswith(".txt"):
+            self._filetype = "log"
+        if meta is not None:
+            self.project_name = meta.get("name")
+            self.project_title = meta.get("title")
+            self.project_version = meta.get("version")
+            self.project_author = meta.get("author")
+        # Open the log file in append mode in the tests directory
         path = os.path.join(os.getcwd(), "tests", os.path.basename(filename))
-        os.makedirs(os.path.dirname(path), exist_ok=True)
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(path), exist_ok = True)
+        # If the file does not exist, open it and writh an initial line
+        if not os.path.isfile(path):
+            with open(path, "w", encoding="utf-8") as f:
+                # If it is a markdown file, write the header as the meta.get("project_name")
+                if self._filetype == "markdown":
+                    f.write(f"# {self.project_name}\n- Title: {self.project_title}\n- Version: {self.project_version}\n- Author: {self.project_author}\nFilename: **{os.path.basename(filename)}**\n")
+                elif self._filetype == "log":
+                    # Wtite the project name and title in uppercase
+                    f.write(f"Project Name: {self.project_name.upper()}\nProject Title: {self.project_title.upper()}\nVersion: {self.project_version}\nAuthor: {self.project_author}\nFilename: {os.path.basename(filename)}\n\n")
+        # Return the opened file object
         return open(path, "a", encoding="utf-8")
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Enable logging ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def enable(self, meta: Optional[dict] = None, filename: Optional[str] = None):
+        logid = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
         if self._orig is not None:
             return
+        # Prefer provided meta, otherwise use stored meta
+        if meta is not None:
+            self.meta = meta
+        # Determine the filetype based on the filename extension
         fn = filename or self._filename or "output.log"
+        if fn.endswith(".md"):
+            self._filetype = "markdown"
+        elif fn.endswith(".log"):
+            self._filetype = "log"
+        elif fn.endswith(".txt"):
+            self._filetype = "text"
+        else:
+            print("Warning: Unrecognized file extension. Defaulting to .log")
+            self._filetype = "log"  # Default to log if no extension provided
+            # Change filename to have .log extension
+            fn = os.path.splitext(fn)[0] + ".log"
         self._orig = sys.stdout
-        self._log = self._open_log(fn)
+        self._log = self._open_log(meta, fn)
         sys.stdout = self
         self._start_time = dt.datetime.now()
-        print("---- Start of log ----")
-        print(f"Filename: {fn}")
-        if meta is not None:
-            project_name = meta.get("name")
-            if project_name is not None:
-                print(f"Project Name: {project_name}")
-            project_title = meta.get("title")
-            if project_title is not None:
-                print(f"Project Title: {project_title}")
-            version = meta.get("version")
-            if version is not None:
-                print(f"Version: {version}")
-        print(f"Date: {dt.datetime.now().strftime('%B %d, %Y')}")
-        print("Author: Dr. Kostas Alexandridis, GISP")
-        print(f"Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n\n")
 
+        if self._filetype == "markdown":
+            print(f"\n> [!NOTE]\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}")
+            print(f"> - Log ID: {logid}")
+            print(f"> - Date: {dt.datetime.now().strftime('%B %d, %Y')}\n")
+        else:
+            print(f"---- Start of log ID: {logid} ----")
+            print(f"Date: {dt.datetime.now().strftime('%B %d, %Y')}")
+            print(f"Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n\n")
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Disable logging ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def disable(self):
         self._end_time = dt.datetime.now()
-        print(f"\n\nLogging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
+        if self._filetype == "markdown":
+            print(f"\n> [!NOTE]\n> - Logging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
+        else:
+            print(f"\n\nLogging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
         self._duration = self._end_time - self._start_time
         if self._duration.total_seconds() < 60:
-            print(f"Elapsed Time: {self._duration.total_seconds():.0f} seconds")
+            if self._filetype == "markdown":
+                print(f"> - Elapsed Time: {self._duration.total_seconds():.0f} seconds")
+            else:
+                print(f"Elapsed Time: {self._duration.total_seconds():.0f} seconds")
+                print("---- End of log ----\n")
         else:
             # Display time in days, hours, minutes and seconds
             days, remainder = divmod(self._duration.total_seconds(), 86400)
@@ -86,14 +144,29 @@ class DualOutput:
             minutes, seconds = divmod(remainder, 60)
             # Only show non-zero values
             if days > 0:
-                print(f"Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
+                if self._filetype == "markdown":
+                    print(f"> - Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
+                else:
+                    print(f"Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
+                    print("---- End of log ----\n")
             elif hours > 0:
-                print(f"Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
+                if self._filetype == "markdown":
+                    print(f"> - Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
+                else:
+                    print(f"Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
+                    print("---- End of log ----\n")
             elif minutes > 0:
-                print(f"Elapsed Time: {int(minutes)} minutes and {int(seconds)} seconds")
+                if self._filetype == "markdown":
+                    print(f"> - Elapsed Time: {int(minutes)} minutes and {int(seconds)} seconds\n")
+                else:
+                    print(f"Elapsed Time: {int(minutes)} minutes and {int   (seconds)} seconds")
+                    print("---- End of log ----\n")
             else:
-                print(f"Elapsed Time: {int(seconds)} seconds")
-        print("---- End of log ----\n")
+                if self._filetype == "markdown":
+                    print(f"> - Elapsed Time: {int(seconds)} seconds\n")
+                else:
+                    print(f"Elapsed Time: {int(seconds)} seconds")
+                    print("---- End of log ----\n")
         
         if self._orig is None:
             return
@@ -105,13 +178,23 @@ class DualOutput:
             self._orig = None
             self._log = None
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Context manager enter ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __enter__(self):
-        self.enable(self._filename)
+        # Use stored metadata when entering context if available
+        self.enable(meta=self.meta, filename=self._filename)
         return self
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Context manager exit ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __exit__(self, exc_type, exc, tb):
         self.disable()
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Write output ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def write(self, message):
         if self._orig:
             self._orig.write(message)
@@ -121,6 +204,9 @@ class DualOutput:
             except Exception:
                 pass
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Flush output ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def flush(self):
         if self._orig:
             self._orig.flush()
@@ -171,6 +257,11 @@ class OCgdm:
 
         # Create a prj_dirs variable calling the project_directories function
         self.prj_dirs = self.project_directories(silent = False)
+        # Attach project directories to logger so it's available to all logger methods
+        try:
+            self.logger.meta = self.prj_dirs
+        except Exception:
+            pass
 
         # Get the available ACS5 years
         self.acs5_years = self.get_available_acs5_years()
@@ -299,7 +390,7 @@ class OCtgl(OCgdm):
         """
         Initialize the OCTL class.
         """
-        # Initialize the GDInit class with provided part/version
+        # Initialize the OCgdm class with provided part/version
         super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
@@ -2191,7 +2282,7 @@ class OCacs(OCgdm):
         """
         Initializes the OCacs class.
         """
-        # Initialize the GDInit class with provided part/version
+        # Initialize the OCgdm class with provided part/version
         super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
@@ -2988,7 +3079,7 @@ class OCucs(OCgdm):
         """
         Initializes the OCGD class.
         """
-        # Initialize the GDInit class with provided part/version
+        # Initialize the OCgdm class with provided part/version
         super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
