@@ -2486,7 +2486,7 @@ class OCacs(OCgdm):
                     .str.normalize("NFKD")
                     .str.encode("ascii", "ignore")
                     .str.decode("ascii")
-                    .str.replace(r"[^A-Za-z0-9\\s,.:;\\-]", "", regex = True)
+                    .str.replace(r"[^A-Za-z0-9\s,\.:;\-]", "", regex = True)
                     .str.replace(r":+", ":", regex = True)
                     .str.replace(r"\s+", " ", regex = True)
                     .str.strip(" \t\n\r.,;:")
