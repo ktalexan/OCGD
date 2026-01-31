@@ -2590,7 +2590,7 @@ class OCacs(OCgdm):
         master_df = master_df[cols_order]
 
         # After processing all years, sort the master_df by: years first, then variable and reset index
-        master_df = master_df.sort_values(by=["years", "variable"]).reset_index(drop = True)
+        master_df = master_df.sort_values(by=["year", "variable"]).reset_index(drop = True)
 
         # Save the master dataframe to an Excel file in the codebook directory
         output_path = os.path.join(self.prj_dirs["codebook"], "acs_cb_variables_master.xlsx")
