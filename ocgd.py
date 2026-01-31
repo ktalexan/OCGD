@@ -2506,8 +2506,6 @@ class OCacs(OCgdm):
                 df["level_group"] = pd.Series(None, index=df.index, dtype="object")
                 df["category"] = pd.Series(None, index=df.index, dtype="object")
                 df["note"] = pd.Series(None, index=df.index, dtype="object")
-                # df["markdown"] is a string with the unicode icon 🆔 at the start followed a space, by the variable and a collon
-                df["markdown"] = pd.Series(f"🆔 {df['variable']}: ", index=df.index, dtype="object")
 
                 # Reorder columns and ensure the 'year' column is preserved.
                 cols_order = list(master_schema.keys())
@@ -2573,6 +2571,9 @@ class OCacs(OCgdm):
         # Remove the comparison columns before returning/saving
         master_df = master_df.drop(columns=["_cmp_variable", "_cmp_label"])
 
+        # For each row, create a markdown string in the format "🆔 {variable}: {alias}" from the variable and alias values in the row
+        master_df["markdown"] = master_df.apply(lambda x: f"🆔 {x['variable']}: {x['alias']}" if pd.notna(x['alias']) else f"🆔 {x['variable']}", axis=1)
+
         # Compute the count_years column as the number of years each variable appears in
         master_df["count_years"] = master_df["year"].apply(lambda x: len(str(x).split(",")) if pd.notna(x) else 0)
 
@@ -2590,7 +2591,7 @@ class OCacs(OCgdm):
         master_df = master_df[cols_order]
 
         # After processing all years, sort the master_df by: years first, then variable and reset index
-        master_df = master_df.sort_values(by=["year", "variable"]).reset_index(drop = True)
+        master_df = master_df.sort_values(by=["variable", "year"]).reset_index(drop = True)
 
         # Save the master dataframe to an Excel file in the codebook directory
         output_path = os.path.join(self.prj_dirs["codebook"], "acs_cb_variables_master.xlsx")
