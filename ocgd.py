@@ -2411,8 +2411,35 @@ class OCacs(OCgdm):
             if year not in years:
                 raise ValueError(f"Year must be one of the following: {years}")
 
-        # Create a master dataframe to hold all years' data
-        master_df = pd.DataFrame()
+        # Define the master schema dictionary for the DataFrame
+        master_schema = {
+            "year": "object",
+            "count_years": "int32",
+            "all_years": "bool",
+            "table": "object",
+            "group": "object",
+            "variable": "object",
+            "alias": "object",
+            "oid": "int32",
+            "used": "bool",
+            "level": "object",
+            "level_group": "object",
+            "category": "object",
+            "label": "object",
+            "concept": "object",
+            "type": "object",
+            "limit": "int32",
+            "attributes": "object",
+            "note": "object",
+            "markdown": "object"
+        }
+
+        # For each year, add a column to the schema with bool type
+        for acs_year in years:
+            master_schema[str(acs_year)] = "bool"
+        
+        # Create an empty DataFrame with the defined schema called master_df
+        master_df = pd.DataFrame(columns=master_schema.keys()).astype(master_schema)
 
         for acs_year in years:
             print(f"Fetching ACS variables for year {acs_year}...")
@@ -2470,16 +2497,21 @@ class OCacs(OCgdm):
                     df = df.rename(columns={"predicateType": "type"})
 
                 # Add additional metadata columns
-                df["oid"] = pd.Series(0, index=df.index, dtype="int")
+                #df["oid"] = pd.Series("", index=df.index, dtype="int")
+                # table is the first 3 characters of the variable name and it is dtype object
+                df["table"] = df["variable"].str.slice(0, 3)
                 df["used"] = pd.Series(False, index=df.index, dtype="bool")
                 df["alias"] = df["label"].str.replace(r"^Estimate\s*", "", regex = True).str.strip(" :")
                 df["level"] = pd.Series(None, index=df.index, dtype="object")
                 df["level_group"] = pd.Series(None, index=df.index, dtype="object")
                 df["category"] = pd.Series(None, index=df.index, dtype="object")
                 df["note"] = pd.Series(None, index=df.index, dtype="object")
+                # df["markdown"] is a string with the unicode icon 🆔 at the start followed a space, by the variable and a collon
+                df["markdown"] = pd.Series(f"🆔 {df['variable']}: ", index=df.index, dtype="object")
 
                 # Reorder columns and ensure the 'year' column is preserved.
-                cols_order = ["variable", "group", "year", "oid", "alias", "used", "level", "level_group", "category", "label", "concept", "type", "limit", "attributes", "note"]
+                cols_order = list(master_schema.keys())
+
                 # Keep only columns that actually exist in the dataframe (prevents KeyError)
                 cols_order = [c for c in cols_order if c in df.columns]
                 df = df[cols_order]
@@ -2541,12 +2573,28 @@ class OCacs(OCgdm):
         # Remove the comparison columns before returning/saving
         master_df = master_df.drop(columns=["_cmp_variable", "_cmp_label"])
 
-        # After processing all years, sort the master_df by variable and reset index
-        master_df = master_df.sort_values(by=["variable"]).reset_index(drop=True)
+        # Compute the count_years column as the number of years each variable appears in
+        master_df["count_years"] = master_df["year"].apply(lambda x: len(str(x).split(",")) if pd.notna(x) else 0)
+
+        # Compute the all_years column as True if count_years equals the total number of years fetched
+        total_years = len(years)
+        master_df["all_years"] = master_df["count_years"] == total_years
+
+        # For each year column, set to True if the year is in the variable's year list, else False
+        for acs_year in years:
+            year_str = str(acs_year)
+            master_df[year_str] = master_df["year"].apply(lambda x: year_str in [y.strip() for y in str(x).split(",")] if pd.notna(x) else False)
+
+        # Reorder columns by master_schema keys
+        cols_order = list(master_schema.keys())
+        master_df = master_df[cols_order]
+
+        # After processing all years, sort the master_df by: years first, then variable and reset index
+        master_df = master_df.sort_values(by=["years", "variable"]).reset_index(drop = True)
 
         # Save the master dataframe to an Excel file in the codebook directory
         output_path = os.path.join(self.prj_dirs["codebook"], "acs_cb_variables_master.xlsx")
-        master_df.to_excel(output_path)
+        master_df.to_excel(output_path, sheet_name = "Master", index_label = "index")
         print(f"Master ACS variables DataFrame saved to {output_path}")
 
         return master_df
