@@ -1,0 +1,176 @@
+{
+    "geo_id": {
+        "name": "GEO_ID",
+        "label": "Geographic Identifier",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "string",
+        "group": "CRE",
+        "limit": 0,
+        "attributes": "NAME"
+    },
+    "sumlevel": {
+        "name": "SUMLEVEL",
+        "label": "Summary Level code",
+        "predicateType": "string",
+        "group": "N/A",
+        "limit": 0
+    },
+    "geocomp": {
+        "name": "GEOCOMP",
+        "label": "GEO_ID Component",
+        "required": "default displayed",
+        "predicateType": "string",
+        "group": "N/A",
+        "limit": 0
+    },
+    "name": {
+        "name": "NAME",
+        "label": "Geographic Area Name",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "string",
+        "group": "CRE",
+        "limit": 0,
+        "attribute of": "GEO_ID",
+        "attribute type": "LABEL"
+    },
+    "popuni": {
+        "name": "POPUNI",
+        "label": "Population Universe",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "int",
+        "group": "CRE",
+        "limit": 0
+    },
+    "pred0_e": {
+        "name": "PRED0_E",
+        "label": "Estimated number of individuals with zero risk factors",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "int",
+        "group": "CRE",
+        "limit": 0,
+        "attributes": "PRED0_M"
+    },
+    "pred12_e": {
+        "name": "PRED12_E",
+        "label": "Estimated number of individuals with one-two risk factors",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "int",
+        "group": "CRE",
+        "limit": 0,
+        "attributes": "PRED12_M"
+    },
+    "pred3_e": {
+        "name": "PRED3_E",
+        "label": "Estimated number of individuals with three or more risk factors",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "int",
+        "group": "CRE",
+        "limit": 0,
+        "attributes": "PRED3_M"
+    },
+    "pred0_pe": {
+        "name": "PRED0_PE",
+        "label": "Rate of individuals with zero risk factors",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "float",
+        "group": "CRE",
+        "limit": 0,
+        "attributes": "PRED0_PM"
+    },
+    "pred12_pe": {
+        "name": "PRED12_PE",
+        "label": "Rate of individuals with one-two risk factors",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "float",
+        "group": "CRE",
+        "limit": 0,
+        "attributes": "PRED12_PM"
+    },
+    "pred3_pe": {
+        "name": "PRED3_PE",
+        "label": "Rate of individuals with three or more risk risk factors",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "float",
+        "group": "CRE",
+        "limit": 0,
+        "attributes": "PRED3_PM"
+    },
+    "pred0_m": {
+        "name": "PRED0_M",
+        "label": "Estimated margin of error for individuals with zero risk factor",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "int",
+        "group": "CRE",
+        "limit": 0,
+        "attribute of": "PRED0_E",
+        "attribute type": "MARGIN_OF_ERROR"
+    },
+    "pred12_m": {
+        "name": "PRED12_M",
+        "label": "Estimated margin of error for individuals with one-two risk factor",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "int",
+        "group": "CRE",
+        "limit": 0,
+        "attribute of": "PRED12_E",
+        "attribute type": "MARGIN_OF_ERROR"
+    },
+    "pred3_m": {
+        "name": "PRED3_M",
+        "label": "Estimated margin of error for individuals with three or more risk factor",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "int",
+        "group": "CRE",
+        "limit": 0,
+        "attribute of": "PRED3_E",
+        "attribute type": "MARGIN_OF_ERROR"
+    },
+    "pred0_pm": {
+        "name": "PRED0_PM",
+        "label": "Margin of error for the rate of  individuals with zero risk factors",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "float",
+        "group": "CRE",
+        "limit": 0,
+        "attribute of": "PRED0_PE",
+        "attribute type": "MARGIN_OF_ERROR"
+    },
+    "pred12_pm": {
+        "name": "PRED12_PM",
+        "label": "Margin of error for the rate of  individuals with one-two risk factors",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "float",
+        "group": "CRE",
+        "limit": 0,
+        "attribute of": "PRED12_PE",
+        "attribute type": "MARGIN_OF_ERROR"
+    },
+    "pred3_pm": {
+        "name": "PRED3_PM",
+        "label": "Margin of error for the rate of  individuals with three or more risk factors",
+        "concept": "Community Resilience Estimates",
+        "predicateType": "float",
+        "group": "CRE",
+        "limit": 0,
+        "attribute of": "PRED3_PE",
+        "attribute type": "MARGIN_OF_ERROR"
+    },
+    "state": {
+        "name": "STATE",
+        "label": "Geography",
+        "group": "N/A",
+        "limit": 0
+    },
+    "county": {
+        "name": "COUNTY",
+        "label": "Geography",
+        "group": "N/A",
+        "limit": 0
+    },
+    "tract": {
+        "name": "TRACT",
+        "label": "Geography",
+        "group": "N/A",
+        "limit": 0
+    }
+}

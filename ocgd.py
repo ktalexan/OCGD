@@ -272,7 +272,11 @@ class OCgdm:
             pass
 
         # Get the available ACS5 years
-        self.acs5_years = self.get_available_acs5_years()
+        self.acs5_years = self.get_census_years(dataset = "acs5")
+        # self.acs5_years = self.get_available_acs5_years()
+
+        # Get the available CRE years
+        self.cre_years = self.get_census_years(dataset = "cre")
 
         # Set the Spatia Reference to Web Mercator
         self.sr = arcpy.SpatialReference(4269)  # NAD83
@@ -314,15 +318,19 @@ class OCgdm:
             "gis_ucs": os.path.join(self.base_path, "gis", "ucs"),
             "gis_ucs_aprx": os.path.join(self.base_path, "gis", "ucs", "ucs.aprx"),
             "gis_ucs_gdb": os.path.join(self.base_path, "gis", "ucs", "ucs.gdb"),
-            "gis_ucs_sup_gdb": os.path.join(self.base_path, "gis", "ucs", "ucs_sup.gdb"),
+            "gis_ucs_sup_gdb": os.path.join(self.base_path, "gis", "ucs_sup.gdb"),
             "gis_acs": os.path.join(self.base_path, "gis", "acs"),
             "gis_acs_aprx": os.path.join(self.base_path, "gis", "acs", "acs.aprx"),
             "gis_acs_gdb": os.path.join(self.base_path, "gis", "acs", "acs.gdb"),
-            "gis_acs_sup_gdb": os.path.join(self.base_path, "gis", "acs", "acs_sup.gdb"),
+            "gis_acs_sup_gdb": os.path.join(self.base_path, "gis", "acs_sup.gdb"),
             "gis_tgl": os.path.join(self.base_path, "gis", "tgl"),
             "gis_tgl_aprx": os.path.join(self.base_path, "gis", "tgl", "tgl.aprx"),
             "gis_tgl_gdb": os.path.join(self.base_path, "gis", "tgl", "tgl.gdb"),
-            "gis_tgl_sup_gdb": os.path.join(self.base_path, "gis", "tgl", "tgl_sup.gdb"),
+            "gis_tgl_sup_gdb": os.path.join(self.base_path, "gis", "tgl_sup.gdb"),
+            "gis_cre": os.path.join(self.base_path, "gis", "cre"),
+            "gis_cre_aprx": os.path.join(self.base_path, "gis", "cre", "cre.aprx"),
+            "gis_cre_gdb": os.path.join(self.base_path, "gis", "cre", "cre.gdb"),
+            "gis_cre_sup_gdb": os.path.join(self.base_path, "gis", "cre_sup.gdb"),
             "gis_archived": os.path.join(self.base_path, "gis", "archived"),
             "graphics": os.path.join(self.base_path, "graphics"),
             "metadata": os.path.join(self.base_path, "metadata"),
@@ -346,7 +354,7 @@ class OCgdm:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Get available ACS5 years ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
-    def get_available_acs5_years(self):
+    def get_census_years(self, dataset: str = "acs5") -> list[int]:
         """
         Get the available years for ACS5 data from the Census API.
         Args:
@@ -369,7 +377,7 @@ class OCgdm:
         years = []
         for ds in datasets:
             # We look for the specific acs5 path in the distribution links
-            if "acs5" in ds.get("c_dataset", ""):
+            if dataset in ds.get("c_dataset", ""):
                 # Extract the year from the identifier or title
                 # Example identifier: "https://api.census.gov/data/2022/acs/acs5"
                 year = ds.get("c_vintage")
@@ -2473,30 +2481,39 @@ class OCacs(OCgdm):
             # Add comparison-cleaned columns for `variable` and `label` to ease later comparisons
             # variable: strip leading/trailing spaces
             df["_cmp_variable"] = df["variable"].astype(str).str.strip()
-            # label: remove spaces and colons, convert to lower
-            if "label" in df.columns:
-                df["_cmp_label"] = df["label"].astype(str).str.replace(r"[ :]", "", regex=True).str.lower().str.strip()
 
             # Clean the 'label' column per user rules
             if "label" in df.columns:
                 # Vectorized cleaning using pandas string methods
-                df["label"] = (
-                    df["label"].astype(str)
-                    .str.replace("!!", ": ", regex = False)
-                    .str.normalize("NFKD")
-                    .str.encode("ascii", "ignore")
-                    .str.decode("ascii")
-                    # allow letters, numbers, whitespace and common punctuation including colon
-                    .str.replace(r"[^A-Za-z0-9\s,\.\:;\-]", "", regex = True)
-                    # collapse multiple colons to single
-                    .str.replace(r":+", ":", regex = True)
-                    # collapse runs of whitespace to single space
-                    .str.replace(r"\s+", " ", regex = True)
-                    # normalize spacing around colons to a single colon followed by a single space
-                    .str.replace(r"\s*:\s*", ": ", regex = True)
-                    # strip leading/trailing spaces and colons (remove leading/trailing colons)
-                    .str.strip(" \t\n\r:")
-                )
+                # Two-pass cleaning: first pass normalizes and removes unwanted chars,
+                # second pass enforces dash-between-words and removes any leftover duplicates.
+                s = df["label"].astype(str)
+                # First pass
+                s = s.str.replace("!!", ": ", regex=False)
+                s = s.str.normalize("NFKD").str.encode("ascii", "ignore").str.decode("ascii")
+                s = s.str.replace(r"[^A-Za-z0-9\s:\-]", "", regex=True)
+                s = s.str.replace(r"\s*-\s*", "-", regex=True)
+                s = s.str.replace(r"-{2,}", "-", regex=True)
+                s = s.str.replace(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", regex=True)
+                s = s.str.replace(r":{2,}", ":", regex=True)
+                s = s.str.replace(r"\s*:\s*", ": ", regex=True)
+                s = s.str.replace(r"\s+", " ", regex=True)
+                s = s.str.strip(" \t\n\r:-")
+
+                # Second pass to ensure idempotency (remove any artifacts left by first pass)
+                s = s.str.replace(r"-{2,}", "-", regex=True)
+                s = s.str.replace(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", regex=True)
+                s = s.str.replace(r":{2,}", ":", regex=True)
+                s = s.str.replace(r"\s*:\s*", ": ", regex=True)
+                s = s.str.replace(r"\s+", " ", regex=True)
+                s = s.str.strip(" \t\n\r:-")
+
+                df["label"] = s
+
+                # label: remove all spaces and colons, convert to lower
+                df["_cmp_label"] = df["label"].astype(str).str.replace(r"[ :]", "", regex=True).str.lower().str.strip()
+                # Remove all diacretics, spaces and dashes from the label comparison column
+                df["_cmp_label"] = df["_cmp_label"].str.replace(r"[^\w\s]", "", regex = True)
 
                 # Rename the 'predicateType' column to 'type' for clarity
                 if "predicateType" in df.columns:
@@ -2545,6 +2562,7 @@ class OCacs(OCgdm):
                     var_cmp = str(var).strip()
                     label_cmp = str(label).replace(" ", "").replace(":", "").lower().strip() if label is not None else ""
 
+                    # Check if the variable exists in the master_df using cleaned comparison
                     existing_rows = master_df[master_df["_cmp_variable"] == var_cmp]
 
                     if not existing_rows.empty:
@@ -3217,6 +3235,269 @@ class OCucs(OCgdm):
 
         # Return the metadata
         return metadata
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define the OCcre main class ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class OCcre(OCgdm):
+    """
+    A class containing functions and methods for the OC Community Resilience Estimates (OCcre) Project.
+    Attributes:
+        None
+    Methods:
+        project_metadata(part: int, version: float, silent: bool = False) -> dict:
+            Generates project metadata for the OCUP data processing project.
+        project_directories(silent: bool = False) -> dict:
+            Generates project directories for the OCSWITRS data processing project.
+    Returns:
+        None
+    Raises:
+        None
+    Examples:
+        >>> metadata = project_metadata(1, 1)
+        >>> prj_dirs = project_directories()
+    Notes:
+        This class is used to generate project metadata and directories for the project.
+    """
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Class initialization ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
+        """
+        Initializes the OCcre class.
+        """
+        # Initialize the OCgdm class with provided part/version
+        super().__init__(part, version)
+
+        # Create a prj_meta variable calling the project_metadata function
+        self.prj_meta = self.project_metadata(silent = False)
+
+        # Define the geographies list
+        self.geographies = [
+            "CO",  # County
+            "TR"   # Census Tract
+        ]
+
+        # Define the CRE DataFrame schema
+        self.schema = {
+            "geoid": "object",
+            "geo_id": "object",
+            "sumlevel": "int32",
+            "geocomp": "int32",
+            "state": "int32",
+            "county": "int32",
+            "tract": "int32",
+            "name": "object",
+            "year": "int32",
+            "popuni": "int64",
+            "pred0_e": "int64",
+            "pred12_e": "int64",
+            "pred3_e": "int64",
+            "pred0_pe": "float",
+            "pred12_pe": "float",
+            "pred3_pe": "float",
+            "pred0_m": "int64",
+            "pred12_m": "int64",
+            "pred3_m": "int64",
+            "pred0_pm": "float",
+            "pred12_pm": "float",
+            "pred3_pm": "float"
+        }
+
+        # Load the codebook
+        #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
+        #self.cb, self.df_cb = self.load_cb(silent = False)
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Project metadata ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def project_metadata(self, silent: bool = False) -> dict:
+        """
+        Function to generate project metadata for the OCUP data processing project.
+        Args:
+            silent (bool, optional): Whether to print the metadata information. Defaults to False.
+        Returns:
+            prj_meta (dict): A dictionary containing the project metadata.
+        Raises:
+            ValueError: If part is not an integer, or if version is not numeric.
+        Example:
+            >>> metadata = project_metadata(1, 1)
+        Notes:
+            The project_metadata function is used to generate project metadata for the OCUP data processing project.
+        """
+        
+        # Match the part to a specific step and description (with default case)
+        match self.part:
+            case 1:
+                step = "Part 1: Raw Data Processing"
+                desc = "Importing the raw data files and perform initial geocoding"
+            case 2:
+                step = "Part 2: Imported Data Geocoding"
+                desc = "Geocoding the imported data and preparing it for GIS processing."
+            case 3:
+                step = "Part 3: GIS Data Processing"
+                desc = "GIS Geoprocessing and formatting of the OCUP data."
+            case 4:
+                step = "Part 4: GIS Map Processing"
+                desc = "Creating maps and visualizations of the OCUP data."
+            case 5:
+                step = "Part 5: GIS Data Sharing"
+                desc = "Exporting and sharing the GIS data to ArcGIS Online."
+            case _:
+                step = "Part 0: General Data Processing"
+                desc = "General data processing and analysis (default)."
+        
+        # Create a dictionary to hold the metadata
+        metadata = {
+            "name": "OC Community Resilience Estimates (OCCRE) Data Processing",
+            "title": step,
+            "description": desc,
+            "version": self.version,
+            "date": self.data_date,
+            "author": "Dr. Kostas Alexandridis, GISP",
+            "years": self.cre_years
+        }
+
+        # If not silent, print the metadata
+        if not silent:
+            print(
+                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}\n- Date: {metadata['date']}\n- Available CRE Years: {metadata['years']}\n"
+            )
+
+        # Return the metadata
+        return metadata
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Load CRE codebook ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    def generate_cre_codebook(self, year: int) -> dict:
+        """
+        Generate CRE codebook for a given year and list of headers.
+        Args:
+            year (int): The CRE year (e.g., 2020, 2021, 2022).
+        Returns:
+            Dictionary containing the CRE variable metadata.
+        Raises:
+            RuntimeError: If the CENSUS_API_KEY1 environment variable is not set.
+        Example:
+            >>> cre_cb = generate_cre_codebook(2020)
+        Notes:
+            This function fetches CRE variable metadata from the Census API.
+        """
+        # Define a dictionary to hold variable metadata
+        cre_cb = dict()
+
+        # Define the headers to fetch metadata for
+        var_list = ["geo_id", "sumlevel", "geocomp", "name", "popuni", "pred0_e", "pred12_e", "pred3_e", "pred0_pe", "pred12_pe", "pred3_pe", "pred0_m", "pred12_m", "pred3_m", "pred0_pm", "pred12_pm", "pred3_pm", "state", "county", "tract"]
+
+        # Loop through each CRE variable and fetch its metadata
+        for cre_var in var_list:
+            # Define the URL for the variable metadata
+            cre_info_url = f"https://api.census.gov/data/{year}/cre/variables/{cre_var.upper()}.json"
+
+            # Make the API request for variable metadata
+            info_response = requests.get(cre_info_url, timeout = 60)
+            
+            # Check for valid JSON response
+            try:
+                info_data = info_response.json()
+            except Exception as exc:
+                raise RuntimeError(f"Invalid JSON response from Census API (status={info_response.status_code}): {info_response.text[:500]}") from exc
+            
+            # Add the variable metadata to the dictionary
+            cre_cb[cre_var.lower()] = info_data
+
+        # Write the codebook to a JSON file
+        cre_cb_path = os.path.join(self.prj_dirs["codebook"], f"cre_cb_{year}.json")
+        with open(cre_cb_path, "w", encoding = "utf-8") as f:
+            json.dump(cre_cb, f, indent = 4)
+        print(f"CRE codebook for year {year} written to {cre_cb_path}")
+
+        # Return the codebook dictionary
+        return cre_cb
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Fetch CRE tables ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def fetch_cre_tables(self, year: int) -> pd.DataFrame:
+        """
+        Fetch CRE data for a given year and geography.
+        Args:
+            year (int): The CRE year (e.g., 2020, 2021, 2022).
+        Returns:
+            DataFrame containing the requested CRE data for each geography.
+        Raises:
+            RuntimeError: If the CENSUS_API_KEY1 environment variable is not set.
+        Example:
+            >>> df_cre = fetch_cre_tables(2020)
+        Notes:
+            This function fetches CRE data from the Census API.
+        """
+        print(f"Fetching CRE data for year: {year}...")
+        
+        # Get Census API key from environment variable
+        api_key = os.getenv("CENSUS_API_KEY1")
+        if not api_key:
+            raise RuntimeError("Environment variable CENSUS_API_KEY1 is not set")
+
+        # Base URL for ACS5 API
+        cre_api_url = f"https://api.census.gov/data/{year}/cre?get=GEO_ID,SUMLEVEL,GEOCOMP,NAME,POPUNI,PRED0_E,PRED12_E,PRED3_E,PRED0_PE,PRED12_PE,PRED3_PE,PRED0_M,PRED12_M,PRED3_M,PRED0_PM,PRED12_PM,PRED3_PM&for=tract:*&in=state:06&in=county:059&key={api_key}"
+
+        # Make the API request
+        api_response = requests.get(cre_api_url, timeout = 60)
+        # Check for valid JSON response
+        try:
+            api_data = api_response.json()
+        except Exception as exc:
+            raise RuntimeError(f"Invalid JSON response from Census API (status={api_response.status_code}): {api_response.text[:500]}") from exc
+
+        # Extract headers from the first row of the api_data
+        headers = api_data[0]
+
+        # Convert headers to lowercase
+        headers = [h.lower() for h in headers]
+
+        # Iterate over the api_data rows and create a list of dictionaries and add them to a list
+        records = []
+        for row in api_data[1:]:
+            rec = dict(zip(headers, row))
+            records.append(rec)
+
+        # Convert the list of records to a pandas DataFrame
+        records_df = pd.DataFrame.from_records(records)
+
+        # if the records_df does not contain all the columns in the schema, add the missing columns with default values. Iterate using the items so that we have access to both the column name and the api_data type
+        for col, dtype in self.schema.items():
+            
+            # If the column is in the api_dataFrame, set the api_data type
+            if col in records_df.columns:
+                records_df[col] = records_df[col].astype(dtype)
+            elif col not in records_df.columns:
+                # Set the default value and add the column to the api_dataFrame based on the api_data type
+                if dtype == "object":
+                    records_df[col] = ""
+                elif dtype in ["int32", "int64"]:
+                    records_df[col] = 0
+                elif dtype in ["float32", "float64"]:
+                    records_df[col] = 0.0
+
+        # Reorder the columns of the api_dataFrame to match the schema
+        records_df = records_df[list(self.schema.keys())]
+
+        # Set the year column to the current year
+        records_df["year"] = year
+
+        # Set the geoid column by removing the '1400000US' prefix from the GEO_ID column
+        records_df["geoid"] = records_df["geo_id"].str.replace("1400000US", "", regex=False)
+
+        # Return the final DataFrame
+        return records_df
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
