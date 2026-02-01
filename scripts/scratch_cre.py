@@ -37,12 +37,20 @@ cre = OCcre(part= 1, version= 2026.1)
 prj_meta = cre.prj_meta
 prj_dirs = cre.prj_dirs
 
+# Load the CRE codebook
+cb_cre = cre.cb
+
 # Run and log the CRE CB Variables fetch
 cre_years = cre.cre_years
 
-YEAR = 2019
-cre_cb = cre.generate_cre_codebook(year= YEAR)
-cre_db = cre.fetch_cre_tables(year= YEAR)
+# Run and log the ACS CB Variables fetch
+logger = cre.logger
 
-print(json.dumps(cre_cb, indent= 4))
-print(cre_db.head(5))
+# Create CRE feature classes for each year (with logging)
+logger.enable(meta = prj_meta, filename = f"cre_feature_classes_{cre.version}.log", replace = True)
+print("CRE Feature Classes Log\n")
+for year in cre_years:
+    print(f"\nCRE feature class for year {year}\n")
+    cre.create_cre_feature_class(year)
+print("\nCRE feature classes creation completed.")
+logger.disable()

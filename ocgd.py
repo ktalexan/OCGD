@@ -87,7 +87,7 @@ class DualOutput:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Enable logging ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def enable(self, meta: Optional[dict] = None, filename: Optional[str] = None):
+    def enable(self, meta: Optional[dict] = None, filename: Optional[str] = None, replace: bool = False):
         logid = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         if self._orig is not None:
             return
@@ -108,6 +108,17 @@ class DualOutput:
             # Change filename to have .log extension
             fn = os.path.splitext(fn)[0] + ".log"
         self._orig = sys.stdout
+
+        # If replace is requested, remove any existing file before opening
+        if replace:
+            try:
+                path_to_remove = os.path.join(os.getcwd(), "tests", os.path.basename(fn))
+                if os.path.isfile(path_to_remove):
+                    os.remove(path_to_remove)
+            except OSError:
+                # If we cannot remove the file, continue and let _open_log handle errors
+                pass
+
         self._log = self._open_log(meta, fn)
         sys.stdout = self
         self._start_time = datetime.datetime.now()
@@ -3283,33 +3294,38 @@ class OCcre(OCgdm):
 
         # Define the CRE DataFrame schema
         self.schema = {
-            "geoid": "object",
-            "geo_id": "object",
-            "sumlevel": "int32",
-            "geocomp": "int32",
-            "state": "int32",
-            "county": "int32",
-            "tract": "int32",
-            "name": "object",
-            "year": "int32",
-            "popuni": "int64",
-            "pred0_e": "int64",
-            "pred12_e": "int64",
-            "pred3_e": "int64",
-            "pred0_pe": "float",
-            "pred12_pe": "float",
-            "pred3_pe": "float",
-            "pred0_m": "int64",
-            "pred12_m": "int64",
-            "pred3_m": "int64",
-            "pred0_pm": "float",
-            "pred12_pm": "float",
-            "pred3_pm": "float"
+            "GEOID": "object",
+            "GEO_ID": "object",
+            "SUMLEVEL": "int32",
+            "GEOCOMP": "int32",
+            "STATE": "int32",
+            "COUNTY": "int32",
+            "TRACT": "int32",
+            "NAME": "object",
+            "YEAR": "int32",
+            "POPUNI": "int64",
+            "PRED0_E": "int64",
+            "PRED12_E": "int64",
+            "PRED3_E": "int64",
+            "PRED0_PE": "float",
+            "PRED12_PE": "float",
+            "PRED3_PE": "float",
+            "PRED0_M": "int64",
+            "PRED12_M": "int64",
+            "PRED3_M": "int64",
+            "PRED0_PM": "float",
+            "PRED12_PM": "float",
+            "PRED3_PM": "float"
         }
 
         # Load the codebook
-        #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
-        #self.cb, self.df_cb = self.load_cb(silent = False)
+        cb_path = os.path.join(self.prj_dirs["codebook"], "cre_cb.json")
+        # Load the CRE variables codebook
+        self.cb = {}
+        if os.path.exists(cb_path):
+            with open(cb_path, "r", encoding = "utf-8") as f:
+                self.cb = json.load(f)
+
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Project metadata ----
@@ -3332,8 +3348,8 @@ class OCcre(OCgdm):
         # Match the part to a specific step and description (with default case)
         match self.part:
             case 1:
-                step = "Part 1: Raw Data Processing"
-                desc = "Importing the raw data files and perform initial geocoding"
+                step = "Part 1: Create CRE Feature Classes"
+                desc = "Creating feature classes for the CRE data from the Census API data frames and the Tiger/Line Census Tract geographies."
             case 2:
                 step = "Part 2: Imported Data Geocoding"
                 desc = "Geocoding the imported data and preparing it for GIS processing."
@@ -3375,7 +3391,7 @@ class OCcre(OCgdm):
     ## fx: Load CRE codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    def generate_cre_codebook(self, year: int) -> dict:
+    def generate_cre_codebook(self, year: int, write_to_file: bool = False) -> dict:
         """
         Generate CRE codebook for a given year and list of headers.
         Args:
@@ -3393,12 +3409,12 @@ class OCcre(OCgdm):
         cre_cb = dict()
 
         # Define the headers to fetch metadata for
-        var_list = ["geo_id", "sumlevel", "geocomp", "name", "popuni", "pred0_e", "pred12_e", "pred3_e", "pred0_pe", "pred12_pe", "pred3_pe", "pred0_m", "pred12_m", "pred3_m", "pred0_pm", "pred12_pm", "pred3_pm", "state", "county", "tract"]
+        var_list = ["GEO_ID", "SUMLEVEL", "GEOCOMP", "NAME", "POPUNI", "PRED0_E", "PRED12_E", "PRED3_E", "PRED0_PE", "PRED12_PE", "PRED3_PE", "PRED0_M", "PRED12_M", "PRED3_M", "PRED0_PM", "PRED12_PM", "PRED3_PM", "STATE", "COUNTY", "TRACT"]
 
         # Loop through each CRE variable and fetch its metadata
         for cre_var in var_list:
             # Define the URL for the variable metadata
-            cre_info_url = f"https://api.census.gov/data/{year}/cre/variables/{cre_var.upper()}.json"
+            cre_info_url = f"https://api.census.gov/data/{year}/cre/variables/{cre_var}.json"
 
             # Make the API request for variable metadata
             info_response = requests.get(cre_info_url, timeout = 60)
@@ -3410,13 +3426,14 @@ class OCcre(OCgdm):
                 raise RuntimeError(f"Invalid JSON response from Census API (status={info_response.status_code}): {info_response.text[:500]}") from exc
             
             # Add the variable metadata to the dictionary
-            cre_cb[cre_var.lower()] = info_data
+            cre_cb[cre_var] = info_data
 
         # Write the codebook to a JSON file
         cre_cb_path = os.path.join(self.prj_dirs["codebook"], f"cre_cb_{year}.json")
-        with open(cre_cb_path, "w", encoding = "utf-8") as f:
-            json.dump(cre_cb, f, indent = 4)
-        print(f"CRE codebook for year {year} written to {cre_cb_path}")
+        if write_to_file:
+            with open(cre_cb_path, "w", encoding = "utf-8") as f:
+                json.dump(cre_cb, f, indent = 4)
+            print(f"CRE codebook for year {year} written to {cre_cb_path}")
 
         # Return the codebook dictionary
         return cre_cb
@@ -3461,7 +3478,7 @@ class OCcre(OCgdm):
         headers = api_data[0]
 
         # Convert headers to lowercase
-        headers = [h.lower() for h in headers]
+        headers = [h for h in headers]
 
         # Iterate over the api_data rows and create a list of dictionaries and add them to a list
         records = []
@@ -3491,13 +3508,156 @@ class OCcre(OCgdm):
         records_df = records_df[list(self.schema.keys())]
 
         # Set the year column to the current year
-        records_df["year"] = year
+        records_df["YEAR"] = year
 
         # Set the geoid column by removing the '1400000US' prefix from the GEO_ID column
-        records_df["geoid"] = records_df["geo_id"].str.replace("1400000US", "", regex=False)
+        records_df["GEOID"] = records_df["GEO_ID"].str.replace("1400000US", "", regex=False)
+
+        # Rename the "NAME" column to "CRE_NAME"
+        records_df = records_df.rename(columns={"NAME": "CRE_NAME"})
 
         # Return the final DataFrame
         return records_df
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Create CRE feature class ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def create_cre_feature_class(self, year: int):
+        """
+        Create CRE feature class for the specified year.
+        Args:
+            year (int): The CRE year (e.g., 2020, 2021, 2022).
+        Returns:
+            None
+        Raises:
+            None
+        Example:
+            >>> create_cre_feature_class(2020)
+        Notes:
+            This function creates a CRE feature class by joining CRE data with TGL tract data.
+        """
+        # Geoid of the ocean side tract to remove
+        remove_geoid = "06059990100"
+
+        print(f"Creating CRE feature class for year: {year}...")
+        # Fetch the CRE tables for the specified year
+        cre_db = self.fetch_cre_tables(year= year)
+
+        print(f"- Removing ocean side tract GEOID: {remove_geoid} if it exists...")
+        # Remove specific GEOID record if it exists
+        cre_db = cre_db[cre_db["GEOID"] != remove_geoid]
+
+        # Path to TGL geodatabase
+        tgl_gdb = os.path.join(self.prj_dirs["gis"], f"tgl{year}.gdb")
+
+        print(f"- Setting arcpy environment to TGL geodatabase: tgl{year}.gdb...")
+        # Set the arcpy environment to the TGL geodatabase
+        arcpy.env.workspace = tgl_gdb
+        arcpy.env.overwriteOutput = True
+
+        # Path to TGL tract feature class
+        tgl_tract = os.path.join(tgl_gdb, "TR")
+
+        print(f"- Loading TGL tract feature class into a spatial DataFrame...")
+        # Load TGL tract feature class into a spatial DataFrame
+        tgl_sdf = pd.DataFrame.spatial.from_featureclass(tgl_tract)
+
+        print(f"- Removing ocean side tract GEOID: {remove_geoid} from TGL SDF if it exists...")
+        # Remove specific GEOID record if it exists
+        tgl_sdf = tgl_sdf[tgl_sdf["GEOID"] != remove_geoid]
+
+        # Ensure GEOID columns are comparable (strings without extra whitespace)
+        tgl_sdf["GEOID"] = tgl_sdf["GEOID"].astype(str).str.strip()
+        cre_db["GEOID"] = cre_db["GEOID"].astype(str).str.strip()
+
+        print("- Checking if the number of records between TGL SDF and CRE DB match before join...")
+        diff_count = tgl_sdf.shape[0] - cre_db.shape[0]
+        if diff_count == 0:
+            print(f"The number of records in TGL SDF and CRE DB match: {tgl_sdf.shape[0]} records each.")
+        elif diff_count > 0:
+            print(f"Warning: TGL SDF has {diff_count} more records ({tgl_sdf.shape[0]}) than CRE DB ({cre_db.shape[0]}).")
+        elif diff_count < 0:
+            print(f"Warning TGL SDF has {-diff_count} fewer records ({tgl_sdf.shape[0]}) than CRE DB ({cre_db.shape[0]}).")
+        
+        print("- Joining CRE data with TGL SDF on GEOID...")
+        # Perform a left join: keep all tgl_sdf records and add matching cre_db columns
+        # If there are overlapping column names besides `GEOID`, keep tgl_sdf's versions
+        cols_to_merge = [c for c in cre_db.columns if c != "GEOID"]
+        tgl_sdf = tgl_sdf.merge(cre_db[ ["GEOID"] + cols_to_merge ], on="GEOID", how="left")
+        print(f"- After join, tgl_sdf shape: {tgl_sdf.shape}")
+
+        # Path to output CRE geodatabase
+        cre_gdb = self.prj_dirs["gis_cre_gdb"]
+
+        print(f"- Setting up CRE geodatabase: {os.path.basename(cre_gdb)}...")
+        # Set the arcpy environment to the feature dataset
+        arcpy.env.workspace = cre_gdb
+        arcpy.env.overwriteOutput = True
+
+        # Path to output CRE feature class
+        cre_fc = os.path.join(cre_gdb, f"CRETR{year}")
+
+        print(f"- Creating CRE feature class: CRETR{year}...")
+        # Remove the output feature class if it already exists
+        if arcpy.Exists(cre_fc):
+            print(f"  - Deleting existing feature class: CRETR{year}")
+            arcpy.Delete_management(cre_fc)
+            print(f"  - Deleted existing feature class: CRETR{year}")
+
+        print(f"- Converting merged DataFrame to feature class: CRETR{year}...")
+        # Convert the merged DataFrame to a feature class in the geodatabase
+        tgl_sdf.spatial.to_featureclass(location = cre_fc, overwrite = True, has_z = None, has_m = None, sanitize_columns = False)
+
+        print("- Setting aliases for CRE feature class and fields...")
+        # Set a friendly alias for the output feature class
+        alias_name = f"OC Community Resilience Estimates {year} Census Tracts"
+        try:
+            # Change the alias name
+            arcpy.AlterAliasName(cre_fc, alias_name)
+            print(f"  - Alias for 'CRETR{year}' successfully changed to '{alias_name}'.")
+        except arcpy.ExecuteError:
+            # ArcPy-specific errors
+            print("  - ArcPy Error:", arcpy.GetMessages(2))
+        except Exception as e:
+            # General Python errors
+            print("  - Error:", e)
+
+        print("- Setting field aliases based on CRE codebook...")
+        # Set field aliases on the output feature class from the CRE codebook
+        for field_key, info in self.cb.items():
+            # `cb_cre` entries should have an `alias` value
+            alias = info.get("alias") if isinstance(info, dict) else None
+            if not alias:
+                continue
+            try:
+                # Only attempt to alter the field if it exists in the output feature class
+                fields = arcpy.ListFields(cre_fc, field_key)
+                if not fields:
+                    # Field not present; skip
+                    # (sanitize_columns=False above should preserve names but some fields may be absent)
+                    continue
+                # Use AlterField to change only the alias (keep the same field name)
+                arcpy.AlterField_management(cre_fc, field_key, field_key, alias)
+                print(f"  - Field alias for '{field_key}' set to '{alias}'.")
+            except arcpy.ExecuteError:
+                print(f"  - ArcPy Error altering alias for field {field_key}:", arcpy.GetMessages(2))
+            except Exception as e:
+                print(f"  - Error altering alias for field {field_key}:", e)
+
+        print("- Defining metadata for CRE feature class...")
+        # Define a metadata object for the feature class
+        cre_md = md.Metadata(cre_fc)
+        cre_md.title = alias_name
+        cre_md.tags = "Orange County, California, Community Resilience Estimates, CRE, OCCRE, Census Tracts"
+        cre_md.summary = f"Orange County Community Resilience Estimates for year {year} at Census Tracts geography level."
+        cre_md.description = f"Orange County Community Resilience Estimates (OCCRE) for year {year} at Census Tracts geography level. The data contains composite social vulnerability indicators derived from U.S. Census data. Version: {self.version}, last updated on {self.data_date}."
+        cre_md.credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works Geospatial Services"
+        cre_md.accessConstraints = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works Geospatial Services</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
+        cre_md.thumbnailUri = "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d14451a55d0415947c7af3/data"
+        cre_md.save()
+
+        print(f"CRE feature class for year {year} created successfully at {cre_fc}.")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

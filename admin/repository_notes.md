@@ -30,6 +30,8 @@ The repository is organized into the following main directories:
 
 ### Integrating US Census Community Resilience Estimates (CRE) Data for OC
 
+- [Census CRE Page](https://www.census.gov/programs-surveys/community-resilience-estimates.html)
+- [CRE Datasets](https://www.census.gov/programs-surveys/community-resilience-estimates/data/datasets.html)
 - [Available Census APIs](https://www.census.gov/data/developers/data-sets.html)
 - [Community Resilience Estimates (CRE) Census API Page](https://www.census.gov/data/developers/data-sets/community-resilience-estimates.html)
 - [API Settings](https://api.census.gov/data/2024/cre.html)

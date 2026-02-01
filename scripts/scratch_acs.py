@@ -39,7 +39,7 @@ prj_dirs = acs.prj_dirs
 
 # Run and log the ACS CB Variables fetch
 logger = acs.logger
-logger.enable(meta = prj_meta, filename = f"cb_variables_{acs.version}.log")
+logger.enable(meta = prj_meta, filename = f"cb_variables_{acs.version}.log", replace = True)
 print("ACS CB Variable Log\n")
 df_vars_master = acs.acs_cb_variables(year= None)
 print("\nExample preview of ACS CB Variables DataFrame:")
