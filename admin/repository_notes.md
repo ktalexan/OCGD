@@ -9,6 +9,7 @@ This document contains general notes and guidelines for the <REPO_NAME> reposito
 ## Basic Repository Structure
 
 The repository is organized into the following main directories:
+
 - [admin](./): Administrative scripts and tools.
 - [analysis](../analysis): Data analysis scripts and notebooks.
 - [codebook](../codebook): Documentation of variables and data sources.
@@ -21,12 +22,11 @@ The repository is organized into the following main directories:
 - [scripts](../scripts): Reusable scripts and functions.
 - [tests](../tests): Unit tests and test data.
 
-
 ## Useful Links
 
 - [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions?tool=vscode)
 
-## Notes and ToDo's:
+## Notes and ToDo
 
 ### Integrating US Census Community Resilience Estimates (CRE) Data for OC
 
@@ -36,7 +36,7 @@ The repository is organized into the following main directories:
 - [Community Resilience Estimates (CRE) Census API Page](https://www.census.gov/data/developers/data-sets/community-resilience-estimates.html)
 - [API Settings](https://api.census.gov/data/2024/cre.html)
 - CRE Years: 2019-2024
-- Example API Call: https://api.census.gov/data/2024/cre?get=SUMLEVEL,GEOCOMP,GEO_ID,NAME,POPUNI,PRED0_E,PRED12_E,PRED3_E,PRED0_PE,PRED12_PE,PRED3_PE,PRED0_M,PRED12_M,PRED3_M,PRED0_PM,PRED12_PM,PRED3_PM&for=tract:*&in=state:06&in=county:059
+- [Example API Call](https://api.census.gov/data/2024/cre?get=SUMLEVEL,GEOCOMP,GEO_ID,NAME,POPUNI,PRED0_E,PRED12_E,PRED3_E,PRED0_PE,PRED12_PE,PRED3_PE,PRED0_M,PRED12_M,PRED3_M,PRED0_PM,PRED12_PM,PRED3_PM&for=tract:*&in=state:06&in=county:059)
 - The only useful geography for OC is Census Tract.
 
 CRE Variables:
@@ -67,4 +67,3 @@ CRE Variables:
 - Completed the CRE codebook function of the class. It now obtains and exports the CRE census variable codebook for a given year into a JSON dictionary (also saves it to the codebook directory) - 2/1/2026 5:35 AM
 
 - Completed the CRE table query function of the class. It now obtains the data table of the CRE estimates for a given year (so it can joined based on geoid with the Tiger/Line geographies) - 2/1/2026 5:36 AM
-

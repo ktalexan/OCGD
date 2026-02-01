@@ -9,7 +9,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Import necessary libraries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-from __future__ import annotations
+#from __future__ import annotations
 import os
 import sys
 import datetime
@@ -3559,7 +3559,7 @@ class OCcre(OCgdm):
         # Path to TGL tract feature class
         tgl_tract = os.path.join(tgl_gdb, "TR")
 
-        print(f"- Loading TGL tract feature class into a spatial DataFrame...")
+        print("- Loading TGL tract feature class into a spatial DataFrame...")
         # Load TGL tract feature class into a spatial DataFrame
         tgl_sdf = pd.DataFrame.spatial.from_featureclass(tgl_tract)
 
@@ -3619,8 +3619,8 @@ class OCcre(OCgdm):
         except arcpy.ExecuteError:
             # ArcPy-specific errors
             print("  - ArcPy Error:", arcpy.GetMessages(2))
-        except Exception as e:
-            # General Python errors
+        except (RuntimeError, OSError, ValueError, TypeError, AttributeError) as e:
+            # Specific Python errors
             print("  - Error:", e)
 
         print("- Setting field aliases based on CRE codebook...")
@@ -3642,7 +3642,7 @@ class OCcre(OCgdm):
                 print(f"  - Field alias for '{field_key}' set to '{alias}'.")
             except arcpy.ExecuteError:
                 print(f"  - ArcPy Error altering alias for field {field_key}:", arcpy.GetMessages(2))
-            except Exception as e:
+            except (RuntimeError, OSError, ValueError, TypeError, AttributeError) as e:
                 print(f"  - Error altering alias for field {field_key}:", e)
 
         print("- Defining metadata for CRE feature class...")
