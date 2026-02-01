@@ -2486,10 +2486,16 @@ class OCacs(OCgdm):
                     .str.normalize("NFKD")
                     .str.encode("ascii", "ignore")
                     .str.decode("ascii")
-                    .str.replace(r"[^A-Za-z0-9\s,\.:;\-]", "", regex = True)
+                    # allow letters, numbers, whitespace and common punctuation including colon
+                    .str.replace(r"[^A-Za-z0-9\s,\.\:;\-]", "", regex = True)
+                    # collapse multiple colons to single
                     .str.replace(r":+", ":", regex = True)
+                    # collapse runs of whitespace to single space
                     .str.replace(r"\s+", " ", regex = True)
-                    .str.strip(" \t\n\r.,;:")
+                    # normalize spacing around colons to a single colon followed by a single space
+                    .str.replace(r"\s*:\s*", ": ", regex = True)
+                    # strip leading/trailing spaces and colons (remove leading/trailing colons)
+                    .str.strip(" \t\n\r:")
                 )
 
                 # Rename the 'predicateType' column to 'type' for clarity
@@ -2527,6 +2533,8 @@ class OCacs(OCgdm):
                 master_df["_cmp_variable"] = master_df["variable"].astype(str).str.strip()
                 if "label" in master_df.columns:
                     master_df["_cmp_label"] = master_df["label"].astype(str).str.replace(r"[ :]", "", regex = True).str.lower().str.strip()
+                    # Remove all diacretics, spaces and dashes from the label comparison column
+                    master_df["_cmp_label"] = master_df["_cmp_label"].str.replace(r"[^\w\s]", "", regex = True)
             else:
                 # For each of the records in the current year's dataframe (df), check if the variable already exists in the master dataframe (master_df) in the "variable" column, and if yes, check if the label is the same. If both are the same, do not add the record, but add the year to the existing record's "year" column as a comma-separated list. If the variable exists but the label is different, add the new record as a new row, and add a note to the "note" column of the master_df "same variable, different label". If the variable does not exist, add the new record as a new row.
                 for _, row in df.iterrows():
@@ -2584,7 +2592,8 @@ class OCacs(OCgdm):
         # For each year column, set to True if the year is in the variable's year list, else False
         for acs_year in years:
             year_str = str(acs_year)
-            master_df[year_str] = master_df["year"].apply(lambda x: year_str in [y.strip() for y in str(x).split(",")] if pd.notna(x) else False)
+            # bind year_str into the lambda default argument to avoid late-binding of the loop variable
+            master_df[year_str] = master_df["year"].apply(lambda x, ys=year_str: ys in [y.strip() for y in str(x).split(",")] if pd.notna(x) else False)
 
         # Reorder columns by master_schema keys
         cols_order = list(master_schema.keys())
