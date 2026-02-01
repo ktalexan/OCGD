@@ -62,3 +62,7 @@ CRE Variables:
 | Automatic | county | County |
 | Automatic | tract | Census Tract |
 
+- Completed the CRE codebook function of the class. It now obtains and exports the CRE census variable codebook for a given year into a JSON dictionary (also saves it to the codebook directory) - 2/1/2026 5:35 AM
+
+- Completed the CRE table query function of the class. It now obtains the data table of the CRE estimates for a given year (so it can joined based on geoid with the Tiger/Line geographies) - 2/1/2026 5:36 AM
+
