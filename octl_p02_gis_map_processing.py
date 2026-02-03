@@ -30,7 +30,7 @@ import pandas as pd
 import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
-from ocgd import OCTGL
+from ocgd import OCTL
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,14 +45,14 @@ pd.options.mode.copy_on_write = True
 arcpy.env.workspace = os.getcwd()
 arcpy.env.overwriteOutput = True
 
-# Initialize the OCTGL class object
-tgl = OCTGL(part = 2, version = 2026.1)
+# Initialize the OCTL class object
+octl = OCTL(part = 2, version = 2026.1)
 
-# Get the project metadata and directories from the OCTGL class object
-prj_meta = tgl.prj_meta
-prj_dirs = tgl.prj_dirs
+# Get the project metadata and directories from the OCTL class object
+prj_meta = octl.prj_meta
+prj_dirs = octl.prj_dirs
 # Get the master codebook (load from JSON file)
-cb = tgl.master_codebook(create = False)
+cb = octl.master_codebook(create = False)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,7 +142,7 @@ for m in map_dict.values():
     year = int(m.name.replace("TL", ""))
     
     # Get the map metadata for the year using the OCTL class method
-    map_meta = tgl.map_metadata(year)
+    map_meta = octl.map_metadata(year)
     
     # Set the map metadata
     print(f"- Setting metadata for {m.name}...")
@@ -200,7 +200,7 @@ for key, m in map_dict.items():
 
 
 # Write the layers dictionary to a JSON file
-lyr_dict_path = tgl.write_dict_to_json(lyr_dict, "layers")
+lyr_dict_path = octl.write_dict_to_json(lyr_dict, "layers")
 
 
 ### Save the ArcGIS Pro Project ----

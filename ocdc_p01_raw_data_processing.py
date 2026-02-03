@@ -19,7 +19,7 @@ import datetime
 import pytz
 import pandas as pd
 from dotenv import load_dotenv
-from ocgd import OCDCC
+from ocgd import OCDC
 
 # Load environment variables from .env file
 load_dotenv()
@@ -30,17 +30,17 @@ load_dotenv()
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\n2. Create project metadata and directories")
 
-# Initialize the OCDCC class
-dcc = OCDCC(part = 1, version = 2026.1)
+# Initialize the OCDC class
+ocdc = OCDC(part = 1, version = 2026.1)
 
 # Create project variables
-part = dcc.part
-version = dcc.version
+part = ocdc.part
+version = ocdc.version
 # Create project metadata
-prj_meta = dcc.prj_meta
+prj_meta = ocdc.prj_meta
 
 # Create project directories
-prj_dirs = dcc.prj_dirs
+prj_dirs = ocdc.prj_dirs
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

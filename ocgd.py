@@ -239,7 +239,7 @@ class DualOutput:
 class OCGD:
     """
     A class to initialize the Orange County Geodemographics (OCGD) main project structure.
-    The ProjectDirs class provides methods to set up the project directories and metadata. It is called by other classes such as OCGD, OCacs, and OCTGL to inherit common functionality.
+    The ProjectDirs class provides methods to set up the project directories and metadata. It is called by other classes such as OCGD, OCACS, OCTL, OCDC, and OCCR to inherit common functionality.
     """
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -284,11 +284,11 @@ class OCGD:
         self.acs5_years = self.get_census_years(dataset = "acs5")
         # self.acs5_years = self.get_available_acs5_years()
 
-        # Get the available CRE years
-        self.cre_years = self.get_census_years(dataset = "cre")
+        # Get the available CR years
+        self.cr_years = self.get_census_years(dataset = "cr")
 
-        # Set the Spatia Reference to Web Mercator
-        self.sr = arcpy.SpatialReference(4269)  # NAD83
+        # Set the Spatial Reference to Web Mercator
+        self.sr = arcpy.SpatialReference(3857)  # Web Mercator
 
         # Load the codebook
         #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
@@ -329,22 +329,22 @@ class OCGD:
             "gis_layers_templates": os.path.join(self.base_path, "gis", "layers", "templates"),
             "gis_layouts": os.path.join(self.base_path, "gis", "layouts"),
             "gis_maps": os.path.join(self.base_path, "gis", "maps"),
-            "gis_ocdcc": os.path.join(self.base_path, "gis", "ocdcc"),
-            "gis_ocdcc_aprx": os.path.join(self.base_path, "gis", "ocdcc", "ocdcc.aprx"),
-            "gis_ocdcc_gdb": os.path.join(self.base_path, "gis", "ocdcc", "ocdcc.gdb"),
-            "gis_ocdcc_sup_gdb": os.path.join(self.base_path, "gis", "ocdcc_sup.gdb"),
+            "gis_ocdc": os.path.join(self.base_path, "gis", "ocdc"),
+            "gis_ocdc_aprx": os.path.join(self.base_path, "gis", "ocdc", "ocdc.aprx"),
+            "gis_ocdc_gdb": os.path.join(self.base_path, "gis", "ocdc", "ocdc.gdb"),
+            "gis_ocdc_sup_gdb": os.path.join(self.base_path, "gis", "ocdc_sup.gdb"),
             "gis_ocacs": os.path.join(self.base_path, "gis", "ocacs"),
             "gis_ocacs_aprx": os.path.join(self.base_path, "gis", "ocacs", "ocacs.aprx"),
             "gis_ocacs_gdb": os.path.join(self.base_path, "gis", "ocacs", "ocacs.gdb"),
             "gis_ocacs_sup_gdb": os.path.join(self.base_path, "gis", "ocacs_sup.gdb"),
-            "gis_octgl": os.path.join(self.base_path, "gis", "octgl"),
-            "gis_octgl_aprx": os.path.join(self.base_path, "gis", "octgl", "octgl.aprx"),
-            "gis_octgl_gdb": os.path.join(self.base_path, "gis", "octgl", "octgl.gdb"),
-            "gis_octgl_sup_gdb": os.path.join(self.base_path, "gis", "octgl_sup.gdb"),
-            "gis_occre": os.path.join(self.base_path, "gis", "occre"),
-            "gis_occre_aprx": os.path.join(self.base_path, "gis", "occre", "occre.aprx"),
-            "gis_occre_gdb": os.path.join(self.base_path, "gis", "occre", "occre.gdb"),
-            "gis_occre_sup_gdb": os.path.join(self.base_path, "gis", "occre_sup.gdb"),
+            "gis_octl": os.path.join(self.base_path, "gis", "octl"),
+            "gis_octl_aprx": os.path.join(self.base_path, "gis", "octl", "octl.aprx"),
+            "gis_octl_gdb": os.path.join(self.base_path, "gis", "octl", "octl.gdb"),
+            "gis_octl_sup_gdb": os.path.join(self.base_path, "gis", "octl_sup.gdb"),
+            "gis_occr": os.path.join(self.base_path, "gis", "occr"),
+            "gis_occr_aprx": os.path.join(self.base_path, "gis", "occr", "occr.aprx"),
+            "gis_occr_gdb": os.path.join(self.base_path, "gis", "occr", "occr.gdb"),
+            "gis_occr_sup_gdb": os.path.join(self.base_path, "gis", "occr_sup.gdb"),
             "graphics": os.path.join(self.base_path, "graphics"),
             "logs": os.path.join(self.base_path, "logs"),
             "metadata": os.path.join(self.base_path, "metadata"),
@@ -447,7 +447,7 @@ class OCGD:
         Args:
             export (bool, optional): Whether to export the dictionary to a JSON file. Defaults to False.
         Returns:
-            tigerweb_dict (dict): A dictionary containing the TIGERweb services and their years.
+            twr_cb (dict): A dictionary containing the TIGERweb services and their years.
         Raises:
             None
         Example:
@@ -456,10 +456,40 @@ class OCGD:
             The get_tigerweb_dictionary function retrieves the available TIGERweb services and their years from the Census REST API.
         """
         # Initialize the dictionary
-        tigerweb_dict = dict()
+        twr_dict = dict()
 
         # The base REST API URL for TIGERweb services
         twr_base = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb"
+
+        codes = {
+            "Public Use Microdata Areas": "PU",
+            "ZIP Code Tabulation Areas": "ZC",
+            "Zip Code Tabulation Areas": "ZC",
+            "Tracts": "TR",
+            "Block Groups": "BG",
+            "Blocks": "BL",
+            "Unified School Districts": "SU",
+            "Secondary School Districts": "SS",
+            "Elementary School Districts": "SE",
+            "County Subdivisions": "CS",
+            "Consolidated Cities": "CC",
+            "Incorporated Places": "CP",
+            "Designated Places": "DP",
+            "Congressional Districts": "CD",
+            "State Legislative Districts - Upper": "LU",
+            "State Legislative Districts - Lower": "LL",
+            "Urban Areas": "UA",
+            "Urban Clusters": "UC",
+            "Urban Growth Areas": "UG",
+            "Urbanized Areas": "UR",
+            "Combined Statistical Areas": "CA",
+            "Metropolitan Divisions": "MD",
+            "Metropolitan Statistical Areas": "MS",
+            "Counties": "CO",
+            "Economic Places": "EP",
+            "Traffic Analysis Zones": "TZ",
+            "Traffic Analysis Districts": "TD"
+        }        
         
         # Get the response from the base URL
         response = requests.get(twr_base, timeout = 20)
@@ -500,7 +530,7 @@ class OCGD:
 
         # Process the ACS Services from the unique lines
         if "ACS" in unique_lines:
-            tigerweb_dict["acs"] = {}
+            twr_dict["acs"] = {}
             acs_years = unique_lines["ACS"]
 
             # For each year, get the layers from the REST API
@@ -526,18 +556,31 @@ class OCGD:
                     lines = layer_section.splitlines()
                     # Each line has the layer name followed by space and then the layer ID in parenthesis (a number). Split them.
                     lines = [re.match(r'^(.*?)[\s]+\((\d+)\)$', line.strip()).groups() for line in lines]
-                    # Create a dictionary of layer names and their IDs
-                    layer_dict = {line[0]: base_url + f"/{line[1]}" for line in lines}
+
+                    # Create a dictionary of layer names and their IDs and codes
+                    layer_dict = {}
+                    for lyr_name, lyr_id in lines:
+                        line_code = None
+                        for code_key, code_val in codes.items():
+                            if code_key in lyr_name:
+                                line_code = code_val
+                                line_alias = code_key
+                                break
+                        layer_dict[lyr_name] = {
+                            "code": line_code,
+                            "alias": line_alias,
+                            "rest": base_url + f"/{lyr_id}"
+                        }
 
                 # Add to the tigerweb dictionary
-                tigerweb_dict["acs"][str(year)] = {
+                twr_dict["acs"][str(year)] = {
                     "rest": base_url,
                     "layers": layer_dict
                 }
                 
         # Process the Census Services from the unique lines
         if "Census" in unique_lines:
-            tigerweb_dict["census"] = {}
+            twr_dict["census"] = {}
             census_years = unique_lines["Census"]
 
             # For each year, get the layers from the REST API
@@ -563,18 +606,31 @@ class OCGD:
                     lines = layer_section.splitlines()
                     # Each line has the layer name followed by space and then the layer ID in parenthesis (a number). Split them.
                     lines = [re.match(r'^(.*?)[\s]+\((\d+)\)$', line.strip()).groups() for line in lines]
-                    # Create a dictionary of layer names and their IDs
-                    layer_dict = {line[0]: base_url + f"/{line[1]}" for line in lines}
+
+                    # Create a dictionary of layer names and their IDs and codes
+                    layer_dict = {}
+                    for lyr_name, lyr_id in lines:
+                        line_code = None
+                        for code_key, code_val in codes.items():
+                            if code_key in lyr_name:
+                                line_code = code_val
+                                line_alias = code_key
+                                break
+                        layer_dict[lyr_name] = {
+                            "code": line_code,
+                            "alias": line_alias,
+                            "rest": base_url + f"/{lyr_id}"
+                        }
                 
                 # Add to the tigerweb dictionary
-                tigerweb_dict["census"][str(year)] = {
+                twr_dict["census"][str(year)] = {
                     "rest": base_url,
                     "layers": layer_dict
                 }
 
         # Process the ECON Services from the unique lines
         if "ECON" in unique_lines:
-            tigerweb_dict["econ"] = {}
+            twr_dict["econ"] = {}
             econ_years = unique_lines["ECON"]
 
             # For each year, get the layers from the REST API
@@ -600,11 +656,24 @@ class OCGD:
                     lines = layer_section.splitlines()
                     # Each line has the layer name followed by space and then the layer ID in parenthesis (a number). Split them.
                     lines = [re.match(r'^(.*?)[\s]+\((\d+)\)$', line.strip()).groups() for line in lines]
-                    # Create a dictionary of layer names and their IDs
-                    layer_dict = {line[0]: base_url + f"/{line[1]}" for line in lines}
+
+                    # Create a dictionary of layer names and their IDs and codes
+                    layer_dict = {}
+                    for lyr_name, lyr_id in lines:
+                        line_code = None
+                        for code_key, code_val in codes.items():
+                            if code_key in lyr_name:
+                                line_code = code_val
+                                line_alias = code_key
+                                break
+                        layer_dict[lyr_name] = {
+                            "code": line_code,
+                            "alias": line_alias,
+                            "rest": base_url + f"/{lyr_id}"
+                        }
 
                 # Add to the tigerweb dictionary
-                tigerweb_dict["econ"][str(year)] = {
+                twr_dict["econ"][str(year)] = {
                     "rest": base_url,
                     "layers": layer_dict
                 }
@@ -613,8 +682,8 @@ class OCGD:
         included_labels = ['Census Block Groups', 'Census Blocks', 'Census Designated Places', 'Census Public Use Microdata Areas', 'Census Tracts', 'Census Urbanized Areas', 'Census ZIP Code Tabulation Areas', 'Combined Statistical Areas', 'Congressional Districts', 'Consolidated Cities', 'Counties', 'County Subdivisions', 'Economic Places', 'Elementary School Districts', 'Incorporated Places', 'Metropolitan Divisions', 'Metropolitan Statistical Areas', 'Public Use Microdata Areas', 'Secondary School Districts', 'State Legislative Districts - Lower', 'State Legislative Districts - Upper', 'Traffic Analysis Districts', 'Traffic Analysis Zones', 'Unified School Districts', 'Urban Areas', 'Urban Clusters', 'Urban Growth Areas', 'Urbanized Areas', 'ZIP Code Tabulation Areas', 'Zip Code Tabulation Areas']
 
         # Create a new dictionary to hold the filtered layers
-        final_dict = tigerweb_dict.copy()
-        for level, content in tigerweb_dict.items():
+        twr_cb = twr_dict.copy()
+        for level, content in twr_dict.items():
             print(f"Level: {level}")
             for year, value in content.items():
                 layers_to_remove = []
@@ -631,28 +700,30 @@ class OCGD:
                         layers_to_remove.append(layer_name)
                 for lyr in layers_to_remove:
                     print(f" - Removing layer: {lyr}")
-                    del final_dict[level][year]["layers"][lyr]
-        
-        
+                    del twr_cb[level][year]["layers"][lyr]
+
+        # Write the main REST API URL (twr_base) to the dictionary
+        twr_cb["main"] = twr_base
+
         # Export the dictionary to a JSON file if export is True
         if export:
             # Export the dictionary to a JSON file in the scratch directory
-            out_path = os.path.join(self.prj_dirs["codebook"], "ocgd_tigerweb_cb.json")
+            out_path = os.path.join(self.prj_dirs["codebook"], "ocgd_twr_cb.json")
             with open(out_path, "w", encoding = "utf-8") as f:
-                json.dump(final_dict, f, indent = 4)
+                json.dump(twr_cb, f, indent = 4)
             print(f"Tigerweb dictionary exported to {out_path}")
 
         # Return the dictionary
-        return final_dict
+        return twr_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the OCTGL main class ----
+# Define the OCTL main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCTGL(OCGD):
-    """Class Containing the Orange County Tiger/Line (OCTGL) Processing Workflow Functions.
+class OCTL(OCGD):
+    """Class Containing the Orange County Tiger/Line (OCTL) Processing Workflow Functions.
 
-    This class encapsulates the workflow for processing Orange County Tiger Lines (OCTGL)
+    This class encapsulates the workflow for processing Orange County Tiger Lines (OCTL)
     data. It includes methods for initialization, main execution, and retrieving
     metadata for various feature classes.
     """
@@ -662,7 +733,7 @@ class OCTGL(OCGD):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
-        Initialize the OCTGL class.
+        Initialize the OCTL class.
         """
         # Initialize the OCgdm class with provided part/version
         super().__init__(part, version)
@@ -702,7 +773,7 @@ class OCTGL(OCGD):
                 # Returns network path or drive letter
                 drive_letter = drive.ProviderName if drive.ProviderName else drive.DeviceID
                 # Construct the remote path
-                remote_path = f"{drive_letter}\\Professional\\OCPW Projects\\ocgd\\octgl\\tgl_raw"
+                remote_path = f"{drive_letter}\\Professional\\OCPW Projects\\ocgd\\octl\\tl_raw"
                 # Return the remote path
                 return remote_path
         # If no drive is found, return None
@@ -726,7 +797,7 @@ class OCTGL(OCGD):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
     def project_metadata(self, silent: bool = False) -> dict:
         """
-        Function to generate project metadata for the OCTGL data processing object.
+        Function to generate project metadata for the OCTL data processing object.
         Args:
             silent (bool): If True, suppresses the print output. Default is False.
         Returns:
@@ -760,7 +831,7 @@ class OCTGL(OCGD):
         
         # Create a dictionary to hold the metadata
         metadata = {
-            "name": "OCTGL Tiger/Line Data Processing",
+            "name": "OCTL Tiger/Line Data Processing",
             "title": step,
             "description": desc,
             "version": self.version,
@@ -798,8 +869,8 @@ class OCTGL(OCGD):
             This function assumes that the input dictionary contains all necessary keys for each layer.
         """
         # Create standard entry values
-        entry_gdb = f"tgl{year}.gdb"
-        entry_tags = "Orange County, California, OCTGL, TigerLines"
+        entry_gdb = f"tl{year}.gdb"
+        entry_tags = "Orange County, California, OCTL, TigerLines"
         entry_credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services"
         entry_access = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works, OC Survey Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works/OC Survey Geospatial Applications</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
         entry_uri = "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d14451a55d0415947c7af3/data"
@@ -814,14 +885,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["addr"]["abbrev"],
                 "postfix": layers_metadata["addr"]["postfix"],
                 "postfix_desc": layers_metadata["addr"]["postfix_desc"],
-                "alias": f"OCTGL {year} Address Ranges",
+                "alias": f"OCTL {year} Address Ranges",
                 "group": "Feature Relationships",
                 "category": "Relationship Files",
                 "label": "Address Ranges Relationship File",
                 "code": "AD",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Adress Ranges Relationship",
+                "title": f"OCTL {year} Adress Ranges Relationship",
                 "tags": f"{entry_tags}, Address, Relationships, Table",
                 "summary": f"Orange County Tiger Lines {year} Address Ranges Relationship Table",
                 "description": f"Orange County Tiger Lines {year} Address Ranges Relationship Table. This table contains address range information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -837,14 +908,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["addrfeat"]["abbrev"],
                 "postfix": layers_metadata["addrfeat"]["postfix"],
                 "postfix_desc": layers_metadata["addrfeat"]["postfix_desc"],
-                "alias": f"OCTGL {year} Address Range Features",
+                "alias": f"OCTL {year} Address Range Features",
                 "group": "Feature Relationships",
                 "category": "Relationship Files",
                 "label": "Address Range Feature Shapefile",
                 "code": "AF",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Address Range Features",
+                "title": f"OCTL {year} Address Range Features",
                 "tags": f"{entry_tags}, Address, Relationships, Table",
                 "summary": f"Orange County Tiger Lines {year} Address Range Features",
                 "description": f"Orange County Tiger Lines {year} Address Range Features. This shapefile contains address range feature information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -860,14 +931,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["addrfn"]["abbrev"],
                 "postfix": layers_metadata["addrfn"]["postfix"],
                 "postfix_desc": layers_metadata["addrfn"]["postfix_desc"],
-                "alias": f"OCTGL {year} Address Range Feature Names",
+                "alias": f"OCTL {year} Address Range Feature Names",
                 "group": "Feature Relationships",
                 "category": "Relationship Files",
                 "label": "Address Range-Feature Name Relationship File",
                 "code": "AN",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Address Range-Feature Name Relationship",
+                "title": f"OCTL {year} Address Range-Feature Name Relationship",
                 "tags": f"{entry_tags}, Address, Relationships, Table",
                 "summary": f"Orange County Tiger Lines {year} Address Range-Feature Name Relationship Table",
                 "description": f"Orange County Tiger Lines {year} Address Range-Feature Name Relationship Table. This table contains address range-feature name information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -883,14 +954,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["arealm"]["abbrev"],
                 "postfix": layers_metadata["arealm"]["postfix"],
                 "postfix_desc": layers_metadata["arealm"]["postfix_desc"],
-                "alias": f"OCTGL {year} Area Landmarks",
+                "alias": f"OCTL {year} Area Landmarks",
                 "group": "Features",
                 "category": "Landmarks",
                 "label": "Area Landmarks",
                 "code": "LA",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Area Landmarks",
+                "title": f"OCTL {year} Area Landmarks",
                 "tags": f"{entry_tags}, Area, Landmarks, Features",
                 "summary": f"Orange County Tiger Lines {year} Area Landmarks",
                 "description": f"Orange County Tiger Lines {year} Area Landmarks. This shapefile contains area landmark feature information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -906,14 +977,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["areawater"]["abbrev"],
                 "postfix": layers_metadata["areawater"]["postfix"],
                 "postfix_desc": layers_metadata["areawater"]["postfix_desc"],
-                "alias": f"OCTGL {year} Area Hydrography",
+                "alias": f"OCTL {year} Area Hydrography",
                 "group": "Features",
                 "category": "Water",
                 "label": "Area Hydrography",
                 "code": "WA",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Area Hydrography",
+                "title": f"OCTL {year} Area Hydrography",
                 "tags": f"{entry_tags}, Water, Hydrography, Features",
                 "summary": f"Orange County Tiger Lines {year} Area Hydrography",
                 "description": f"Orange County Tiger Lines {year} Area Hydrography. This shapefile contains area hydrography feature information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -929,14 +1000,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["bg"]["abbrev"],
                 "postfix": layers_metadata["bg"]["postfix"],
                 "postfix_desc": layers_metadata["bg"]["postfix_desc"],
-                "alias": f"OCTGL {year} Block Groups",
+                "alias": f"OCTL {year} Block Groups",
                 "group": "Geographic Areas",
                 "category": "Block Groups",
                 "label": "Block Group",
                 "code": "BG",
                 "method": "query",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Block Groups",
+                "title": f"OCTL {year} Block Groups",
                 "tags": f"{entry_tags}, US Census, Block Groups",
                 "summary": f"Orange County Tiger Lines {year} Block Groups",
                 "description": f"Orange County Tiger Lines {year} Block Groups. This shapefile contains block group geographic area information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -952,14 +1023,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["cbsa"]["abbrev"],
                 "postfix": layers_metadata["cbsa"]["postfix"],
                 "postfix_desc": layers_metadata["cbsa"]["postfix_desc"],
-                "alias": f"OCTGL {year} Metropolitan Statistical Areas",
+                "alias": f"OCTL {year} Metropolitan Statistical Areas",
                 "group": "Geographic Areas",
                 "category": "Core Based Statistical Areas",
                 "label": "Metropolitan/Micropolitan Statistical Area",
                 "code": "SM",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Metropolitan Statistical Areas",
+                "title": f"OCTL {year} Metropolitan Statistical Areas",
                 "tags": f"{entry_tags}, US Census, Metropolitan Statistical Areas",
                 "summary": f"Orange County Tiger Lines {year} Metropolitan Statistical Areas",
                 "description": f"Orange County Tiger Lines {year} Metropolitan Statistical Areas. This shapefile contains metropolitan statistical area geographic area information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -975,14 +1046,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["coastline"]["abbrev"],
                 "postfix": layers_metadata["coastline"]["postfix"],
                 "postfix_desc": layers_metadata["coastline"]["postfix_desc"],
-                "alias": f"OCTGL {year} Coastlines",
+                "alias": f"OCTL {year} Coastlines",
                 "group": "Features",
                 "category": "Coastlines",
                 "label": "Coastline",
                 "code": "CL",
                 "method": "clip",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Coastlines",
+                "title": f"OCTL {year} Coastlines",
                 "tags": f"{entry_tags}, Coastlines",
                 "summary": f"Orange County Tiger Lines {year} Coastlines",
                 "description": f"Orange County Tiger Lines {year} Coastlines. This shapefile contains coastline geographic area information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -998,14 +1069,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["county"]["abbrev"],
                 "postfix": layers_metadata["county"]["postfix"],
                 "postfix_desc": layers_metadata["county"]["postfix_desc"],
-                "alias": f"OCTGL {year} Orange County",
+                "alias": f"OCTL {year} Orange County",
                 "group": "Geographic Areas",
                 "category": "Counties",
                 "label": "County and Equivalent",
                 "code": "CO",
                 "method": "query",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Orange County",
+                "title": f"OCTL {year} Orange County",
                 "tags": f"{entry_tags}, Counties",
                 "summary": f"Orange County Tiger Lines {year} Orange County",
                 "description": f"Orange County Tiger Lines {year} Orange County. This shapefile contains county geographic area information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1021,14 +1092,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["csa"]["abbrev"],
                 "postfix": layers_metadata["csa"]["postfix"],
                 "postfix_desc": layers_metadata["csa"]["postfix_desc"],
-                "alias": f"OCTGL {year} Combined Statistical Areas",
+                "alias": f"OCTL {year} Combined Statistical Areas",
                 "group": "Geographic Areas",
                 "category": "Core Based Statistical Areas",
                 "label": "Combined Statistical Area",
                 "code": "SC",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Combined Statistical Areas",
+                "title": f"OCTL {year} Combined Statistical Areas",
                 "tags": f"{entry_tags}, US Census, Statistical Areas",
                 "summary": f"Orange County Tiger Lines {year} Combined Statistical Areas",
                 "description": f"Orange County Tiger Lines {year} Combined Statistical Areas. This shapefile contains combined statistical area geographic area information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1044,14 +1115,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["cd"]["abbrev"],
                 "postfix": layers_metadata["cd"]["postfix"],
                 "postfix_desc": layers_metadata["cd"]["postfix_desc"],
-                "alias": f"OCTGL {year} Congressional Districts",
+                "alias": f"OCTL {year} Congressional Districts",
                 "group": "Geographic Areas",
                 "category": "Congressional Districts",
                 "label": f"Congressional Districts of the {layers_metadata["cd"]["postfix_desc"]}",
                 "code": "CD",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Congressional Districts",
+                "title": f"OCTL {year} Congressional Districts",
                 "tags": f"{entry_tags}, Congressional Districts",
                 "summary": f"Orange County Tiger Lines {year} Congressional Districts of the {layers_metadata["cd"]["postfix_desc"]}",
                 "description": f"Orange County Tiger Lines {year} Congressional Districts of the {layers_metadata["cd"]["postfix_desc"]}. This shapefile contains congressional district geographic area information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1067,14 +1138,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["cousub"]["abbrev"],
                 "postfix": layers_metadata["cousub"]["postfix"],
                 "postfix_desc": layers_metadata["cousub"]["postfix_desc"],
-                "alias": f"OCTGL {year} County Subdivisions",
+                "alias": f"OCTL {year} County Subdivisions",
                 "group": "Geographic Areas",
                 "category": "County Subdivisions",
                 "label": "County Subdivisions",
                 "code": "CS",
                 "method": "query",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} County Subdivisions",
+                "title": f"OCTL {year} County Subdivisions",
                 "tags": f"{entry_tags}, counties, subdivisions",
                 "summary": f"Orange County Tiger Lines {year} County Subdivisions",
                 "description": f"Orange County Tiger Lines {year} County Subdivisions. This shapefile contains county subdivision geographic area information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1090,14 +1161,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["edges"]["abbrev"],
                 "postfix": layers_metadata["edges"]["postfix"],
                 "postfix_desc": layers_metadata["edges"]["postfix_desc"],
-                "alias": f"OCTGL {year} All Lines",
+                "alias": f"OCTL {year} All Lines",
                 "group": "Features",
                 "category": "All Lines",
                 "label": "All Lines",
                 "code": "ED",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} All Lines",
+                "title": f"OCTL {year} All Lines",
                 "tags": f"{entry_tags}, all lines",
                 "summary": f"Orange County Tiger Lines {year} All Lines",
                 "description": f"Orange County Tiger Lines {year} All Lines. This shapefile contains all line features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1113,14 +1184,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["elsd"]["abbrev"],
                 "postfix": layers_metadata["elsd"]["postfix"],
                 "postfix_desc": layers_metadata["elsd"]["postfix_desc"],
-                "alias": f"OCTGL {year} Elementary School Districts",
+                "alias": f"OCTL {year} Elementary School Districts",
                 "group": "Geographic Areas",
                 "category": "School Districts",
                 "label": "Elementary School Districts",
                 "code": "SE",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Elementary School Districts",
+                "title": f"OCTL {year} Elementary School Districts",
                 "tags": f"{entry_tags}, schools, school districts, elementary schools",
                 "summary": f"Orange County Tiger Lines {year} Elementary School Districts",
                 "description": f"Orange County Tiger Lines {year} Elementary School Districts. This shapefile contains elementary school district geographic area information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1136,14 +1207,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["facesmil"]["abbrev"],
                 "postfix": layers_metadata["facesmil"]["postfix"],
                 "postfix_desc": layers_metadata["facesmil"]["postfix_desc"],
-                "alias": f"OCTGL {year} Topological Faces-Military Installations",
+                "alias": f"OCTL {year} Topological Faces-Military Installations",
                 "group": "Feature Relationships",
                 "category": "Relationship Files",
                 "label": "Topological Faces-Military Installations Relationship File",
                 "code": "FM",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Topological Faces-Military Installations",
+                "title": f"OCTL {year} Topological Faces-Military Installations",
                 "tags": f"{entry_tags}, military installations",
                 "summary": f"Orange County Tiger Lines {year} Topological Faces-Military Installations Table",
                 "description": f"Orange County Tiger Lines {year} Topological Faces-Military Installations. This shapefile contains topological faces and military installations relationship information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1159,14 +1230,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["faces"]["abbrev"],
                 "postfix": layers_metadata["faces"]["postfix"],
                 "postfix_desc": layers_metadata["faces"]["postfix_desc"],
-                "alias": f"OCTGL {year} Topological Faces",
+                "alias": f"OCTL {year} Topological Faces",
                 "group": "Feature Relationships",
                 "category": "Relationship Files",
                 "label": "Topological Faces (Polygons with all Geocodes) Shapefile",
                 "code": "FC",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Topological Faces",
+                "title": f"OCTL {year} Topological Faces",
                 "tags": f"{entry_tags}, faces, relationships",
                 "summary": f"Orange County Tiger Lines {year} Topological Faces",
                 "description": f"Orange County Tiger Lines {year} Topological Faces. This shapefile contains topological faces (polygons with all geocodes) information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1182,14 +1253,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["facesah"]["abbrev"],
                 "postfix": layers_metadata["facesah"]["postfix"],
                 "postfix_desc": layers_metadata["facesah"]["postfix_desc"],
-                "alias": f"OCTGL {year} Topological Faces-Area Hydrography",
+                "alias": f"OCTL {year} Topological Faces-Area Hydrography",
                 "group": "Feature Relationships",
                 "category": "Relationship Files",
                 "label": "Topological Faces-Area Hydrography Relationship File",
                 "code": "FH",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Topological Faces-Area Hydrography",
+                "title": f"OCTL {year} Topological Faces-Area Hydrography",
                 "tags": f"{entry_tags}, feces, water, hydrography",
                 "summary": f"Orange County Tiger Lines {year} Topological Faces-Area Hydrography",
                 "description": f"Orange County Tiger Lines {year} Topological Faces-Area Hydrography. This shapefile contains topological faces and area hydrography relationship information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1205,14 +1276,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["facesal"]["abbrev"],
                 "postfix": layers_metadata["facesal"]["postfix"],
                 "postfix_desc": layers_metadata["facesal"]["postfix_desc"],
-                "alias": f"OCTGL {year} Topological Faces-Area Landmark",
+                "alias": f"OCTL {year} Topological Faces-Area Landmark",
                 "group": "Feature Relationships",
                 "category": "Relationship Files",
                 "label": "Topological Faces-Area Landmark Relationship File",
                 "code": "FL",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Topological Faces-Area Landmark",
+                "title": f"OCTL {year} Topological Faces-Area Landmark",
                 "tags": f"{entry_tags}, faces, landmarks",
                 "summary": f"Orange County Tiger Lines {year} Topological Faces-Area Landmark",
                 "description": f"Orange County Tiger Lines {year} Topological Faces-Area Landmark. This shapefile contains topological faces and area landmark relationship information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1228,14 +1299,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["featnames"]["abbrev"],
                 "postfix": layers_metadata["featnames"]["postfix"],
                 "postfix_desc": layers_metadata["featnames"]["postfix_desc"],
-                "alias": f"OCTGL {year} Feature Names",
+                "alias": f"OCTL {year} Feature Names",
                 "group": "Feature Relationships",
                 "category": "Relationship Files",
                 "label": "Feature Names Relationship File",
                 "code": "FN",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Feature Names",
+                "title": f"OCTL {year} Feature Names",
                 "tags": f"{entry_tags}, names, relationships",
                 "summary": f"Orange County Tiger Lines {year} Feature Names Table",
                 "description": f"Orange County Tiger Lines {year} Feature Names. This shapefile contains feature names relationship information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1251,14 +1322,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["linearwater"]["abbrev"],
                 "postfix": layers_metadata["linearwater"]["postfix"],
                 "postfix_desc": layers_metadata["linearwater"]["postfix_desc"],
-                "alias": f"OCTGL {year} Linear Hydrography",
+                "alias": f"OCTL {year} Linear Hydrography",
                 "group": "Features",
                 "category": "Water",
                 "label": "Linear Hydrography",
                 "code": "WL",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Linear Hydrography",
+                "title": f"OCTL {year} Linear Hydrography",
                 "tags": f"{entry_tags}, water, hydrography",
                 "summary": f"Orange County Tiger Lines {year} Linear Hydrography",
                 "description": f"Orange County Tiger Lines {year} Linear Hydrography. This shapefile contains linear hydrography features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1274,14 +1345,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["metdiv"]["abbrev"],
                 "postfix": layers_metadata["metdiv"]["postfix"],
                 "postfix_desc": layers_metadata["metdiv"]["postfix_desc"],
-                "alias": f"OCTGL {year} Metropolitan Divisions",
+                "alias": f"OCTL {year} Metropolitan Divisions",
                 "group": "Geographic Areas",
                 "category": "Core Based Statistical Areas",
                 "label": "Metropolitan Division",
                 "code": "MD",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Metropolitan Divisions",
+                "title": f"OCTL {year} Metropolitan Divisions",
                 "tags": f"{entry_tags}, metropolitan divisions",
                 "summary": f"Orange County Tiger Lines {year} Metropolitan Divisions",
                 "description": f"Orange County Tiger Lines {year} Metropolitan Divisions. This shapefile contains metropolitan division features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1297,14 +1368,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["mil"]["abbrev"],
                 "postfix": layers_metadata["mil"]["postfix"],
                 "postfix_desc": layers_metadata["mil"]["postfix_desc"],
-                "alias": f"OCTGL {year} Military Installations",
+                "alias": f"OCTL {year} Military Installations",
                 "group": "Features",
                 "category": "Military Installations",
                 "label": "Military Installations",
                 "code": "ML",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Military Installations",
+                "title": f"OCTL {year} Military Installations",
                 "tags": f"{entry_tags}, military installations",
                 "summary": f"Orange County Tiger Lines {year} Military Installations",
                 "description": f"Orange County Tiger Lines {year} Military Installations. This shapefile contains military installation features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1320,14 +1391,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["place"]["abbrev"],
                 "postfix": layers_metadata["place"]["postfix"],
                 "postfix_desc": layers_metadata["place"]["postfix_desc"],
-                "alias": f"OCTGL {year} Cities or Places",
+                "alias": f"OCTL {year} Cities or Places",
                 "group": "Geographic Areas",
                 "category": "Places",
                 "label": "Place (Cities or Unincorporated)",
                 "code": "PL",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Cities or Places",
+                "title": f"OCTL {year} Cities or Places",
                 "tags": f"{entry_tags}, places, cities",
                 "summary": f"Orange County Tiger Lines {year} Cities or Places",
                 "description": f"Orange County Tiger Lines {year} Cities or Places. This shapefile contains city and place features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1343,14 +1414,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["pointlm"]["abbrev"],
                 "postfix": layers_metadata["pointlm"]["postfix"],
                 "postfix_desc": layers_metadata["pointlm"]["postfix_desc"],
-                "alias": f"OCTGL {year} Point Landmarks",
+                "alias": f"OCTL {year} Point Landmarks",
                 "group": "Features",
                 "category": "Landmarks",
                 "label": "Point Landmarks",
                 "code": "LP",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Point Landmarks",
+                "title": f"OCTL {year} Point Landmarks",
                 "tags": f"{entry_tags}, points, landmarks",
                 "summary": f"Orange County Tiger Lines {year} Point Landmarks",
                 "description": f"Orange County Tiger Lines {year} Point Landmarks. This shapefile contains point landmark features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1366,14 +1437,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["primaryroads"]["abbrev"],
                 "postfix": layers_metadata["primaryroads"]["postfix"],
                 "postfix_desc": layers_metadata["primaryroads"]["postfix_desc"],
-                "alias": f"OCTGL {year} Primary Roads",
+                "alias": f"OCTL {year} Primary Roads",
                 "group": "Features",
                 "category": "Roads",
                 "label": "Primary Roads",
                 "code": "RP",
                 "method": "clip",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Primary Roads",
+                "title": f"OCTL {year} Primary Roads",
                 "tags": f"{entry_tags}, roads, primary",
                 "summary": f"Orange County Tiger Lines {year} Primary Roads",
                 "description": f"Orange County Tiger Lines {year} Primary Roads. This shapefile contains primary road features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1389,14 +1460,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["prisecroads"]["abbrev"],
                 "postfix": layers_metadata["prisecroads"]["postfix"],
                 "postfix_desc": layers_metadata["prisecroads"]["postfix_desc"],
-                "alias": f"OCTGL {year} Primary and Secondary Roads",
+                "alias": f"OCTL {year} Primary and Secondary Roads",
                 "group": "Features",
                 "category": "Roads",
                 "label": "Primary and Secondary Roads",
                 "code": "RS",
                 "method": "clip",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Primary and Secondary Roads",
+                "title": f"OCTL {year} Primary and Secondary Roads",
                 "tags": f"{entry_tags}, roads, primary, secondary",
                 "summary": f"Orange County Tiger Lines {year} Primary and Secondary Roads",
                 "description": f"Orange County Tiger Lines {year} Primary and Secondary Roads. This shapefile contains primary and secondary road features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1412,14 +1483,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["puma"]["abbrev"],
                 "postfix": layers_metadata["puma"]["postfix"],
                 "postfix_desc": layers_metadata["puma"]["postfix_desc"],
-                "alias": f"OCTGL {year} Public Use Microdata Areas",
+                "alias": f"OCTL {year} Public Use Microdata Areas",
                 "group": "Geographic Areas",
                 "category": "Public Use Microdata Areas",
                 "label": "Public Use Microdata Areas",
                 "code": "PU",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Public Use Microdata Areas",
+                "title": f"OCTL {year} Public Use Microdata Areas",
                 "tags": f"{entry_tags}, public use microdata areas",
                 "summary": f"Orange County Tiger Lines {year} Public Use Microdata Areas",
                 "description": f"Orange County Tiger Lines {year} Public Use Microdata Areas. This shapefile contains public use microdata area features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1435,14 +1506,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["rails"]["abbrev"],
                 "postfix": layers_metadata["rails"]["postfix"],
                 "postfix_desc": layers_metadata["rails"]["postfix_desc"],
-                "alias": f"OCTGL {year} Rails",
+                "alias": f"OCTL {year} Rails",
                 "group": "Features",
                 "category": "Rails",
                 "label": "Rails",
                 "code": "RL",
                 "method": "clip",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Rails",
+                "title": f"OCTL {year} Rails",
                 "tags": f"{entry_tags}, rails, railroads",
                 "summary": f"Orange County Tiger Lines {year} Rails",
                 "description": f"Orange County Tiger Lines {year} Rails. This shapefile contains rail features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1458,14 +1529,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["roads"]["abbrev"],
                 "postfix": layers_metadata["roads"]["postfix"],
                 "postfix_desc": layers_metadata["roads"]["postfix_desc"],
-                "alias": f"OCTGL {year} All Roads",
+                "alias": f"OCTL {year} All Roads",
                 "group": "Features",
                 "category": "Roads",
                 "label": "All Roads",
                 "code": "RD",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} All Roads",
+                "title": f"OCTL {year} All Roads",
                 "tags": f"{entry_tags}, roads",
                 "summary": f"Orange County Tiger Lines {year} All Roads",
                 "description": f"Orange County Tiger Lines {year} All Roads. This shapefile contains road features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1481,14 +1552,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["scsd"]["abbrev"],
                 "postfix": layers_metadata["scsd"]["postfix"],
                 "postfix_desc": layers_metadata["scsd"]["postfix_desc"],
-                "alias": f"OCTGL {year} Secondary School Districts",
+                "alias": f"OCTL {year} Secondary School Districts",
                 "group": "Geographic Areas",
                 "category": "School Districts",
                 "label": "Secondary School Districts",
                 "code": "SS",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Secondary School Districts",
+                "title": f"OCTL {year} Secondary School Districts",
                 "tags": f"{entry_tags}, schools, school districts, secondary schools",
                 "summary": f"Orange County Tiger Lines {year} Secondary School Districts",
                 "description": f"Orange County Tiger Lines {year} Secondary School Districts. This shapefile contains secondary school district features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1504,14 +1575,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["sldl"]["abbrev"],
                 "postfix": layers_metadata["sldl"]["postfix"],
                 "postfix_desc": layers_metadata["sldl"]["postfix_desc"],
-                "alias": f"OCTGL {year} State Assembly Legislative Districts",
+                "alias": f"OCTL {year} State Assembly Legislative Districts",
                 "group": "Geographic Areas",
                 "category": "State Legislative Districts",
                 "label": "State Legislative District - Lower Chamber (Assembly)",
                 "code": "LL",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} State Assembly Legislative Districts",
+                "title": f"OCTL {year} State Assembly Legislative Districts",
                 "tags": f"{entry_tags}, legislative districts, state assembly",
                 "summary": f"Orange County Tiger Lines {year} State Assembly Legislative Districts",
                 "description": f"Orange County Tiger Lines {year} State Assembly Legislative Districts. This shapefile contains state assembly legislative district (lower chamber) features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1527,14 +1598,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["sldu"]["abbrev"],
                 "postfix": layers_metadata["sldu"]["postfix"],
                 "postfix_desc": layers_metadata["sldu"]["postfix_desc"],
-                "alias": f"OCTGL {year} State Senate Legislative Districts",
+                "alias": f"OCTL {year} State Senate Legislative Districts",
                 "group": "Geographic Areas",
                 "category": "State Legislative Districts",
                 "label": "State Legislative District - Upper Chamber (Senate)",
                 "code": "LU",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} State Senate Legislative Districts",
+                "title": f"OCTL {year} State Senate Legislative Districts",
                 "tags": f"{entry_tags}, legislative districts, state senate",
                 "summary": f"Orange County Tiger Lines {year} State Senate Legislative Districts",
                 "description": f"Orange County Tiger Lines {year} State Senate Legislative Districts. This shapefile contains state senate legislative district (upper chamber) features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1550,14 +1621,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["tabblock"]["abbrev"],
                 "postfix": layers_metadata["tabblock"]["postfix"],
                 "postfix_desc": layers_metadata["tabblock"]["postfix_desc"],
-                "alias": f"OCTGL {year} Blocks",
+                "alias": f"OCTL {year} Blocks",
                 "group": "Geographic Areas",
                 "category": "Blocks",
                 "label": "Block",
                 "code": "BL",
                 "method": "query",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Blocks",
+                "title": f"OCTL {year} Blocks",
                 "tags": f"{entry_tags}, US Census, blocks",
                 "summary": f"Orange County Tiger Lines {year} Blocks",
                 "description": f"Orange County Tiger Lines {year} Blocks. This shapefile contains block features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1573,14 +1644,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["tract"]["abbrev"],
                 "postfix": layers_metadata["tract"]["postfix"],
                 "postfix_desc": layers_metadata["tract"]["postfix_desc"],
-                "alias": f"OCTGL {year} Census Tracts",
+                "alias": f"OCTL {year} Census Tracts",
                 "group": "Geographic Areas",
                 "category": "Census Tracts",
                 "label": "Census Tract",
                 "code": "TR",
                 "method": "query",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Census Tracts",
+                "title": f"OCTL {year} Census Tracts",
                 "tags": f"{entry_tags}, US Census, census tracts",
                 "summary": f"Orange County Tiger Lines {year} Census Tracts",
                 "description": f"Orange County Tiger Lines {year} Census Tracts. This shapefile contains census tract features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1596,14 +1667,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["unsd"]["abbrev"],
                 "postfix": layers_metadata["unsd"]["postfix"],
                 "postfix_desc": layers_metadata["unsd"]["postfix_desc"],
-                "alias": f"OCTGL {year} Unified School Districts",
+                "alias": f"OCTL {year} Unified School Districts",
                 "group": "Geographic Areas",
                 "category": "School Districts",
                 "label": "Unified School Districts",
                 "code": "SU",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Unified School Districts",
+                "title": f"OCTL {year} Unified School Districts",
                 "tags": f"{entry_tags}, schools, school districts, unified schools",
                 "summary": f"Orange County Tiger Lines {year} Unified School Districts",
                 "description": f"Orange County Tiger Lines {year} Unified School Districts. This shapefile contains unified school district features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1619,14 +1690,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["uac"]["abbrev"],
                 "postfix": layers_metadata["uac"]["postfix"],
                 "postfix_desc": layers_metadata["uac"]["postfix_desc"],
-                "alias": f"OCTGL {year} Urban Areas",
+                "alias": f"OCTL {year} Urban Areas",
                 "group": "Geographic Areas",
                 "category": "Urban Areas",
                 "label": "Urban Areas",
                 "code": "UA",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} Urban Areas",
+                "title": f"OCTL {year} Urban Areas",
                 "tags": f"{entry_tags}, urban areas",
                 "summary": f"Orange County Tiger Lines {year} Urban Areas",
                 "description": f"Orange County Tiger Lines {year} Urban Areas. This shapefile contains urban area features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1642,14 +1713,14 @@ class OCTGL(OCGD):
                 "abbrev": layers_metadata["zcta5"]["abbrev"],
                 "postfix": layers_metadata["zcta5"]["postfix"],
                 "postfix_desc": layers_metadata["zcta5"]["postfix_desc"],
-                "alias": f"OCTGL {year} ZIP Code Tabulation Areas",
+                "alias": f"OCTL {year} ZIP Code Tabulation Areas",
                 "group": "Geographic Areas",
                 "category": "ZIP Code Tabulation Areas",
                 "label": "ZIP Code Tabulation Areas",
                 "code": "ZC",
                 "method": "within",
                 "gdb": entry_gdb,
-                "title": f"OCTGL {year} ZIP Code Tabulation Areas",
+                "title": f"OCTL {year} ZIP Code Tabulation Areas",
                 "tags": f"{entry_tags}, ZIP Codes, ZCTA",
                 "summary": f"Orange County Tiger Lines {year} ZIP Code Tabulation Areas",
                 "description": f"Orange County Tiger Lines {year} ZIP Code Tabulation Areas. This shapefile contains ZIP Code Tabulation Area features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -1660,7 +1731,7 @@ class OCTGL(OCGD):
         }
 
         # Define the codebook path
-        cb_path = os.path.join(self.prj_dirs["codebook"], f"octgl_cb_{year}.json")
+        cb_path = os.path.join(self.prj_dirs["codebook"], f"octl_cb_{year}.json")
         
         # Export the codebook to a JSON file
         with open(cb_path, "w", encoding = "utf-8") as json_file:
@@ -1686,14 +1757,14 @@ class OCTGL(OCGD):
         Raises:
             ValueError: If the remote path is not found.
         Example:
-            metadata = OCTGL.folder_metadata(year=2022, remote=True, export=True)
+            metadata = OCTL.folder_metadata(year=2022, remote=True, export=True)
             print(metadata)
         Note:
             This method reads the Tiger/Line data folder for the specified year,
         """
         
         # Initialize metadata dictionary
-        metadata_path = os.path.join(self.prj_dirs["metadata"], "octgl_folder_metadata.json")
+        metadata_path = os.path.join(self.prj_dirs["metadata"], "octl_folder_metadata.json")
         # Load existing metadata if available
         if os.path.exists(metadata_path):
             # Load existing metadata
@@ -1718,7 +1789,7 @@ class OCTGL(OCGD):
             root_directory = Path(raw_directory).parent.as_posix()
 
         # Define the folder name based on the year
-        folder = f"tgl{year}"
+        folder = f"tl{year}"
 
         # Define the layers to be checked
         layers = ["addr", "addrfeat", "addrfn", "arealm", "areawater", "bg", "cbsa", "cd", "coastline", "county", "cousub", "csa", "edges", "elsd", "faces", "facesah", "facesal", "facesmil", "featnames", "linearwater", "metdiv", "mil", "place", "pointlm", "primaryroads", "prisecroads", "puma", "rails", "roads", "scsd", "sldl", "sldu", "tabblock", "tract", "uac", "unsd", "zcta5"]
@@ -1837,13 +1908,13 @@ class OCTGL(OCGD):
 
         if export:
             # Export metadata to JSON file
-            json_path = os.path.join(self.prj_dirs["metadata"], f"octgl_raw_metadata_tl_{year}.json")
+            json_path = os.path.join(self.prj_dirs["metadata"], f"octl_raw_metadata_tl_{year}.json")
             with open(json_path, "w", encoding = "utf-8") as json_file:
                 json.dump(metadata[year], json_file, indent=4)
                 print(f"Metadata for year {year} exported to (metadata) {os.path.basename(json_path)}")
 
             # Export updated metadata to JSON file
-            json_path = os.path.join(self.prj_dirs["metadata"], "octgl_folder_metadata.json")
+            json_path = os.path.join(self.prj_dirs["metadata"], "octl_folder_metadata.json")
             with open(json_path, "w", encoding = "utf-8") as json_file:
                 json.dump(metadata, json_file, indent=4)
                 print(f"Metadata for year {year} exported to (metadata) {os.path.basename(json_path)}")
@@ -1872,7 +1943,7 @@ class OCTGL(OCGD):
         """
 
         # Set the codebook from the JSON file
-        cb_path = os.path.join(self.prj_dirs["codebook"], f"octgl_cb_{year}.json")
+        cb_path = os.path.join(self.prj_dirs["codebook"], f"octl_cb_{year}.json")
         with open(cb_path, "r", encoding = "utf-8") as json_file:
             cb = json.load(json_file)
         
@@ -1947,7 +2018,7 @@ class OCTGL(OCGD):
         Notes:
             This function creates a geodatabase.
         """
-        gdb_name = f"octgl{year}.gdb"
+        gdb_name = f"octl{year}.gdb"
         gdb_path = os.path.join(self.prj_dirs["gis"], gdb_name)
 
         if not arcpy.Exists(gdb_path):
@@ -1985,9 +2056,9 @@ class OCTGL(OCGD):
             This function processes raw data from the raw data directory and creates a geodatabase.
         """
         if logging:
-            STR_VER = str(self.version).replace(".", "0")
-            self.logger.enable(meta = self.prj_meta, filename = f"octgl_process_shapefiles_{STR_VER}_{year}.log", replace = True)
-            print("OCTGL Process Shapefiles Log\n")
+            str_ver = str(self.version).replace(".", "0")
+            self.logger.enable(meta = self.prj_meta, filename = f"octl_process_shapefiles_{str_ver}_{year}.log", replace = True)
+            print("OCTL Process Shapefiles Log\n")
 
         # Get the folder metadata
         folder_metadata = self.folder_metadata(year = year, remote = remote, export = export)
@@ -2228,7 +2299,7 @@ class OCTGL(OCGD):
             print(f"\nApplying metadata to the TL geodatabase: {os.path.basename(tl_gdb)}")
             md_gdb = md.Metadata(tl_gdb)
             md_gdb.title = f"TL{tl_metadata["year"]} TigerLine Geodatabase"
-            md_gdb.tags = "Orange County, California, OCTGL, TigerLine, Geodatabase"
+            md_gdb.tags = "Orange County, California, OCTL, TigerLine, Geodatabase"
             md_gdb.summary = f"Orange County TigerLine Geodatabase for the {tl_metadata["year"]} year data"
             md_gdb.description = f"Orange County TigerLine Geodatabase for the {tl_metadata["year"]} year data. The data contains feature classes for all TigerLine data available for Orange County, California. Version: {self.version}, last updated on {self.data_date}."
             md_gdb.credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services"
@@ -2243,7 +2314,7 @@ class OCTGL(OCGD):
         print(f"\nSuccessfully processed shapefiles:\n{tl_fcs}")
 
         if logging:
-            print("\nOCTGL Process Shapefiles Completed.")
+            print("\nOCTL Process Shapefiles Completed.")
             self.logger.disable()
 
         # Return the final list of processed feature classes
@@ -2293,9 +2364,9 @@ class OCTGL(OCGD):
                     # get the congress number from the congress_dict
                     congress_number = congress_dict[str(year)]
                     for value in fc_dict.values():
-                        value["alias"] = f"OCTGL {year} Congressional Districts {congress_number}th Congress"
+                        value["alias"] = f"OCTL {year} Congressional Districts {congress_number}th Congress"
                         value["label"] = f"Congressional Districts of the {congress_number}th US Congress"
-                        value["title"] = f"OCTGL {year} Congressional Districts of the {congress_number}th US Congress"
+                        value["title"] = f"OCTL {year} Congressional Districts of the {congress_number}th US Congress"
                         value["description"] = f"Orange County Tiger Lines {year} Congressional Districts of the {congress_number}th US Congress"
                         gdb_dict[str(year)][fc] = value
                     continue
@@ -2332,10 +2403,10 @@ class OCTGL(OCGD):
 
         # Create the map metadata dictionary
         md_map = {
-            "title": f"OCTGL {year} Map",
-            "tags": f"Orange County, California, Tiger/Line, OCTGL, tgl{year}",
+            "title": f"OCTL {year} Map",
+            "tags": f"Orange County, California, Tiger/Line, OCTL, tl{year}",
             "summary": f"Orange County Tiger Lines Map for {year}",
-            "description": f"Orange County Tiger Lines {year} Map containing the most up-to-date spatial data for Orange County, California. This map is part of the Orange County Tiger Lines (OCTGL) project, which provides comprehensive geospatial data for the county. The data includes roads, boundaries, hydrography, and other essential features derived from the U.S. Census Bureau's Tiger/Line shapefiles for {year}. Version: {self.version}, last updated on {self.data_date}.",
+            "description": f"Orange County Tiger Lines {year} Map containing the most up-to-date spatial data for Orange County, California. This map is part of the Orange County Tiger Lines (OCTL) project, which provides comprehensive geospatial data for the county. The data includes roads, boundaries, hydrography, and other essential features derived from the U.S. Census Bureau's Tiger/Line shapefiles for {year}. Version: {self.version}, last updated on {self.data_date}.",
             "credits": "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services",
             "access": """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works, OC Survey Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works/OC Survey Geospatial Applications</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>""",
             "uri": "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d14451a55d0415947c7af3/data"
@@ -2401,12 +2472,12 @@ class OCTGL(OCGD):
         """
         # Get the project directories
         master_cb = {}
-        master_cb_path = os.path.join(self.prj_dirs["codebook"], "octgl_cb_master.json")
+        master_cb_path = os.path.join(self.prj_dirs["codebook"], "octl_cb_master.json")
 
         # Check if the create flag is set to True
         if create:
             # Get a list of json files from the raw metadata directory that start with "ram_metadata_tl_"
-            json_files = list(Path(self.prj_dirs["metadata"]).glob("octgl_raw_metadata_tl_*.json"))
+            json_files = list(Path(self.prj_dirs["metadata"]).glob("octl_raw_metadata_tl_*.json"))
 
             # Loop through the json files and read them into a list
             for jf in json_files:
@@ -2548,18 +2619,18 @@ class OCTGL(OCGD):
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the OCDCC main class ----
+# Define the OCDC main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCDCC(OCGD):
+class OCDC(OCGD):
     """
-    A class containing functions and methods for the US Decennial Census (OCDCC) Project.
+    A class containing functions and methods for the US Decennial Census (OCDC) Project.
     Attributes:
         None
     Methods:
-        project_metadata(part: int, version: float, silent: bool = False) -> dict:
-            Generates project metadata for the OCUP data processing project.
+        project_metadata(part: int, version: float = float(datetime.datetime.now().year), silent: bool = False) -> dict:
+            Generates project metadata for the OCDC data processing project.
         project_directories(silent: bool = False) -> dict:
-            Generates project directories for the OCSWITRS data processing project.
+            Generates project directories for the OCDC data processing project.
     Returns:
         None
     Raises:
@@ -2630,7 +2701,7 @@ class OCDCC(OCGD):
 
         # Create a dictionary to hold the metadata
         metadata = {
-            "name": "OCTGL Tiger/Line Data Processing",
+            "name": "OCTL Tiger/Line Data Processing",
             "title": step,
             "description": desc,
             "version": self.version,
@@ -2753,7 +2824,7 @@ class OCACS(OCGD):
         
         # Create a dictionary to hold the metadata
         metadata = {
-            "name": "OCTGL Tiger/Line Data Processing",
+            "name": "OCTL Tiger/Line Data Processing",
             "title": step,
             "description": desc,
             "version": self.version,
@@ -3069,7 +3140,7 @@ class OCACS(OCGD):
             This function retrieves the GEOID field name and unique values from the specified feature class in the geodatabase for the given year.
         """
         # Set the workspace to the geodatabase for the specified year
-        path = os.path.join(self.prj_dirs["gis"], f"tgl{year}.gdb")
+        path = os.path.join(self.prj_dirs["gis"], f"tl{year}.gdb")
         if not os.path.exists(path):
             raise ValueError(f"Geodatabase for year {year} does not exist at path {path}.")
         
@@ -3357,39 +3428,39 @@ class OCACS(OCGD):
         return df
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: TGL to SDF ----
+    ## fx: TL to SDF ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def tgl_to_sdf(self, year: int, geography: str):
+    def tl_to_sdf(self, year: int, geography: str):
         """
-        Convert TGL tables to spatial data frames for a given year and geography.
+        Convert TL tables to spatial data frames for a given year and geography.
         Args:
             year (int): The ACS year (e.g., 2010, 2015, 2020).
             geography (str): The geography type (e.g., "CO", "CS", "PL", etc.).
         Returns:
-            pd.DataFrame: A spatial data frame containing the TGL data for the specified year and geography.
+            pd.DataFrame: A spatial data frame containing the TL data for the specified year and geography.
         Raises:
             None
         Example:
-            >>> tgl_sdf = tgl_to_sdf(2010, "CO")
+            >>> tl_sdf = tl_to_sdf(2010, "CO")
         Note:
-            Ensure that the TGL geodatabase for the specified year exists in the GIS directory.
+            Ensure that the TL geodatabase for the specified year exists in the GIS directory.
         """
         print(f"Converting TigerLine feature class to spatial data frame for year: {year} and geography: {geography}...")
 
-        # Set the TGL geodatabase path
-        tgl_gdb_path = os.path.join(self.prj_dirs["gis"], f"tgl{year}.gdb")
+        # Set the TL geodatabase path
+        tl_gdb_path = os.path.join(self.prj_dirs["gis"], f"tl{year}.gdb")
 
         try:
-            arcpy.env.workspace = tgl_gdb_path
+            arcpy.env.workspace = tl_gdb_path
             arcpy.env.overwriteOutput = True
 
-            # Load the TGL feature class into a spatial data frame
-            tgl_sdf = pd.DataFrame.spatial.from_featureclass(os.path.join(tgl_gdb_path, geography))
+            # Load the TL feature class into a spatial data frame
+            tl_sdf = pd.DataFrame.spatial.from_featureclass(os.path.join(tl_gdb_path, geography))
         finally:
             arcpy.env.workspace = os.getcwd()
 
         # Return the spatial data frame
-        return tgl_sdf
+        return tl_sdf
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3464,9 +3535,9 @@ class OCACS(OCGD):
                 for geo in self.geographies:
                     print(f"\nProcessing {year} geography: {geo}")
 
-                    # Convert TGL to SDF for the given year and geography
-                    tgl_sdf = self.tgl_to_sdf(year, geo)
-                    print(f"- Converted TGL to SDF for geography: {geo}")
+                    # Convert TL to SDF for the given year and geography
+                    tl_sdf = self.tl_to_sdf(year, geo)
+                    print(f"- Converted TL to SDF for geography: {geo}")
 
                     # Get the list of variables to process for the given dataset
                     process_vars = self.get_acs_list(year, fd)
@@ -3482,13 +3553,13 @@ class OCACS(OCGD):
 
                     print(f"- Fetched ACS tables for geography: {geo} with {len(acs_df)} records")
 
-                    # Get the name of the tgl_sdf column that contains the GEOID values
-                    tgl_geoid_col = [col for col in tgl_sdf.columns if "GEOID" in col][0]
+                    # Get the name of the tl_sdf column that contains the GEOID values
+                    tl_geoid_col = [col for col in tl_sdf.columns if "GEOID" in col][0]
                     acs_geoid_col = [col for col in acs_df.columns if "GEOID" in col][0]
 
-                    # Merge the demographic variables from acs_df (GEOID) to the tgl_sdf (GEOID10)
-                    tgl_sdf = tgl_sdf.merge(acs_df, left_on = tgl_geoid_col, right_on = acs_geoid_col, how="left")
-                    print(f"- Merged ACS data with TGL SDF for geography: {geo}")
+                    # Merge the demographic variables from acs_df (GEOID) to the tl_sdf (GEOID10)
+                    tl_sdf = tl_sdf.merge(acs_df, left_on = tl_geoid_col, right_on = acs_geoid_col, how="left")
+                    print(f"- Merged ACS data with TL SDF for geography: {geo}")
 
                     # Define the output feature class path
                     fc_path = os.path.join(fd_path, geo+fd[0])
@@ -3498,7 +3569,7 @@ class OCACS(OCGD):
                     arcpy.env.overwriteOutput = True
 
                     # Convert the merged DataFrame to a feature class in the geodatabase
-                    tgl_sdf.spatial.to_featureclass(location = fc_path, overwrite = True, has_z = None, has_m = None, sanitize_columns = False)
+                    tl_sdf.spatial.to_featureclass(location = fc_path, overwrite = True, has_z = None, has_m = None, sanitize_columns = False)
                     print(f"- Converted merged DataFrame to feature class: {geo+fd[0]}")
 
                     # Set field aliases based on the codebook
@@ -3518,18 +3589,18 @@ class OCACS(OCGD):
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define the OCCRE main class ----
+# Define the OCCR main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCCRE(OCGD):
+class OCCR(OCGD):
     """
-    A class containing functions and methods for the OC Community Resilience Estimates (OCcre) Project.
+    A class containing functions and methods for the OC Community Resilience Estimates (OCCR) Project.
     Attributes:
         None
     Methods:
         project_metadata(part: int, version: float, silent: bool = False) -> dict:
-            Generates project metadata for the OCUP data processing project.
+            Generates project metadata for the OCCR data processing project.
         project_directories(silent: bool = False) -> dict:
-            Generates project directories for the OCSWITRS data processing project.
+            Generates project directories for the OCCR data processing project.
     Returns:
         None
     Raises:
@@ -3546,7 +3617,7 @@ class OCCRE(OCGD):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
-        Initializes the OCcre class.
+        Initializes the OCCR class.
         """
         # Initialize the OCgdm class with provided part/version
         super().__init__(part, version)
@@ -3560,7 +3631,7 @@ class OCCRE(OCGD):
             "TR"   # Census Tract
         ]
 
-        # Define the CRE DataFrame schema
+        # Define the CR DataFrame schema
         self.schema = {
             "GEOID": "object",
             "GEO_ID": "object",
@@ -3587,8 +3658,8 @@ class OCCRE(OCGD):
         }
 
         # Load the codebook
-        cb_path = os.path.join(self.prj_dirs["codebook"], "cre_cb.json")
-        # Load the CRE variables codebook
+        cb_path = os.path.join(self.prj_dirs["codebook"], "cr_cb.json")
+        # Load the CR variables codebook
         self.cb = {}
         if os.path.exists(cb_path):
             with open(cb_path, "r", encoding = "utf-8") as f:
@@ -3616,8 +3687,8 @@ class OCCRE(OCGD):
         # Match the part to a specific step and description (with default case)
         match self.part:
             case 1:
-                step = "Part 1: Create CRE Feature Classes"
-                desc = "Creating feature classes for the CRE data from the Census API data frames and the Tiger/Line Census Tract geographies."
+                step = "Part 1: Create CR Feature Classes"
+                desc = "Creating feature classes for the CR data from the Census API data frames and the Tiger/Line Census Tract geographies."
             case 2:
                 step = "Part 2: Imported Data Geocoding"
                 desc = "Geocoding the imported data and preparing it for GIS processing."
@@ -3636,19 +3707,19 @@ class OCCRE(OCGD):
         
         # Create a dictionary to hold the metadata
         metadata = {
-            "name": "OC Community Resilience Estimates (OCCRE) Data Processing",
+            "name": "OC Community Resilience Estimates (OCCR) Data Processing",
             "title": step,
             "description": desc,
             "version": self.version,
             "date": self.data_date,
             "author": "Dr. Kostas Alexandridis, GISP",
-            "years": self.cre_years
+            "years": self.cr_years
         }
 
         # If not silent, print the metadata
         if not silent:
             print(
-                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}\n- Date: {metadata['date']}\n- Available CRE Years: {metadata['years']}\n"
+                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}\n- Date: {metadata['date']}\n- Available CR Years: {metadata['years']}\n"
             )
 
         # Return the metadata
@@ -3656,36 +3727,36 @@ class OCCRE(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Load CRE codebook ----
+    ## fx: Load CR codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    def generate_cre_codebook(self, year: int, write_to_file: bool = False) -> dict:
+    def generate_cr_codebook(self, year: int, write_to_file: bool = False) -> dict:
         """
-        Generate CRE codebook for a given year and list of headers.
+        Generate CR codebook for a given year and list of headers.
         Args:
-            year (int): The CRE year (e.g., 2020, 2021, 2022).
+            year (int): The CR year (e.g., 2020, 2021, 2022).
         Returns:
-            Dictionary containing the CRE variable metadata.
+            Dictionary containing the CR variable metadata.
         Raises:
             RuntimeError: If the CENSUS_API_KEY1 environment variable is not set.
         Example:
-            >>> cre_cb = generate_cre_codebook(2020)
+            >>> cr_cb = generate_cr_codebook(2020)
         Notes:
-            This function fetches CRE variable metadata from the Census API.
+            This function fetches CR variable metadata from the Census API.
         """
         # Define a dictionary to hold variable metadata
-        cre_cb = dict()
+        cr_cb = dict()
 
         # Define the headers to fetch metadata for
         var_list = ["GEO_ID", "SUMLEVEL", "GEOCOMP", "NAME", "POPUNI", "PRED0_E", "PRED12_E", "PRED3_E", "PRED0_PE", "PRED12_PE", "PRED3_PE", "PRED0_M", "PRED12_M", "PRED3_M", "PRED0_PM", "PRED12_PM", "PRED3_PM", "STATE", "COUNTY", "TRACT"]
 
-        # Loop through each CRE variable and fetch its metadata
-        for cre_var in var_list:
+        # Loop through each CR variable and fetch its metadata
+        for cr_var in var_list:
             # Define the URL for the variable metadata
-            cre_info_url = f"https://api.census.gov/data/{year}/cre/variables/{cre_var}.json"
+            cr_info_url = f"https://api.census.gov/data/{year}/cr/variables/{cr_var}.json"
 
             # Make the API request for variable metadata
-            info_response = requests.get(cre_info_url, timeout = 60)
+            info_response = requests.get(cr_info_url, timeout = 60)
             
             # Check for valid JSON response
             try:
@@ -3694,37 +3765,36 @@ class OCCRE(OCGD):
                 raise RuntimeError(f"Invalid JSON response from Census API (status={info_response.status_code}): {info_response.text[:500]}") from exc
             
             # Add the variable metadata to the dictionary
-            cre_cb[cre_var] = info_data
+            cr_cb[cr_var] = info_data
 
         # Write the codebook to a JSON file
-        cre_cb_path = os.path.join(self.prj_dirs["codebook"], f"cre_cb_{year}.json")
+        cr_cb_path = os.path.join(self.prj_dirs["codebook"], f"cr_cb_{year}.json")
         if write_to_file:
-            with open(cre_cb_path, "w", encoding = "utf-8") as f:
-                json.dump(cre_cb, f, indent = 4)
-            print(f"CRE codebook for year {year} written to {cre_cb_path}")
+            with open(cr_cb_path, "w", encoding = "utf-8") as f:
+                json.dump(cr_cb, f, indent = 4)
+            print(f"CR codebook for year {year} written to {cr_cb_path}")
 
         # Return the codebook dictionary
-        return cre_cb
-
+        return cr_cb
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Fetch CRE tables ----
+    ## fx: Fetch CR tables ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def fetch_cre_tables(self, year: int) -> pd.DataFrame:
+    def fetch_cr_tables(self, year: int) -> pd.DataFrame:
         """
-        Fetch CRE data for a given year and geography.
+        Fetch CR data for a given year and geography.
         Args:
-            year (int): The CRE year (e.g., 2020, 2021, 2022).
+            year (int): The CR year (e.g., 2020, 2021, 2022).
         Returns:
-            DataFrame containing the requested CRE data for each geography.
+            DataFrame containing the requested CR data for each geography.
         Raises:
             RuntimeError: If the CENSUS_API_KEY1 environment variable is not set.
         Example:
-            >>> df_cre = fetch_cre_tables(2020)
+            >>> df_cr = fetch_cr_tables(2020)
         Notes:
-            This function fetches CRE data from the Census API.
+            This function fetches CR data from the Census API.
         """
-        print(f"Fetching CRE data for year: {year}...")
+        print(f"Fetching CR data for year: {year}...")
         
         # Get Census API key from environment variable
         api_key = os.getenv("CENSUS_API_KEY1")
@@ -3732,10 +3802,10 @@ class OCCRE(OCGD):
             raise RuntimeError("Environment variable CENSUS_API_KEY1 is not set")
 
         # Base URL for ACS5 API
-        cre_api_url = f"https://api.census.gov/data/{year}/cre?get=GEO_ID,SUMLEVEL,GEOCOMP,NAME,POPUNI,PRED0_E,PRED12_E,PRED3_E,PRED0_PE,PRED12_PE,PRED3_PE,PRED0_M,PRED12_M,PRED3_M,PRED0_PM,PRED12_PM,PRED3_PM&for=tract:*&in=state:06&in=county:059&key={api_key}"
+        cr_api_url = f"https://api.census.gov/data/{year}/cr?get=GEO_ID,SUMLEVEL,GEOCOMP,NAME,POPUNI,PRED0_E,PRED12_E,PRED3_E,PRED0_PE,PRED12_PE,PRED3_PE,PRED0_M,PRED12_M,PRED3_M,PRED0_PM,PRED12_PM,PRED3_PM&for=tract:*&in=state:06&in=county:059&key={api_key}"
 
         # Make the API request
-        api_response = requests.get(cre_api_url, timeout = 60)
+        api_response = requests.get(cr_api_url, timeout = 60)
         # Check for valid JSON response
         try:
             api_data = api_response.json()
@@ -3781,109 +3851,105 @@ class OCCRE(OCGD):
         # Set the geoid column by removing the '1400000US' prefix from the GEO_ID column
         records_df["GEOID"] = records_df["GEO_ID"].str.replace("1400000US", "", regex=False)
 
-        # Rename the "NAME" column to "CRE_NAME"
-        records_df = records_df.rename(columns={"NAME": "CRE_NAME"})
+        # Rename the "NAME" column to "CR_NAME"
+        records_df = records_df.rename(columns={"NAME": "CR_NAME"})
 
         # Return the final DataFrame
         return records_df
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Create CRE feature class ----
+    ## fx: Create CR feature class ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def create_cre_feature_class(self, year: int):
+    def create_cr_feature_class(self, year: int):
         """
-        Create CRE feature class for the specified year.
+        Create CR feature class for the specified year.
         Args:
-            year (int): The CRE year (e.g., 2020, 2021, 2022).
+            year (int): The CR year (e.g., 2020, 2021, 2022).
         Returns:
             None
         Raises:
             None
         Example:
-            >>> create_cre_feature_class(2020)
+            >>> create_cr_feature_class(2020)
         Notes:
-            This function creates a CRE feature class by joining CRE data with TGL tract data.
+            This function creates a CR feature class by joining CR data with TL tract data.
         """
         # Geoid of the ocean side tract to remove
         remove_geoid = "06059990100"
 
-        print(f"Creating CRE feature class for year: {year}...")
-        # Fetch the CRE tables for the specified year
-        cre_db = self.fetch_cre_tables(year= year)
+        print(f"Creating CR feature class for year: {year}...")
+        # Fetch the CR tables for the specified year
+        cr_db = self.fetch_cr_tables(year= year)
 
         print(f"- Removing ocean side tract GEOID: {remove_geoid} if it exists...")
         # Remove specific GEOID record if it exists
-        cre_db = cre_db[cre_db["GEOID"] != remove_geoid]
+        cr_db = cr_db[cr_db["GEOID"] != remove_geoid]
+        # Path to TL geodatabase
+        tl_gdb = os.path.join(self.prj_dirs["gis"], f"tl{year}.gdb")
 
-        # Path to TGL geodatabase
-        tgl_gdb = os.path.join(self.prj_dirs["gis"], f"tgl{year}.gdb")
-
-        print(f"- Setting arcpy environment to TGL geodatabase: tgl{year}.gdb...")
-        # Set the arcpy environment to the TGL geodatabase
-        arcpy.env.workspace = tgl_gdb
+        print(f"- Setting arcpy environment to TL geodatabase: tl{year}.gdb...")
+        # Set the arcpy environment to the TL geodatabase
+        arcpy.env.workspace = tl_gdb
         arcpy.env.overwriteOutput = True
 
-        # Path to TGL tract feature class
-        tgl_tract = os.path.join(tgl_gdb, "TR")
+        # Path to TL tract feature class
+        tl_tract = os.path.join(tl_gdb, "TR")
 
-        print("- Loading TGL tract feature class into a spatial DataFrame...")
-        # Load TGL tract feature class into a spatial DataFrame
-        tgl_sdf = pd.DataFrame.spatial.from_featureclass(tgl_tract)
-
-        print(f"- Removing ocean side tract GEOID: {remove_geoid} from TGL SDF if it exists...")
+        print("- Loading TL tract feature class into a spatial DataFrame...")
+        # Load TL tract feature class into a spatial DataFrame
+        tl_sdf = pd.DataFrame.spatial.from_featureclass(tl_tract)
+        print(f"- Removing ocean side tract GEOID: {remove_geoid} from TL SDF if it exists...")
         # Remove specific GEOID record if it exists
-        tgl_sdf = tgl_sdf[tgl_sdf["GEOID"] != remove_geoid]
+        tl_sdf = tl_sdf[tl_sdf["GEOID"] != remove_geoid]
 
         # Ensure GEOID columns are comparable (strings without extra whitespace)
-        tgl_sdf["GEOID"] = tgl_sdf["GEOID"].astype(str).str.strip()
-        cre_db["GEOID"] = cre_db["GEOID"].astype(str).str.strip()
+        tl_sdf["GEOID"] = tl_sdf["GEOID"].astype(str).str.strip()
+        cr_db["GEOID"] = cr_db["GEOID"].astype(str).str.strip()
 
-        print("- Checking if the number of records between TGL SDF and CRE DB match before join...")
-        diff_count = tgl_sdf.shape[0] - cre_db.shape[0]
+        print("- Checking if the number of records between TL SDF and CR DB match before join...")
+        diff_count = tl_sdf.shape[0] - cr_db.shape[0]
         if diff_count == 0:
-            print(f"The number of records in TGL SDF and CRE DB match: {tgl_sdf.shape[0]} records each.")
+            print(f"The number of records in TL SDF and CR DB match: {tl_sdf.shape[0]} records each.")
         elif diff_count > 0:
-            print(f"Warning: TGL SDF has {diff_count} more records ({tgl_sdf.shape[0]}) than CRE DB ({cre_db.shape[0]}).")
+            print(f"Warning: TL SDF has {diff_count} more records ({tl_sdf.shape[0]}) than CR DB ({cr_db.shape[0]}).")
         elif diff_count < 0:
-            print(f"Warning TGL SDF has {-diff_count} fewer records ({tgl_sdf.shape[0]}) than CRE DB ({cre_db.shape[0]}).")
+            print(f"Warning TL SDF has {-diff_count} fewer records ({tl_sdf.shape[0]}) than CR DB ({cr_db.shape[0]}).")
         
-        print("- Joining CRE data with TGL SDF on GEOID...")
-        # Perform a left join: keep all tgl_sdf records and add matching cre_db columns
-        # If there are overlapping column names besides `GEOID`, keep tgl_sdf's versions
-        cols_to_merge = [c for c in cre_db.columns if c != "GEOID"]
-        tgl_sdf = tgl_sdf.merge(cre_db[ ["GEOID"] + cols_to_merge ], on="GEOID", how="left")
-        print(f"- After join, tgl_sdf shape: {tgl_sdf.shape}")
+        print("- Joining CR data with TL SDF on GEOID...")
+        # Perform a left join: keep all tl_sdf records and add matching cr_db columns
+        # If there are overlapping column names besides `GEOID`, keep tl_sdf's versions
+        cols_to_merge = [c for c in cr_db.columns if c != "GEOID"]
+        tl_sdf = tl_sdf.merge(cr_db[ ["GEOID"] + cols_to_merge ], on="GEOID", how="left")
+        print(f"- After join, tl_sdf shape: {tl_sdf.shape}")
+        # Path to output CR geodatabase
+        cr_gdb = self.prj_dirs["gis_occr_gdb"]
 
-        # Path to output CRE geodatabase
-        cre_gdb = self.prj_dirs["gis_occre_gdb"]
-
-        print(f"- Setting up CRE geodatabase: {os.path.basename(cre_gdb)}...")
+        print(f"- Setting up CR geodatabase: {os.path.basename(cr_gdb)}...")
         # Set the arcpy environment to the feature dataset
-        arcpy.env.workspace = cre_gdb
+        arcpy.env.workspace = cr_gdb
         arcpy.env.overwriteOutput = True
 
-        # Path to output CRE feature class
-        cre_fc = os.path.join(cre_gdb, f"CRETR{year}")
-
-        print(f"- Creating CRE feature class: CRETR{year}...")
+        # Path to output CR feature class
+        cr_fc = os.path.join(cr_gdb, f"CRTR{year}")
+        print(f"- Creating CR feature class: CRTR{year}...")
         # Remove the output feature class if it already exists
-        if arcpy.Exists(cre_fc):
-            print(f"  - Deleting existing feature class: CRETR{year}")
-            arcpy.Delete_management(cre_fc)
-            print(f"  - Deleted existing feature class: CRETR{year}")
+        if arcpy.Exists(cr_fc):
+            print(f"  - Deleting existing feature class: CRTR{year}")
+            arcpy.Delete_management(cr_fc)
+            print(f"  - Deleted existing feature class: CRTR{year}")
 
-        print(f"- Converting merged DataFrame to feature class: CRETR{year}...")
+        print(f"- Converting merged DataFrame to feature class: CRTR{year}...")
         # Convert the merged DataFrame to a feature class in the geodatabase
-        tgl_sdf.spatial.to_featureclass(location = cre_fc, overwrite = True, has_z = None, has_m = None, sanitize_columns = False)
+        tl_sdf.spatial.to_featureclass(location = cr_fc, overwrite = True, has_z = None, has_m = None, sanitize_columns = False)
 
-        print("- Setting aliases for CRE feature class and fields...")
+        print("- Setting aliases for CR feature class and fields...")
         # Set a friendly alias for the output feature class
         alias_name = f"OC Community Resilience Estimates {year} Census Tracts"
         try:
             # Change the alias name
-            arcpy.AlterAliasName(cre_fc, alias_name)
-            print(f"  - Alias for 'CRETR{year}' successfully changed to '{alias_name}'.")
+            arcpy.AlterAliasName(cr_fc, alias_name)
+            print(f"  - Alias for 'CRTR{year}' successfully changed to '{alias_name}'.")
         except arcpy.ExecuteError:
             # ArcPy-specific errors
             print("  - ArcPy Error:", arcpy.GetMessages(2))
@@ -3891,41 +3957,41 @@ class OCCRE(OCGD):
             # Specific Python errors
             print("  - Error:", e)
 
-        print("- Setting field aliases based on CRE codebook...")
-        # Set field aliases on the output feature class from the CRE codebook
+        print("- Setting field aliases based on CR codebook...")
+        # Set field aliases on the output feature class from the CR codebook
         for field_key, info in self.cb.items():
-            # `cb_cre` entries should have an `alias` value
+            # `cb_cr` entries should have an `alias` value
             alias = info.get("alias") if isinstance(info, dict) else None
             if not alias:
                 continue
             try:
                 # Only attempt to alter the field if it exists in the output feature class
-                fields = arcpy.ListFields(cre_fc, field_key)
+                fields = arcpy.ListFields(cr_fc, field_key)
                 if not fields:
                     # Field not present; skip
                     # (sanitize_columns=False above should preserve names but some fields may be absent)
                     continue
                 # Use AlterField to change only the alias (keep the same field name)
-                arcpy.AlterField_management(cre_fc, field_key, field_key, alias)
+                arcpy.AlterField_management(cr_fc, field_key, field_key, alias)
                 print(f"  - Field alias for '{field_key}' set to '{alias}'.")
             except arcpy.ExecuteError:
                 print(f"  - ArcPy Error altering alias for field {field_key}:", arcpy.GetMessages(2))
             except (RuntimeError, OSError, ValueError, TypeError, AttributeError) as e:
                 print(f"  - Error altering alias for field {field_key}:", e)
 
-        print("- Defining metadata for CRE feature class...")
+        print("- Defining metadata for CR feature class...")
         # Define a metadata object for the feature class
-        cre_md = md.Metadata(cre_fc)
-        cre_md.title = alias_name
-        cre_md.tags = "Orange County, California, Community Resilience Estimates, CRE, OCCRE, Census Tracts"
-        cre_md.summary = f"Orange County Community Resilience Estimates for year {year} at Census Tracts geography level."
-        cre_md.description = f"Orange County Community Resilience Estimates (OCCRE) for year {year} at Census Tracts geography level. The data contains composite social vulnerability indicators derived from U.S. Census data. Version: {self.version}, last updated on {self.data_date}."
-        cre_md.credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works Geospatial Services"
-        cre_md.accessConstraints = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works Geospatial Services</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
-        cre_md.thumbnailUri = "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d14451a55d0415947c7af3/data"
-        cre_md.save()
+        cr_md = md.Metadata(cr_fc)
+        cr_md.title = alias_name
+        cr_md.tags = "Orange County, California, Community Resilience Estimates, CR, OCCR, Census Tracts"
+        cr_md.summary = f"Orange County Community Resilience Estimates for year {year} at Census Tracts geography level."
+        cr_md.description = f"Orange County Community Resilience Estimates (OCCR) for year {year} at Census Tracts geography level. The data contains composite social vulnerability indicators derived from U.S. Census data. Version: {self.version}, last updated on {self.data_date}."
+        cr_md.credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works Geospatial Services"
+        cr_md.accessConstraints = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works Geospatial Services</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
+        cr_md.thumbnailUri = "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d14451a55d0415947c7af3/data"
+        cr_md.save()
 
-        print(f"CRE feature class for year {year} created successfully at {cre_fc}.")
+        print(f"CR feature class for year {year} created successfully at {cr_fc}.")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

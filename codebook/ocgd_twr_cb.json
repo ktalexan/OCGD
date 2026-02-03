@@ -1,0 +1,1589 @@
+{
+    "acs": {
+        "2012": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer",
+            "layers": {
+                "2010 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/0"
+                },
+                "2010 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/12"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/14"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/16"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/20"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/24"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/26"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/28"
+                },
+                "112th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/52"
+                },
+                "2010 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/54"
+                },
+                "2010 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/56"
+                },
+                "2010 Census Urbanized Areas": {
+                    "code": "UR",
+                    "alias": "Urbanized Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/62"
+                },
+                "2010 Census Urban Clusters": {
+                    "code": "UC",
+                    "alias": "Urban Clusters",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/64"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/74"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/76"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/78"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2012/MapServer/84"
+                }
+            }
+        },
+        "2013": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer",
+            "layers": {
+                "2010 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/0"
+                },
+                "2010 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/12"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/14"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/16"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/20"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/24"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/26"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/28"
+                },
+                "113th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/52"
+                },
+                "2013 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/54"
+                },
+                "2013 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/56"
+                },
+                "2010 Census Urbanized Areas": {
+                    "code": "UR",
+                    "alias": "Urbanized Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/62"
+                },
+                "2010 Census Urban Clusters": {
+                    "code": "UC",
+                    "alias": "Urban Clusters",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/64"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/74"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/76"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/78"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2013/MapServer/84"
+                }
+            }
+        },
+        "2014": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer",
+            "layers": {
+                "2010 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/0"
+                },
+                "2010 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/12"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/14"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/16"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/20"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/24"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/26"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/28"
+                },
+                "114th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/52"
+                },
+                "2014 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/54"
+                },
+                "2014 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/56"
+                },
+                "2010 Census Urbanized Areas": {
+                    "code": "UR",
+                    "alias": "Urbanized Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/62"
+                },
+                "2010 Census Urban Clusters": {
+                    "code": "UC",
+                    "alias": "Urban Clusters",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/64"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/74"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/76"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/78"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2014/MapServer/84"
+                }
+            }
+        },
+        "2015": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer",
+            "layers": {
+                "2010 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/0"
+                },
+                "2010 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/12"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/14"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/16"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/20"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/24"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/26"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/28"
+                },
+                "114th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/52"
+                },
+                "2014 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/54"
+                },
+                "2014 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/56"
+                },
+                "2010 Census Urbanized Areas": {
+                    "code": "UR",
+                    "alias": "Urbanized Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/62"
+                },
+                "2010 Census Urban Clusters": {
+                    "code": "UC",
+                    "alias": "Urban Clusters",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/64"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/74"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/76"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/78"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2015/MapServer/84"
+                }
+            }
+        },
+        "2016": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer",
+            "layers": {
+                "2010 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/0"
+                },
+                "2010 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/12"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/14"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/16"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/20"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/24"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/26"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/28"
+                },
+                "115th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/52"
+                },
+                "2016 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/54"
+                },
+                "2016 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/56"
+                },
+                "2010 Census Urbanized Areas": {
+                    "code": "UR",
+                    "alias": "Urbanized Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/62"
+                },
+                "2010 Census Urban Clusters": {
+                    "code": "UC",
+                    "alias": "Urban Clusters",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/64"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/74"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/76"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/78"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2016/MapServer/84"
+                }
+            }
+        },
+        "2017": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer",
+            "layers": {
+                "2010 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/0"
+                },
+                "2010 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/12"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/14"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/16"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/20"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/24"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/26"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/28"
+                },
+                "115th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/52"
+                },
+                "2016 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/54"
+                },
+                "2016 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/56"
+                },
+                "2010 Census Urbanized Areas": {
+                    "code": "UR",
+                    "alias": "Urbanized Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/62"
+                },
+                "2010 Census Urban Clusters": {
+                    "code": "UC",
+                    "alias": "Urban Clusters",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/64"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/74"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/76"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/78"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2017/MapServer/84"
+                }
+            }
+        },
+        "2018": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer",
+            "layers": {
+                "2010 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/0"
+                },
+                "2010 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/12"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/14"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/16"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/20"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/24"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/26"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/28"
+                },
+                "116th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/52"
+                },
+                "2018 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/54"
+                },
+                "2018 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/56"
+                },
+                "2010 Census Urbanized Areas": {
+                    "code": "UR",
+                    "alias": "Urbanized Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/62"
+                },
+                "2010 Census Urban Clusters": {
+                    "code": "UC",
+                    "alias": "Urban Clusters",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/64"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/74"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/76"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/78"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2018/MapServer/84"
+                }
+            }
+        },
+        "2019": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer",
+            "layers": {
+                "2010 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/0"
+                },
+                "2010 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/12"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/14"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/16"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/20"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/24"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/26"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/28"
+                },
+                "116th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/52"
+                },
+                "2018 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/54"
+                },
+                "2018 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/56"
+                },
+                "2010 Census Urbanized Areas": {
+                    "code": "UR",
+                    "alias": "Urbanized Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/62"
+                },
+                "2010 Census Urban Clusters": {
+                    "code": "UC",
+                    "alias": "Urban Clusters",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/64"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/74"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/76"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/78"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/84"
+                }
+            }
+        },
+        "2021": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer",
+            "layers": {
+                "2020 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/0"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/6"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/8"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/10"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/12"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/14"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/18"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/22"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/24"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/26"
+                },
+                "116th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/50"
+                },
+                "2018 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/52"
+                },
+                "2018 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/54"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/68"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/70"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/72"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2021/MapServer/78"
+                }
+            }
+        },
+        "2022": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer",
+            "layers": {
+                "2020 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/80"
+                },
+                "2020 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/0"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/6"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/8"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/10"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/12"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/14"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/18"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/22"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/24"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/26"
+                },
+                "118th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/50"
+                },
+                "2022 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/52"
+                },
+                "2022 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/54"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2022/MapServer/78"
+                }
+            }
+        },
+        "2023": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer",
+            "layers": {
+                "2020 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/0"
+                },
+                "2020 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/14"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/16"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/18"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/22"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/26"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/28"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/30"
+                },
+                "118th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/54"
+                },
+                "2022 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/56"
+                },
+                "2022 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/58"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/82"
+                },
+                "Urban Areas": {
+                    "code": "UA",
+                    "alias": "Urban Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/88"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/97"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/95"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/93"
+                }
+            }
+        },
+        "2024": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer",
+            "layers": {
+                "2020 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/0"
+                },
+                "2020 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/14"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/16"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/18"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/22"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/26"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/28"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/30"
+                },
+                "119th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/54"
+                },
+                "2024 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/56"
+                },
+                "2024 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/58"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/82"
+                },
+                "Urban Areas": {
+                    "code": "UA",
+                    "alias": "Urban Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/88"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/97"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/95"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/93"
+                }
+            }
+        },
+        "2025": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer",
+            "layers": {
+                "2020 Census Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/0"
+                },
+                "2020 Census ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/2"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/8"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/14"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/16"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/18"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/22"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/26"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/28"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/30"
+                },
+                "119th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/54"
+                },
+                "2024 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/56"
+                },
+                "2024 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/58"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/82"
+                },
+                "Urban Areas": {
+                    "code": "UA",
+                    "alias": "Urban Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/88"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/97"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/95"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2025/MapServer/93"
+                }
+            }
+        }
+    },
+    "census": {
+        "2010": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer",
+            "layers": {
+                "Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/0"
+                },
+                "Traffic Analysis Districts": {
+                    "code": "TD",
+                    "alias": "Traffic Analysis Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/2"
+                },
+                "Traffic Analysis Zones": {
+                    "code": "TZ",
+                    "alias": "Traffic Analysis Zones",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/4"
+                },
+                "Urban Growth Areas": {
+                    "code": "UG",
+                    "alias": "Urban Growth Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/6"
+                },
+                "ZIP Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "ZIP Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/8"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/14"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/16"
+                },
+                "Census Blocks": {
+                    "code": "BL",
+                    "alias": "Blocks",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/18"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/20"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/22"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/24"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/28"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/32"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/34"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/36"
+                },
+                "113th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/60"
+                },
+                "111th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/62"
+                },
+                "2012 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/64"
+                },
+                "2012 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/66"
+                },
+                "2010 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/68"
+                },
+                "2010 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/70"
+                },
+                "Urbanized Areas": {
+                    "code": "UR",
+                    "alias": "Urbanized Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/78"
+                },
+                "Urban Clusters": {
+                    "code": "UC",
+                    "alias": "Urban Clusters",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/80"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/90"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/92"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/94"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2010/MapServer/100"
+                }
+            }
+        },
+        "2020": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer",
+            "layers": {
+                "Urban Growth Areas": {
+                    "code": "UG",
+                    "alias": "Urban Growth Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/0"
+                },
+                "Census Tracts": {
+                    "code": "TR",
+                    "alias": "Tracts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/6"
+                },
+                "Census Block Groups": {
+                    "code": "BG",
+                    "alias": "Block Groups",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/8"
+                },
+                "Census Blocks": {
+                    "code": "BL",
+                    "alias": "Blocks",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/10"
+                },
+                "Unified School Districts": {
+                    "code": "SU",
+                    "alias": "Unified School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/12"
+                },
+                "Secondary School Districts": {
+                    "code": "SS",
+                    "alias": "Secondary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/14"
+                },
+                "Elementary School Districts": {
+                    "code": "SE",
+                    "alias": "Elementary School Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/16"
+                },
+                "County Subdivisions": {
+                    "code": "CS",
+                    "alias": "County Subdivisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/20"
+                },
+                "Consolidated Cities": {
+                    "code": "CC",
+                    "alias": "Consolidated Cities",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/24"
+                },
+                "Incorporated Places": {
+                    "code": "CP",
+                    "alias": "Incorporated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/26"
+                },
+                "Census Designated Places": {
+                    "code": "DP",
+                    "alias": "Designated Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/28"
+                },
+                "116th Congressional Districts": {
+                    "code": "CD",
+                    "alias": "Congressional Districts",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/52"
+                },
+                "2018 State Legislative Districts - Upper": {
+                    "code": "LU",
+                    "alias": "State Legislative Districts - Upper",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/54"
+                },
+                "2018 State Legislative Districts - Lower": {
+                    "code": "LL",
+                    "alias": "State Legislative Districts - Lower",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/56"
+                },
+                "Combined Statistical Areas": {
+                    "code": "CA",
+                    "alias": "Combined Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/72"
+                },
+                "Metropolitan Divisions": {
+                    "code": "MD",
+                    "alias": "Metropolitan Divisions",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/74"
+                },
+                "Metropolitan Statistical Areas": {
+                    "code": "MS",
+                    "alias": "Metropolitan Statistical Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/76"
+                },
+                "Counties": {
+                    "code": "CO",
+                    "alias": "Counties",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/82"
+                },
+                "Zip Code Tabulation Areas": {
+                    "code": "ZC",
+                    "alias": "Zip Code Tabulation Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/84"
+                },
+                "Public Use Microdata Areas": {
+                    "code": "PU",
+                    "alias": "Public Use Microdata Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/86"
+                },
+                "2020 Urban Areas - Corrected": {
+                    "code": "UA",
+                    "alias": "Urban Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/88"
+                },
+                "2020 Urban Areas Labels - Corrected": {
+                    "code": "UA",
+                    "alias": "Urban Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/89"
+                },
+                "2020 Urban Areas": {
+                    "code": "UA",
+                    "alias": "Urban Areas",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/90"
+                }
+            }
+        }
+    },
+    "econ": {
+        "2012": {
+            "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ECON2012/MapServer",
+            "layers": {
+                "Economic Places": {
+                    "code": "EP",
+                    "alias": "Economic Places",
+                    "rest": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ECON2012/MapServer/0"
+                }
+            }
+        }
+    },
+    "main": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb"
+}
