@@ -48,10 +48,50 @@ out_sr = octl.sr
 # twr_cb = octl.get_tigerweb_dictionary(export = True)
 twr_cb = octl.get_tigerweb_dictionary(export = False)
 
+# Set up logging for the script
+logger = octl.logger
+
+# Create geodatabases from TWR REST APIs for American Community Survey (OCACS)
+logger.enable(meta = prj_meta, filename = f"twr_ocacs_gdb_{octl.version}.log", replace = True)
+for year in list(twr_cb["acs"].keys()):
+    print(f"\nCreating TWR geodatabase for OCACS year: {year}\n")
+    gdb_path = os.path.join(prj_dirs["gis"], f"twr_ocacs{year}.gdb")
+    # If the geodatabase already exists, delete it
+    if arcpy.Exists(gdb_path):
+        arcpy.Delete_management(gdb_path)
+    # Create a new geodatabase from TWR REST API
+    octl.create_gdb_from_twr(year = int(year), level = "acs", out_gdb = gdb_path)
+    print(f"TWR OCACS geodatabase created at: {gdb_path}\n")
+logger.disable()
+
+# Create geodatabases from TWR REST APIs for Decennial Census (OCDC)
+logger.enable(meta = prj_meta, filename = f"twr_ocdc_gdb_{octl.version}.log", replace = True)
+for year in list(twr_cb["census"].keys()):
+    print(f"\nCreating TWR geodatabase for OCDC year: {year}\n")
+    gdb_path = os.path.join(prj_dirs["gis"], f"twr_ocdc{year}.gdb")
+    # If the geodatabase already exists, delete it
+    if arcpy.Exists(gdb_path):
+        arcpy.Delete_management(gdb_path)
+    # Create a new geodatabase from TWR REST API
+    octl.create_gdb_from_twr(year = int(year), level = "census", out_gdb = gdb_path)
+    print(f"TWR OCDC geodatabase created at: {gdb_path}\n")
+logger.disable()
 
 
+# Create geodatabases from TWR REST APIs for Economic Census (OCEC)
+logger.enable(meta = prj_meta, filename = f"twr_ocec_gdb_{octl.version}.log", replace = True)
+for year in list(twr_cb["econ"].keys()):
+    print(f"\nCreating TWR geodatabase for Economic Census year: {year}\n")
+    gdb_path = os.path.join(prj_dirs["gis"], f"twr_ocec{year}.gdb")
+    # If the geodatabase already exists, delete it
+    if arcpy.Exists(gdb_path):
+        arcpy.Delete_management(gdb_path)
+    # Create a new geodatabase from TWR REST API
+    octl.create_gdb_from_twr(year = int(year), level = "econ", out_gdb = gdb_path)
+    print(f"TWR OCEC geodatabase created at: {gdb_path}\n")
+logger.disable()
 
-out_gdb = octl.create_gdb_from_twr(year=2025, level="acs")
+#out_gdb = octl.create_gdb_from_twr(year=2025, level="acs")
 
 
 
@@ -83,5 +123,4 @@ if "STATE" in [f.name for f in arcpy.ListFields(rest)]:
 if 'STATE' in fields:
     arcpy.MakeFeatureLayer_management(rest, 'temp_lyr')
 else:
-    raise RuntimeError("REST layer has no 'STATE' field: {}".format(rest))
-
+    raise RuntimeError(f"REST layer has no 'STATE' field: {rest}")

@@ -749,13 +749,32 @@ class OCGD:
         cb = self.get_tigerweb_dictionary(export = False)
 
         # Validate level and year
-        if level in cb:
-            level_years = [y for y in cb[level]]
-            if str(year) not in level_years:
-                raise ValueError(f"Year {year} not found in level '{level}'. Available years: {level_years}")
+        # If the level is not "main"
+        if level != "main":
+            print(f"Validating level: {level} and year: {year}")
+            # Check if the level exists in the TIGERweb dictionary
+            if level in cb:
+                level_years = [int(y) for y in cb[level]]
+                # If the year is between the min and max of level_years, find the closest year. If the year is greater than min and less than max, if it is not in level_years, use the nearest year available.
+                if year < min(level_years):
+                    print(f"Year {year} is less than the minimum available year for level '{level}'. Using minimum year {min(level_years)}.")
+                    year = min(level_years)
+                elif year > max(level_years):
+                    print(f"Year {year} is greater than the maximum available year for level '{level}'. Using maximum year {max(level_years)}.")
+                    year = max(level_years)
+                elif year not in level_years:
+                    closest_year = min(level_years, key=lambda x: abs(x - year))
+                    print(f"Year {year} is not available for level '{level}'. Using closest available year {closest_year}.")
+                    year = closest_year
+                else:
+                    print(f"Year {year} is available for level '{level}'.")
+            else:
+                print(f"Level '{level}' is not available in the TIGERweb dictionary.")
+                return None
         else:
-            raise ValueError(f"Level '{level}' not found in TIGERweb dictionary. Available levels: {list(cb.keys())}")
-        
+            print(f"Level 'main' selected.\nMain TIGERweb REST API URL: {cb['main']}.\nExiting function.")
+            return None
+            
         # Get the specific year dictionary for the level
         cb_layers = cb.get(level, {}).get(str(year), {}).get("layers", {})
 
@@ -929,12 +948,6 @@ class OCGD:
                     # Create a feature layer from the REST service without a where-clause
                     print("- Creating feature layer without query")
                     arcpy.MakeFeatureLayer_management(layer_rest, temp_layer)
-
-                # Check if the temp_lyr is empty
-                print("- Checking if temp_lyr is empty")
-                if int(arcpy.management.GetCount("temp_lyr").getOutput(0)) == 0:
-                    arcpy.Delete_management(temp_layer)
-                    continue
 
                 # Get the spatial reference of the temporary layer
                 print("- Checking spatial reference")
