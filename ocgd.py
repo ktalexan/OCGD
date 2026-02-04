@@ -437,6 +437,152 @@ class OCGD:
         arcpy.env.addOutputsToMap = add_to_map
         return aprx, workspace
 
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Crawl TIGERweb REST API ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def crawl_tigerweb(self, export: bool = False) -> dict:
+        """
+        Function to crawl the TIGERweb REST API and create a full inventory of services and layers.
+        Args:
+            export (bool, optional): Whether to export the inventory to a JSON file. Defaults to False.
+        Returns
+            inventory (dict): A dictionary containing the full inventory of TIGERweb services and layers.
+        Raises:
+            None
+        Example:
+            >>> inventory = crawl_tigerweb(export=True)
+        Notes:
+            The crawl_tigerweb function retrieves the full inventory of TIGERweb services and layers from the Census REST API.
+        """
+
+        # Set the base REST API URL for TIGERweb services
+        base_rest = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb"
+        base_params = {"f": "json"}
+
+        # Initialize the inventory dictionary
+        inventory = {}
+
+        try:
+            print
+            # Get the base REST services
+            base_response = requests.get(base_rest, params = base_params, timeout = 30)
+            base_response.raise_for_status()
+            base_data = base_response.json()
+
+            # Iterate through each service in the base REST services
+            for service in base_data.get("services", []):
+                # Sanitize service and get the service type
+                service_name = service["name"].replace("TIGERweb/", "")
+                service_type = service["type"]
+                print(f"\n{service_type}: Inventorying: {service_name}")
+
+                # Get the service REST URL and parameters
+                service_rest = f"{base_rest}/{service_name}/{service_type}"
+                service_param = {"f": "pjson"}
+                
+                # Initialize the service in the inventory
+                inventory[service_name] = {
+                    "rest": service_rest,
+                    "name": service_name,
+                    "type": service_type
+                }
+
+                try:
+                    # Get the service details
+                    service_response = requests.get(service_rest, params = service_param, timeout = 30)
+                    service_response.raise_for_status()
+                    service_data = service_response.json()
+
+                    # Update the inventory with service details
+                    inventory[service_name].update({
+                        "currentVersion": service_data.get("currentVersion"),
+                        "cimVersion": service_data.get("cimVersion"),
+                        "mapName": service_data.get("mapName"),
+                        "description": service_data.get("description"),
+                        "spatialReference": service_data.get("spatialReference", {}).get("latestWkid", None),
+                    })
+                
+                except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
+                    print(f"- Skipping layers for {service_name}: {e}")
+
+                # Get the layers for the service
+                if "layers" in service_data:
+                    inventory[service_name]["layers"] = {}
+
+                    # Iterate through each layer in the service
+                    for layer in service_data["layers"]:
+                        layer_type = layer["type"]
+                        layer_id = layer["id"]
+                        layer_name = layer["name"]
+                        layer_label = f"{layer_name} ({layer_id})"
+                        print(f"- {layer_type}: {layer_name} (ID: {layer_id})")
+
+                        # Get the layer REST URL and parameters
+                        layer_rest = f"{base_rest}/{service_name}/{service_type}/{layer_id}"
+                        layer_param = {"f": "pjson"}
+
+                        try:
+                            # Get the layer details
+                            layer_response = requests.get(layer_rest, params = layer_param, timeout = 30)
+                            layer_response.raise_for_status()
+                            layer_data = layer_response.json()
+                            layer_description = layer_data["description"]
+                            layer_version = layer_data["currentVersion"]
+                            layer_cim_version = layer_data["cimVersion"]
+                            layer_geometry = layer_data["geometryType"]
+
+                            # Update the inventory with layer details
+                            inventory[service_name]["layers"][layer_label] = {
+                                "rest": layer_rest,
+                                "id": layer_id,
+                                "name": layer_name,
+                                "type": layer_type,
+                                "description": layer_description,
+                                "currentVersion": layer_version,
+                                "cimVersion": layer_cim_version,
+                                "geometryType": layer_geometry
+                            }
+
+                        except (requests.exceptions.RequestException, json.JSONDecodeError, KeyError) as e:
+                            print(f"- Skipping fields for {layer_name}: {e}")
+
+                        # if the layer_type is Feature Layer
+                        if layer_type == "Feature Layer":
+                            inventory[service_name]["layers"][layer_label]["fields"] = []
+
+                            # Get the fields for the layer based on layer type
+                            layer_fields = [f["name"] for f in layer_data.get("fields", [])]
+
+                            # Update the inventory with layer fields
+                            inventory[service_name]["layers"][layer_label]["fields"] = layer_fields
+                        elif layer_type == "Group Layer":
+                            inventory[service_name]["layers"][layer_label]["sublayers"] = []
+
+                            # Get the sublayers for the group layer
+                            sublayer_ids = [id for id in layer_data["subLayers"] if "id" in id]
+
+                            # Update the inventory with sublayer IDs
+                            inventory[service_name]["layers"][layer_label]["sublayers"] = sublayer_ids
+
+        except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
+            print(f"Error at {base_rest}: {e}")
+
+
+        print("\nInventory complete.")
+
+        if export:
+            # Export inventory to JSON file
+            output_path = os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json")
+            with open(output_path, "w", encoding = "utf-8") as f:
+                json.dump(inventory, f, indent=4)
+            print(f"Inventory exported to {output_path}")
+
+        # Return the final inventory
+        return inventory
+
+
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Get TIGERweb dictionary ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
