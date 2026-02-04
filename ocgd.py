@@ -716,6 +716,276 @@ class OCGD:
         # Return the dictionary
         return twr_cb
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Create GDB from TIGERweb REST API ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def create_gdb_from_twr(self, year: int, level: str = "acs", out_gdb: str = None):
+        """
+        Create a file geodatabase from the TIGERweb REST API layers for a specified level and year.
+        Args:
+            year (int): The year of the TIGERweb data to use.
+            level (str, optional): The level of TIGERweb data to use. Defaults to "acs".
+            out_gdb (str, optional): The output geodatabase path. If None, a scratch geodatabase will be created. Defaults to None.
+        Returns:
+            None
+        Raises:
+            None
+        Example:
+            >>> create_gdb_from_twr(year=2022, level="acs", out_gdb="path/to/output.gdb")
+        Notes:
+            The create_gdb_from_twr function creates a file geodatabase from the TIGERweb REST API layers for a specified level and year.
+        """
+
+        # If out_gdb is None, create a scratch geodatabase
+        if out_gdb is None:
+            out_gdb = self.scratch_gdb()
+
+        # Set the arcpy environment to the output geodatabase
+        arcpy.env.workspace = out_gdb
+        arcpy.env.overwriteOutput = True
+
+        # Get the TIGERweb dictionary
+        print("Updating TIGERweb dictionary...")
+        cb = self.get_tigerweb_dictionary(export = False)
+
+        # Validate level and year
+        if level in cb:
+            level_years = [y for y in cb[level]]
+            if str(year) not in level_years:
+                raise ValueError(f"Year {year} not found in level '{level}'. Available years: {level_years}")
+        else:
+            raise ValueError(f"Level '{level}' not found in TIGERweb dictionary. Available levels: {list(cb.keys())}")
+        
+        # Get the specific year dictionary for the level
+        cb_layers = cb.get(level, {}).get(str(year), {}).get("layers", {})
+
+        # Part 1: Create Counties feature class as reference
+        
+        # Find the Counties layer information and populate variables
+        if "Counties" in cb_layers:
+            print("\n--- Processing layer: Counties ---")
+            # The REST endpoint for the Counties layer
+            layer_rest = cb_layers["Counties"]["rest"]
+            # The Counties alias
+            layer_alias = cb_layers["Counties"]["alias"]
+            # The Counties layer code
+            layer_code = cb_layers["Counties"]["code"]
+            # The output feature class name (same as layer code)
+            out_fc_name = layer_code
+            # The where-clause to filter for Orange County, CA
+            query = "STATE = '06' AND COUNTY = '059'"  # Orange County, CA
+
+            # Ensure output GDB exists
+            if not arcpy.Exists(out_gdb):
+                folder = os.path.dirname(out_gdb)
+                gdb_name = os.path.basename(out_gdb)
+                arcpy.CreateFileGDB_management(folder, gdb_name)
+
+            # Temporary layer name
+            temp_layer = "temp_layer"
+
+            try:
+                print("- Using direct_query method")
+                # Create a feature layer from the REST service, applying the query where-clause
+                arcpy.MakeFeatureLayer_management(layer_rest, temp_layer, query)
+
+                # Get the spatial reference of the temporary layer
+                print("- Checking spatial reference")
+                temp_sr = arcpy.Describe(temp_layer).spatialReference
+
+                # Check if the spatial reference is the desired output spatial reference
+                if temp_sr.factoryCode != self.sr.factoryCode:
+                    print("- Projecting to desired spatial reference (Web Mercator, WKID 3857)")
+                    # Project the layer to the desired spatial reference
+                    projected_temp = "projected_temp_layer"
+                    arcpy.Project_management(temp_layer, projected_temp, self.sr)
+                    # Delete the temporary layer
+                    arcpy.Delete_management(temp_layer)
+                    # Recreate the temporary layer variable to point to the projected layer
+                    arcpy.MakeFeatureLayer_management(projected_temp, temp_layer)
+                else:
+                    print("- No projection needed. Spatial reference matches.")
+
+                # Export the (possibly projected) layer to a feature class
+                print("- Exporting temporary layer to a feature class")
+                out_fc_path = os.path.join(out_gdb, out_fc_name)
+                arcpy.FeatureClassToFeatureClass_conversion(temp_layer, out_gdb, out_fc_name)
+                
+                # Set the alias name for the output feature class
+                print(f"- Setting alias: {layer_alias} for the output feature class: {out_fc_name}")
+                if arcpy.Exists(out_fc_path):
+                    arcpy.AlterAliasName(out_fc_path, layer_alias)
+
+                print(f"✅ Feature class created: {out_fc_path}")
+
+            except arcpy.ExecuteError:
+                print("- ArcPy Error:", arcpy.GetMessages(2))
+            except (OSError, requests.RequestException, RuntimeError) as e:
+                print(f"- Python Error: {e}")
+            finally:
+                # Clean up temporary layer
+                print("- Cleaning up temporary layers")
+                if arcpy.Exists(temp_layer):
+                    arcpy.Delete_management(temp_layer)
+
+        # Part 2: Process other layers
+
+        # Loop through each layer in the TIGERweb dictionary for the specified level and year
+        for layer, layer_info in cb_layers.items():
+
+            # Skip the Counties layer as it has already been processed
+            if layer == "Counties":
+                continue
+            
+            # Process each layer
+            print(f"\n--- Processing layer: {layer} ---")
+            # Get the layer code, alias, and REST endpoint
+            layer_code = layer_info["code"]
+            layer_alias = layer_info["alias"]
+            layer_rest = layer_info["rest"]
+
+            # Define output feature class name and path
+            out_fc_name = layer_code
+            out_fc_path = os.path.join(out_gdb, out_fc_name)
+
+            # Define the path to the Counties feature class for spatial selection (the one created earlier)
+            county_path = os.path.join(out_gdb, "CO")
+
+            # Ensure output GDB exists
+            if not arcpy.Exists(out_gdb):
+                folder = os.path.dirname(out_gdb)
+                gdb_name = os.path.basename(out_gdb)
+                arcpy.CreateFileGDB_management(folder, gdb_name)
+
+            # Temporary layer name
+            temp_layer = "temp_layer"
+
+            # Initialize method variable
+            method = ""
+
+            # Determine method based on layer code
+            if layer_code in ["TR", "CO", "CS", "BG", "BL", "TZ"]:
+                method = "direct_query"
+                query = "STATE = '06' AND COUNTY = '059'"
+                print(f"- Using {method} method")
+                try:
+                    # Create a feature layer from the REST service, applying the query where-clause
+                    print("- Creating feature layer with query")
+                    arcpy.MakeFeatureLayer_management(layer_rest, temp_layer, query)
+
+                    # Get the spatial reference of the temporary layer
+                    print("- Checking spatial reference")
+                    temp_sr = arcpy.Describe(temp_layer).spatialReference
+
+                    # Check if the spatial reference is the desired output spatial reference
+                    if temp_sr.factoryCode != self.sr.factoryCode:
+                        print("- Projecting to desired spatial reference (Web Mercator, WKID 3857)")
+                        # Project the layer to the desired spatial reference
+                        projected_temp = "projected_temp_layer"
+                        arcpy.Project_management(temp_layer, projected_temp, self.sr)
+                        # Delete the temporary layer
+                        arcpy.Delete_management(temp_layer)
+                        # Recreate the temporary layer variable to point to the projected layer
+                        arcpy.MakeFeatureLayer_management(projected_temp, temp_layer)
+                    else:
+                        print("- No projection needed. Spatial reference matches.")
+
+                    # Export the (possibly projected) layer to a feature class
+                    print("- Exporting temporary layer to a feature class")
+                    out_fc_path = os.path.join(out_gdb, out_fc_name)
+                    arcpy.FeatureClassToFeatureClass_conversion(temp_layer, out_gdb, out_fc_name)
+
+                except arcpy.ExecuteError:
+                    print("ArcPy Error:", arcpy.GetMessages(2))
+                except (OSError, requests.RequestException, RuntimeError) as e:
+                    print(f"Python Error: {e}")
+                finally:
+                    # Clean up temporary layer
+                    if arcpy.Exists(temp_layer):
+                        arcpy.Delete_management(temp_layer)
+
+                    # Check if the output feature class is empty
+                    if int(arcpy.GetCount_management(out_fc_path).getOutput(0)) == 0:
+                        arcpy.Delete_management(out_fc_path)
+                    else:
+                        # Set the alias name for the output feature class
+                        print(f"- Setting alias: {layer_alias} for the output feature class: {out_fc_name}")
+                        if arcpy.Exists(out_fc_path):
+                            arcpy.AlterAliasName(out_fc_path, layer_alias)
+                        
+                        print(f"✅ Feature class created: {out_fc_path}")
+
+            else:
+                method = "spatial_selection"
+                print(f"- Using {method} method")
+
+                if "STATE" in [f.name for f in arcpy.ListFields(layer_rest)]:
+                    query = "STATE = '06'"
+
+                    # Create a feature layer from the REST service, applying the query where-clause
+                    print("- Creating feature layer with query")
+                    arcpy.MakeFeatureLayer_management(layer_rest, temp_layer, query)
+                else:
+                    # Create a feature layer from the REST service without a where-clause
+                    print("- Creating feature layer without query")
+                    arcpy.MakeFeatureLayer_management(layer_rest, temp_layer)
+
+                # Check if the temp_lyr is empty
+                print("- Checking if temp_lyr is empty")
+                if int(arcpy.management.GetCount("temp_lyr").getOutput(0)) == 0:
+                    arcpy.Delete_management(temp_layer)
+                    continue
+
+                # Get the spatial reference of the temporary layer
+                print("- Checking spatial reference")
+                temp_sr = arcpy.Describe(temp_layer).spatialReference
+
+                # Check if the spatial reference is the desired output spatial reference
+                if temp_sr.factoryCode != self.sr.factoryCode:
+                    print("- Projecting to desired spatial reference (Web Mercator, WKID 3857)")
+                    # Project the layer to the desired spatial reference
+                    projected_temp = "projected_temp_layer"
+                    arcpy.Project_management(temp_layer, projected_temp, self.sr)
+                    # Delete the temporary layer
+                    arcpy.Delete_management(temp_layer)
+                    # Recreate the temporary layer variable to point to the projected layer
+                    arcpy.MakeFeatureLayer_management(projected_temp, temp_layer)
+                else:
+                    print("- No projection needed. Spatial reference matches.")
+
+                # Apply your spatial selection with the negative distance
+                print("- Applying spatial selection within -1000 Feet of County boundary")
+                arcpy.management.SelectLayerByLocation(
+                    in_layer = temp_layer,
+                    overlap_type = "WITHIN_A_DISTANCE",
+                    select_features = county_path,
+                    search_distance = "-1000 Feet",
+                    selection_type = "NEW_SELECTION",
+                    invert_spatial_relationship = "NOT_INVERT"
+                )
+
+                # Export the selection to a new fc
+                print("- Exporting selected features to a feature class")
+                out_fc_path = os.path.join(out_gdb, out_fc_name)
+                arcpy.conversion.FeatureClassToFeatureClass(temp_layer, out_gdb, out_fc_name)
+
+                # Clean up temporary layer
+                if arcpy.Exists(temp_layer):
+                    arcpy.Delete_management(temp_layer)
+
+                # Check if the output feature class is empty
+                if int(arcpy.GetCount_management(out_fc_path).getOutput(0)) == 0:
+                    arcpy.Delete_management(out_fc_path)
+                else:
+                    # Set the alias name for the output feature class
+                    print(f"- Setting alias: {layer_alias} for the output feature class: {out_fc_name}")
+                    if arcpy.Exists(out_fc_path):
+                        arcpy.AlterAliasName(out_fc_path, layer_alias)
+
+                    print(f"✅ Feature class created: {out_fc_path}")
+        print("\nAll layers processed.")
+        return out_gdb
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the OCTL main class ----
