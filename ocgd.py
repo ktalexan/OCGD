@@ -329,6 +329,7 @@ class OCGD:
             "gis_layers_templates": os.path.join(self.base_path, "gis", "layers", "templates"),
             "gis_layouts": os.path.join(self.base_path, "gis", "layouts"),
             "gis_maps": os.path.join(self.base_path, "gis", "maps"),
+            "gis_styles": os.path.join(self.base_path, "gis", "styles"),
             "gis_ocdc": os.path.join(self.base_path, "gis", "ocdc"),
             "gis_ocdc_aprx": os.path.join(self.base_path, "gis", "ocdc", "ocdc.aprx"),
             "gis_ocdc_gdb": os.path.join(self.base_path, "gis", "ocdc", "ocdc.gdb"),
@@ -460,10 +461,67 @@ class OCGD:
         base_rest = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb"
         base_params = {"f": "json"}
 
-        # Initialize the inventory dictionary
-        inventory = {"series": {}, "standalone": {}}
+        # The 2-letter codes should be unique. No duplicates should be present.
+        cb_codes = {
+            "Public Use Microdata Areas": "PU",
+            "ZIP Code Tabulation Areas": "ZC",
+            "Zip Code Tabulation Areas": "ZC",
+            "Tracts": "TR",
+            "Block Groups": "BG",
+            "Blocks": "BL",
+            "Unified School Districts": "SU",
+            "Secondary School Districts": "SS",
+            "Elementary School Districts": "SE",
+            "County Subdivisions": "CS",
+            "Consolidated Cities": "CC",
+            "Incorporated Places": "CP",
+            "Designated Places": "DP",
+            "Congressional Districts": "CD",
+            "State Legislative Districts - Upper": "LU",
+            "State Legislative Districts - Lower": "LL",
+            "Urban Areas": "UA",
+            "Urban Clusters": "UC",
+            "Urban Growth Areas": "UG",
+            "Urbanized Areas": "UR",
+            "Combined Statistical Areas": "CA",
+            "Metropolitan Divisions": "MD",
+            "Metropolitan Statistical Areas": "MS",
+            "Micropolitan Statistical Areas": "MC",
+            "Counties": "CO",
+            "Economic Places": "EP",
+            "Traffic Analysis Zones": "TZ",
+            "Traffic Analysis Districts": "TD",
+            "Primary Roads": "PR",
+            "Secondary Roads": "SR",
+            "Local Roads": "LR",
+            "Railroads": "RL",
+            "Linear Hydrography": "LH",
+            "Areal Hydrography": "AH",
+            "National Park Service Areas": "NP",
+            "Correctional Facilities": "CF",
+            "Colleges and Universities": "UN",
+            "Military Installations": "MI",
+        }        
 
-        exclusion_list = ["Labels", "Tribal", "Estates", "Subbarrios", "Alaska", "American Indian", "Off-Reservation", "Hawaiian", "Census Divisions", "Census Regions", "New England", "States", "Oklahoma", "Voting Districts"]
+
+        # Initialize the inventory dictionary
+        inventory = {
+            "metadata": {
+                "project": self.prj_meta["name"],
+                "version": self.prj_meta["version"],
+                "date": self.prj_meta["date"],
+                "author": self.prj_meta["author"],
+                "description": "Full inventory of TIGERweb services and layers retrieved from the Census REST API.",
+                "total_services": 0,
+                "total_layers": 0
+            },
+            "series": {},
+            "standalone": {}
+            }
+
+        exclusion_list = ["Labels", "Tribal", "Estates", "Subbarrios", "Alaska", "American Indian", "Off-Reservation", "Hawaiian", "Census Divisions", "Census Regions", "New England", "States", "Oklahoma", "Voting Districts", "School District Administrative Areas", "Consolidated Cities", "Micropolitan", "Urban Growth Areas", "Glaciers"]
+        cs = 0 # Service counter
+        cl = 0 # Layer counter
 
         # Get the base REST services
         base_response = requests.get(base_rest, params = base_params, timeout = 30)
@@ -473,6 +531,7 @@ class OCGD:
         base_data = [service for service in base_data.get("services", []) if "TIGERweb/tigerWMS_" in service["name"]]
 
         for service in base_data:
+            cs += 1 # Increment the service counter
             service_name = service["name"].replace("TIGERweb/tigerWMS_", "")
             service_type = service["type"]
 
@@ -524,7 +583,8 @@ class OCGD:
                         # If the layer["name"] contains any of the exclusion terms, skip it
                         if any(exclusion in layer["name"] for exclusion in exclusion_list):
                             continue
-
+                        
+                        cl += 1 # Increment the layer counter
                         layer_type = layer["type"]
                         layer_id = layer["id"]
                         layer_name = layer["name"]
@@ -542,18 +602,26 @@ class OCGD:
                         layer_id = layer_data["id"]
                         layer_type = layer_data["type"]
                         layer_name = layer_data["name"]
+                        layer_alias = None
+                        layer_code = None
                         layer_description = layer_data["description"]
                         layer_version = layer_data["currentVersion"]
                         layer_cim_version = layer_data["cimVersion"]
                         layer_geometry = layer_data["geometryType"]
                         layer_fields = [f["name"] for f in layer_data["fields"]]
-                        # If both "STATE" and "COUNTY" are not in layer_fields set gp_method to "query", else if only "STATE" is in layer_fields set gp_method to "spatial with query", else set gp_method to "spatial only"
+                        # If both "STATE" and "COUNTY" are not in layer_fields set ocgd_method to "query", else if only "STATE" is in layer_fields set ocgd_method to "spatial with query", else set ocgd_method to "spatial only"
                         if "STATE" in layer_fields and "COUNTY" in layer_fields:
-                            gp_method = "query"
+                            ocgd_method = "query"
                         elif "STATE" in layer_fields:
-                            gp_method = "spatial with query"
+                            ocgd_method = "spatial with query"
                         else:
-                            gp_method = "spatial only"
+                            ocgd_method = "spatial only"
+
+                        # Determine the layer code and alias based on the layer name and the cb_codes dictionary
+                        for cb_code_key, cb_code_value in cb_codes.items():
+                            if cb_code_key in layer_name:
+                                layer_code = cb_code_value
+                                layer_alias = cb_code_key
 
                         # Update the inventory with layer details
                         inventory["series"][category_name][category_year]["layers"][layer_label] = {
@@ -561,11 +629,13 @@ class OCGD:
                             "id": layer_id,
                             "name": layer_name,
                             "type": layer_type,
+                            "code": layer_code,
+                            "alias": layer_alias,
                             "description": layer_description,
                             "currentVersion": layer_version,
                             "cimVersion": layer_cim_version,
                             "geometryType": layer_geometry,
-                            "gp_method": gp_method,
+                            "ocgd_method": ocgd_method,
                             "fields": layer_fields
                         }
 
@@ -611,7 +681,7 @@ class OCGD:
                         # If the layer["name"] contains any of the exclusion terms, skip it
                         if any(exclusion in layer["name"] for exclusion in exclusion_list):
                             continue
-
+                        cl += 1 # Increment the layer counter
                         layer_type = layer["type"]
                         layer_id = layer["id"]
                         layer_name = layer["name"]
@@ -634,27 +704,40 @@ class OCGD:
                         layer_cim_version = layer_data["cimVersion"]
                         layer_geometry = layer_data["geometryType"]
                         layer_fields = [f["name"] for f in layer_data["fields"]]
-                        # If both "STATE" and "COUNTY" are not in layer_fields set gp_method to "query", else if only "STATE" is in layer_fields set gp_method to "spatial with query", else set gp_method to "spatial only"
+                        # If both "STATE" and "COUNTY" are not in layer_fields set ocgd_method to "query", else if only "STATE" is in layer_fields set ocgd_method to "spatial with query", else set ocgd_method to "spatial only"
                         if "STATE" in layer_fields and "COUNTY" in layer_fields:
-                            gp_method = "query"
+                            ocgd_method = "query"
                         elif "STATE" in layer_fields:
-                            gp_method = "spatial with query"
+                            ocgd_method = "spatial with query"
                         else:
-                            gp_method = "spatial only"
+                            ocgd_method = "spatial only"
+
+                        # Determine the layer code and alias based on the layer name and the cb_codes dictionary
+                        for cb_code_key, cb_code_value in cb_codes.items():
+                            if cb_code_key in layer_name:
+                                layer_code = cb_code_value
+                                layer_alias = cb_code_key
 
                         # Update the inventory with layer details
                         inventory["standalone"][category_name]["layers"][layer_label] = {
                             "rest": layer_rest,
                             "id": layer_id,
                             "name": layer_name,
+                            "code": layer_code,
+                            "alias": layer_alias,
                             "type": layer_type,
                             "description": layer_description,
                             "currentVersion": layer_version,
                             "cimVersion": layer_cim_version,
                             "geometryType": layer_geometry,
-                            "gp_method": gp_method,
+                            "ocgd_method": ocgd_method,
                             "fields": layer_fields
                         }
+        
+        # Update the inventory metadata with total services and layers
+        inventory["metadata"]["total_services"] = cs
+        inventory["metadata"]["total_layers"] = cl
+        print(f"\nTotal Services: {cs}, Total Layers: {cl}")
 
         if export:
             # Export inventory to JSON file
@@ -668,288 +751,9 @@ class OCGD:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Get TIGERweb dictionary ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def get_tigerweb_dictionary(self, export: bool = False) -> dict:
-        """
-        Function to get the available TIGERweb services and their years from the Census REST API.
-        Returns a dictionary with service names as keys and list of years as values.
-        Args:
-            export (bool, optional): Whether to export the dictionary to a JSON file. Defaults to False.
-        Returns:
-            twr_cb (dict): A dictionary containing the TIGERweb services and their years.
-        Raises:
-            None
-        Example:
-            >>> tigerweb_dict = get_tigerweb_dictionary(export=True)
-        Notes:
-            The get_tigerweb_dictionary function retrieves the available TIGERweb services and their years from the Census REST API.
-        """
-        # Initialize the dictionary
-        twr_dict = dict()
-
-        # The base REST API URL for TIGERweb services
-        twr_base = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb"
-
-        codes = {
-            "Public Use Microdata Areas": "PU",
-            "ZIP Code Tabulation Areas": "ZC",
-            "Zip Code Tabulation Areas": "ZC",
-            "Tracts": "TR",
-            "Block Groups": "BG",
-            "Blocks": "BL",
-            "Unified School Districts": "SU",
-            "Secondary School Districts": "SS",
-            "Elementary School Districts": "SE",
-            "County Subdivisions": "CS",
-            "Consolidated Cities": "CC",
-            "Incorporated Places": "CP",
-            "Designated Places": "DP",
-            "Congressional Districts": "CD",
-            "State Legislative Districts - Upper": "LU",
-            "State Legislative Districts - Lower": "LL",
-            "Urban Areas": "UA",
-            "Urban Clusters": "UC",
-            "Urban Growth Areas": "UG",
-            "Urbanized Areas": "UR",
-            "Combined Statistical Areas": "CA",
-            "Metropolitan Divisions": "MD",
-            "Metropolitan Statistical Areas": "MS",
-            "Counties": "CO",
-            "Economic Places": "EP",
-            "Traffic Analysis Zones": "TZ",
-            "Traffic Analysis Districts": "TD"
-        }        
-        
-        # Get the response from the base URL
-        response = requests.get(twr_base, timeout = 20)
-        # Check if the request was successful
-        if response.status_code != 200:
-            print(f"Error fetching data: {response.status_code}")
-            return {}
-
-        # Get the content of the URL
-        content = response.text
-
-        # Clean the content
-        # Remove all html tags including script and style tags, and '&nbsp', '&qt'
-        content = re.sub(r'<[^>]*>', '', content)
-        content = re.sub(r'&nbsp;', ' ', content)
-        content = re.sub(r'&qt;', ' ', content)
-        # If lines contain "TIGERweb", keep them, otherwise remove them
-        search_content = "TIGERweb/tigerWMS_"
-        # Split the content into lines
-        lines = content.splitlines()
-        # Filter lines that contain the search content
-        lines = [line for line in lines if search_content in line]
-        # Get the content of each line after the last occurrence of the search content
-        lines = [line.split(search_content)[-1].strip() for line in lines]
-        # Remove " (MapServer)" till the end of the line
-        lines = [re.sub(r' \(MapServer\).*', '', line) for line in lines]
-        # the text in lines have a year at the end in their string, get only these lines
-        lines = [line for line in lines if re.search(r'\d{4}$', line)]
-        # Split the lines into two parts: before the year and the year
-        lines = [re.match(r'^(.*?)(\d{4})$', line).groups() for line in lines]
-
-        # for each unique first part, get the list of years
-        unique_lines = {}
-        for line in lines:
-            if line[0] not in unique_lines:
-                unique_lines[line[0]] = []
-            unique_lines[line[0]].append(int(line[1]))
-
-        # Process the ACS Services from the unique lines
-        if "ACS" in unique_lines:
-            twr_dict["acs"] = {}
-            acs_years = unique_lines["ACS"]
-
-            # For each year, get the layers from the REST API
-            for year in acs_years:
-                base_url = f"{twr_base}/tigerWMS_ACS{year}/MapServer"
-                response = requests.get(base_url, timeout = 20)
-                if response.status_code != 200:
-                    print(f"Error fetching data for ACS {year}: {response.status_code}")
-                    continue
-                # Get the content of the URL
-                content = response.text
-                # Remove all html tags including script and style tags, and '&nbsp', '&qt'
-                content = re.sub(r'<[^>]*>', '', content)
-                content = re.sub(r'&nbsp;', ' ', content)
-                content = re.sub(r'&qt;', ' ', content)
-                # Only keep the section of the content that lists the layers (between "Layers:" and "Description:")
-                layer_section = re.search(r'Layers:(.*?)Description:', content, re.DOTALL)
-                if layer_section:
-                    layer_section = layer_section.group(1)
-                    # Remove empty lines
-                    layer_section = os.linesep.join([s for s in layer_section.splitlines() if s.strip()])
-                    # Split the content into lines
-                    lines = layer_section.splitlines()
-                    # Each line has the layer name followed by space and then the layer ID in parenthesis (a number). Split them.
-                    lines = [re.match(r'^(.*?)[\s]+\((\d+)\)$', line.strip()).groups() for line in lines]
-
-                    # Create a dictionary of layer names and their IDs and codes
-                    layer_dict = {}
-                    for lyr_name, lyr_id in lines:
-                        line_code = None
-                        for code_key, code_val in codes.items():
-                            if code_key in lyr_name:
-                                line_code = code_val
-                                line_alias = code_key
-                                break
-                        layer_dict[lyr_name] = {
-                            "code": line_code,
-                            "alias": line_alias,
-                            "rest": base_url + f"/{lyr_id}"
-                        }
-
-                # Add to the tigerweb dictionary
-                twr_dict["acs"][str(year)] = {
-                    "rest": base_url,
-                    "layers": layer_dict
-                }
-                
-        # Process the Census Services from the unique lines
-        if "Census" in unique_lines:
-            twr_dict["census"] = {}
-            census_years = unique_lines["Census"]
-
-            # For each year, get the layers from the REST API
-            for year in census_years:
-                base_url = f"{twr_base}/tigerWMS_Census{year}/MapServer"
-                response = requests.get(base_url, timeout = 20)
-                if response.status_code != 200:
-                    print(f"Error fetching data for ACS {year}: {response.status_code}")
-                    continue
-                # Get the content of the URL
-                content = response.text
-                # Remove all html tags including script and style tags, and '&nbsp', '&qt'
-                content = re.sub(r'<[^>]*>', '', content)
-                content = re.sub(r'&nbsp;', ' ', content)
-                content = re.sub(r'&qt;', ' ', content)
-                # Only keep the section of the content that lists the layers (between "Layers:" and "Description:")
-                layer_section = re.search(r'Layers:(.*?)Description:', content, re.DOTALL)
-                if layer_section:
-                    layer_section = layer_section.group(1)
-                    # Remove empty lines
-                    layer_section = os.linesep.join([s for s in layer_section.splitlines() if s.strip()])
-                    # Split the content into lines
-                    lines = layer_section.splitlines()
-                    # Each line has the layer name followed by space and then the layer ID in parenthesis (a number). Split them.
-                    lines = [re.match(r'^(.*?)[\s]+\((\d+)\)$', line.strip()).groups() for line in lines]
-
-                    # Create a dictionary of layer names and their IDs and codes
-                    layer_dict = {}
-                    for lyr_name, lyr_id in lines:
-                        line_code = None
-                        for code_key, code_val in codes.items():
-                            if code_key in lyr_name:
-                                line_code = code_val
-                                line_alias = code_key
-                                break
-                        layer_dict[lyr_name] = {
-                            "code": line_code,
-                            "alias": line_alias,
-                            "rest": base_url + f"/{lyr_id}"
-                        }
-                
-                # Add to the tigerweb dictionary
-                twr_dict["census"][str(year)] = {
-                    "rest": base_url,
-                    "layers": layer_dict
-                }
-
-        # Process the ECON Services from the unique lines
-        if "ECON" in unique_lines:
-            twr_dict["econ"] = {}
-            econ_years = unique_lines["ECON"]
-
-            # For each year, get the layers from the REST API
-            for year in econ_years:
-                base_url = f"{twr_base}/tigerWMS_ECON{year}/MapServer"
-                response = requests.get(base_url, timeout = 20)
-                if response.status_code != 200:
-                    print(f"Error fetching data for ACS {year}: {response.status_code}")
-                    continue
-                # Get the content of the URL
-                content = response.text
-                # Remove all html tags including script and style tags, and '&nbsp', '&qt'
-                content = re.sub(r'<[^>]*>', '', content)
-                content = re.sub(r'&nbsp;', ' ', content)
-                content = re.sub(r'&qt;', ' ', content)
-                # Only keep the section of the content that lists the layers (between "Layers:" and "Description:")
-                layer_section = re.search(r'Layers:(.*?)Description:', content, re.DOTALL)
-                if layer_section:
-                    layer_section = layer_section.group(1)
-                    # Remove empty lines
-                    layer_section = os.linesep.join([s for s in layer_section.splitlines() if s.strip()])
-                    # Split the content into lines
-                    lines = layer_section.splitlines()
-                    # Each line has the layer name followed by space and then the layer ID in parenthesis (a number). Split them.
-                    lines = [re.match(r'^(.*?)[\s]+\((\d+)\)$', line.strip()).groups() for line in lines]
-
-                    # Create a dictionary of layer names and their IDs and codes
-                    layer_dict = {}
-                    for lyr_name, lyr_id in lines:
-                        line_code = None
-                        for code_key, code_val in codes.items():
-                            if code_key in lyr_name:
-                                line_code = code_val
-                                line_alias = code_key
-                                break
-                        layer_dict[lyr_name] = {
-                            "code": line_code,
-                            "alias": line_alias,
-                            "rest": base_url + f"/{lyr_id}"
-                        }
-
-                # Add to the tigerweb dictionary
-                twr_dict["econ"][str(year)] = {
-                    "rest": base_url,
-                    "layers": layer_dict
-                }
-
-        # Define a list of included labels
-        included_labels = ['Census Block Groups', 'Census Blocks', 'Census Designated Places', 'Census Public Use Microdata Areas', 'Census Tracts', 'Census Urbanized Areas', 'Census ZIP Code Tabulation Areas', 'Combined Statistical Areas', 'Congressional Districts', 'Consolidated Cities', 'Counties', 'County Subdivisions', 'Economic Places', 'Elementary School Districts', 'Incorporated Places', 'Metropolitan Divisions', 'Metropolitan Statistical Areas', 'Public Use Microdata Areas', 'Secondary School Districts', 'State Legislative Districts - Lower', 'State Legislative Districts - Upper', 'Traffic Analysis Districts', 'Traffic Analysis Zones', 'Unified School Districts', 'Urban Areas', 'Urban Clusters', 'Urban Growth Areas', 'Urbanized Areas', 'ZIP Code Tabulation Areas', 'Zip Code Tabulation Areas']
-
-        # Create a new dictionary to hold the filtered layers
-        twr_cb = twr_dict.copy()
-        for level, content in twr_dict.items():
-            print(f"Level: {level}")
-            for year, value in content.items():
-                layers_to_remove = []
-                print(f"- Year: {year}, Original Count: {len(value['layers'])}")
-                for layer_name in value["layers"]:
-                    if layer_name.endswith("Labels"):
-                        layers_to_remove.append(layer_name)
-                        continue
-                    if layer_name.startswith("Tribal"):
-                        layers_to_remove.append(layer_name)
-                        continue
-                    # if any of the included labels is a part of the layer name, keep it
-                    if not any(included_label in layer_name for included_label in included_labels):
-                        layers_to_remove.append(layer_name)
-                for lyr in layers_to_remove:
-                    print(f" - Removing layer: {lyr}")
-                    del twr_cb[level][year]["layers"][lyr]
-
-        # Write the main REST API URL (twr_base) to the dictionary
-        twr_cb["main"] = twr_base
-
-        # Export the dictionary to a JSON file if export is True
-        if export:
-            # Export the dictionary to a JSON file in the scratch directory
-            out_path = os.path.join(self.prj_dirs["codebook"], "ocgd_twr_cb.json")
-            with open(out_path, "w", encoding = "utf-8") as f:
-                json.dump(twr_cb, f, indent = 4)
-            print(f"Tigerweb dictionary exported to {out_path}")
-
-        # Return the dictionary
-        return twr_cb
-
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Create GDB from TIGERweb REST API ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def create_gdb_from_twr(self, year: int, level: str = "acs", out_gdb: str = None):
+    def create_gdb_from_twr(self, year: int, level: str = "ACS", out_gdb: str = None):
         """
         Create a file geodatabase from the TIGERweb REST API layers for a specified level and year.
         Args:
@@ -961,7 +765,7 @@ class OCGD:
         Raises:
             None
         Example:
-            >>> create_gdb_from_twr(year=2022, level="acs", out_gdb="path/to/output.gdb")
+            >>> create_gdb_from_twr(year=2022, level="ACS", out_gdb="path/to/output.gdb")
         Notes:
             The create_gdb_from_twr function creates a file geodatabase from the TIGERweb REST API layers for a specified level and year.
         """
@@ -974,108 +778,122 @@ class OCGD:
         arcpy.env.workspace = out_gdb
         arcpy.env.overwriteOutput = True
 
-        # Get the TIGERweb dictionary
-        print("Updating TIGERweb dictionary...")
-        cb = self.get_tigerweb_dictionary(export = False)
+        # Import the full inventory JSON file (if not already in memory)
+        with open(os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json"), "r", encoding = "utf-8") as f:
+            inventory = json.load(f)
 
-        # Validate level and year
-        # If the level is not "main"
-        if level != "main":
-            print(f"Validating level: {level} and year: {year}")
-            # Check if the level exists in the TIGERweb dictionary
-            if level in cb:
-                level_years = [int(y) for y in cb[level]]
-                # If the year is between the min and max of level_years, find the closest year. If the year is greater than min and less than max, if it is not in level_years, use the nearest year available.
-                if year < min(level_years):
-                    print(f"Year {year} is less than the minimum available year for level '{level}'. Using minimum year {min(level_years)}.")
-                    year = min(level_years)
-                elif year > max(level_years):
-                    print(f"Year {year} is greater than the maximum available year for level '{level}'. Using maximum year {max(level_years)}.")
-                    year = max(level_years)
-                elif year not in level_years:
-                    closest_year = min(level_years, key=lambda x: abs(x - year))
-                    print(f"Year {year} is not available for level '{level}'. Using closest available year {closest_year}.")
-                    year = closest_year
+        # Check if the codebook is older than 3 months. If it is, recrawl the TIGERweb REST API to update the full inventory and export it to a JSON file.
+        cb_date = datetime.datetime.strptime(inventory["metadata"]["date"], "%B %Y") if inventory["metadata"]["date"] else None
+        if cb_date and (datetime.datetime.now() - cb_date).days > 90:
+            print("\nThe codebook is older than 3 months. Recrawling TIGERweb REST API to update the full inventory...\n")
+            logger = self.logger
+            logger.enable(meta = self.prj_meta, filename = f"octl_cb_twr_crawl_{self.version}.log", replace = True)
+            print("\nCrawling TIGERweb REST API to create full inventory...\n")
+            # Run the crawl_tigerweb method to get the full inventory
+            inventory = self.crawl_tigerweb(export = True)
+            logger.disable()
+
+
+        # Find the key for the specified level in the full inventory
+        for cat, content in inventory.items():
+            if level in content:
+                if str(year) in inventory[cat][level]:
+                    cb = inventory[cat][level][str(year)]
+                    print(f"Year '{year}' found for level '{level}' in category '{cat}'.")
+                    break
                 else:
-                    print(f"Year {year} is available for level '{level}'.")
-            else:
-                print(f"Level '{level}' is not available in the TIGERweb dictionary.")
-                return None
+                    cb = inventory[cat][level]
+                    print(f"Year '{year}' not found for level '{level}' in category '{cat}'.")
+                break
         else:
-            print(f"Level 'main' selected.\nMain TIGERweb REST API URL: {cb['main']}.\nExiting function.")
+            print(f"Level '{level}' not found in the inventory.")
             return None
-            
-        # Get the specific year dictionary for the level
-        cb_layers = cb.get(level, {}).get(str(year), {}).get("layers", {})
+
+        # Get the layers dictionary from the codebook
+        cb_layers = cb["layers"]
+        cb_counties = None
 
         # Part 1: Create Counties feature class as reference
-        
+
         # Find the Counties layer information and populate variables
-        if "Counties" in cb_layers:
-            print("\n--- Processing layer: Counties ---")
-            # The REST endpoint for the Counties layer
-            layer_rest = cb_layers["Counties"]["rest"]
-            # The Counties alias
-            layer_alias = cb_layers["Counties"]["alias"]
-            # The Counties layer code
-            layer_code = cb_layers["Counties"]["code"]
-            # The output feature class name (same as layer code)
-            out_fc_name = layer_code
-            # The where-clause to filter for Orange County, CA
-            query = "STATE = '06' AND COUNTY = '059'"  # Orange County, CA
+        print("\n--- Finding Counties layer ---")
+        for layer in cb_layers:
+            if "Counties" in layer:
+                cb_counties = cb_layers[layer]
+                break
+            else:
+                # If Counties layer is not found at the top level, get it from the Current Census Service
+                current_layers = inventory["standalone"]["Current"]["layers"]
+                for layer in current_layers:
+                    if "Counties" in layer:
+                        cb_counties = current_layers[layer]
+                        break
+        
+        print("\n--- Processing layer: Counties ---")
+        # Get the key layer information from the codebook
+        layer_rest = cb_counties["rest"]
+        layer_alias = cb_counties["alias"]
+        layer_code = cb_counties["code"]    # The output feature class name (same as layer code)
+        out_fc_name = layer_code
+        layer_method = cb_counties["ocgd_method"]
+        
+        # Define the query to run
+        query = "STATE = '06' AND COUNTY = '059'"  # Orange County, CA
 
-            # Ensure output GDB exists
-            if not arcpy.Exists(out_gdb):
-                folder = os.path.dirname(out_gdb)
-                gdb_name = os.path.basename(out_gdb)
-                arcpy.CreateFileGDB_management(folder, gdb_name)
+        # Ensure output GDB exists
+        if not arcpy.Exists(out_gdb):
+            folder = os.path.dirname(out_gdb)
+            gdb_name = os.path.basename(out_gdb)
+            arcpy.CreateFileGDB_management(folder, gdb_name)
 
-            # Temporary layer name
-            temp_layer = "temp_layer"
+        # Temporary layer name
+        temp_layer = "temp_layer"
 
-            try:
-                print("- Using direct_query method")
-                # Create a feature layer from the REST service, applying the query where-clause
-                arcpy.MakeFeatureLayer_management(layer_rest, temp_layer, query)
+        try:
+            print(f"- Using {layer_method} method")
+            # Create a feature layer from the REST service, applying the query where-clause
+            arcpy.MakeFeatureLayer_management(layer_rest, temp_layer, query)
 
-                # Get the spatial reference of the temporary layer
-                print("- Checking spatial reference")
-                temp_sr = arcpy.Describe(temp_layer).spatialReference
+            # Get the spatial reference of the temporary layer
+            print("- Checking spatial reference")
+            temp_sr = arcpy.Describe(temp_layer).spatialReference
 
-                # Check if the spatial reference is the desired output spatial reference
-                if temp_sr.factoryCode != self.sr.factoryCode:
-                    print("- Projecting to desired spatial reference (Web Mercator, WKID 3857)")
-                    # Project the layer to the desired spatial reference
-                    projected_temp = "projected_temp_layer"
-                    arcpy.Project_management(temp_layer, projected_temp, self.sr)
-                    # Delete the temporary layer
-                    arcpy.Delete_management(temp_layer)
-                    # Recreate the temporary layer variable to point to the projected layer
-                    arcpy.MakeFeatureLayer_management(projected_temp, temp_layer)
-                else:
-                    print("- No projection needed. Spatial reference matches.")
+            # Check if the spatial reference is the desired output spatial reference
+            if temp_sr.factoryCode != self.sr.factoryCode:
+                print("- Projecting to desired spatial reference (Web Mercator, WKID 3857)")
+                # Project the layer to the desired spatial reference
+                projected_temp = "projected_temp_layer"
+                arcpy.Project_management(temp_layer, projected_temp, self.sr)
+                # Delete the temporary layer
+                arcpy.Delete_management(temp_layer)
+                # Recreate the temporary layer variable to point to the projected layer
+                arcpy.MakeFeatureLayer_management(projected_temp, temp_layer)
+            else:
+                print("- No projection needed. Spatial reference matches.")
 
-                # Export the (possibly projected) layer to a feature class
-                print("- Exporting temporary layer to a feature class")
-                out_fc_path = os.path.join(out_gdb, out_fc_name)
-                arcpy.FeatureClassToFeatureClass_conversion(temp_layer, out_gdb, out_fc_name)
-                
-                # Set the alias name for the output feature class
-                print(f"- Setting alias: {layer_alias} for the output feature class: {out_fc_name}")
-                if arcpy.Exists(out_fc_path):
-                    arcpy.AlterAliasName(out_fc_path, layer_alias)
+            # Export the (possibly projected) layer to a feature class
+            print("- Exporting temporary layer to a feature class")
+            out_fc_path = os.path.join(out_gdb, out_fc_name)
+            arcpy.FeatureClassToFeatureClass_conversion(temp_layer, out_gdb, out_fc_name)
+            
+            # Set the alias name for the output feature class
+            print(f"- Setting alias: {layer_alias} for the output feature class: {out_fc_name}")
+            if arcpy.Exists(out_fc_path):
+                arcpy.AlterAliasName(out_fc_path, layer_alias)
 
-                print(f"✅ Feature class created: {out_fc_path}")
+            print(f"✅ Feature class created: {out_fc_path}")
 
-            except arcpy.ExecuteError:
-                print("- ArcPy Error:", arcpy.GetMessages(2))
-            except (OSError, requests.RequestException, RuntimeError) as e:
-                print(f"- Python Error: {e}")
-            finally:
-                # Clean up temporary layer
-                print("- Cleaning up temporary layers")
-                if arcpy.Exists(temp_layer):
-                    arcpy.Delete_management(temp_layer)
+        except arcpy.ExecuteError:
+            print("- ArcPy Error:", arcpy.GetMessages(2))
+        except (OSError, requests.RequestException, RuntimeError) as e:
+            print(f"- Python Error: {e}")
+        finally:
+            # Clean up temporary layer
+            print("- Cleaning up temporary layers")
+            if arcpy.Exists(temp_layer):
+                arcpy.Delete_management(temp_layer)
+            
+
 
         # Part 2: Process other layers
 
@@ -1083,15 +901,19 @@ class OCGD:
         for layer, layer_info in cb_layers.items():
 
             # Skip the Counties layer as it has already been processed
-            if layer == "Counties":
+            if "Counties" in layer:
                 continue
             
+            # Get the content for the current layer
+            cb_layer = layer_info
+
             # Process each layer
             print(f"\n--- Processing layer: {layer} ---")
-            # Get the layer code, alias, and REST endpoint
-            layer_code = layer_info["code"]
-            layer_alias = layer_info["alias"]
-            layer_rest = layer_info["rest"]
+            # Get the key layer information from the codebook
+            layer_rest = cb_layer["rest"]
+            layer_alias = cb_layer["alias"]
+            layer_code = cb_layer["code"]    # The output feature class name (same as layer code)
+            layer_method = cb_layer["ocgd_method"]
 
             # Define output feature class name and path
             out_fc_name = layer_code
@@ -1109,14 +931,9 @@ class OCGD:
             # Temporary layer name
             temp_layer = "temp_layer"
 
-            # Initialize method variable
-            method = ""
-
-            # Determine method based on layer code
-            if layer_code in ["TR", "CO", "CS", "BG", "BL", "TZ"]:
-                method = "direct_query"
+            if layer_method == "query":
                 query = "STATE = '06' AND COUNTY = '059'"
-                print(f"- Using {method} method")
+                print(f"- Using {layer_method} method")
                 try:
                     # Create a feature layer from the REST service, applying the query where-clause
                     print("- Creating feature layer with query")
@@ -1155,6 +972,7 @@ class OCGD:
 
                     # Check if the output feature class is empty
                     if int(arcpy.GetCount_management(out_fc_path).getOutput(0)) == 0:
+                        print(f"⚠️ No features selected for layer '{layer_alias}'. Output feature class deleted.")
                         arcpy.Delete_management(out_fc_path)
                     else:
                         # Set the alias name for the output feature class
@@ -1165,16 +983,16 @@ class OCGD:
                         print(f"✅ Feature class created: {out_fc_path}")
 
             else:
-                method = "spatial_selection"
-                print(f"- Using {method} method")
+                print(f"- Using {layer_method} method")
 
-                if "STATE" in [f.name for f in arcpy.ListFields(layer_rest)]:
+                if layer_method == "spatial with query":
                     query = "STATE = '06'"
 
                     # Create a feature layer from the REST service, applying the query where-clause
                     print("- Creating feature layer with query")
                     arcpy.MakeFeatureLayer_management(layer_rest, temp_layer, query)
-                else:
+
+                elif layer_method == "spatial only":
                     # Create a feature layer from the REST service without a where-clause
                     print("- Creating feature layer without query")
                     arcpy.MakeFeatureLayer_management(layer_rest, temp_layer)
@@ -1218,6 +1036,7 @@ class OCGD:
 
                 # Check if the output feature class is empty
                 if int(arcpy.GetCount_management(out_fc_path).getOutput(0)) == 0:
+                    print(f"⚠️ No features selected for layer '{layer_alias}'. Output feature class deleted.")
                     arcpy.Delete_management(out_fc_path)
                 else:
                     # Set the alias name for the output feature class
@@ -1226,6 +1045,7 @@ class OCGD:
                         arcpy.AlterAliasName(out_fc_path, layer_alias)
 
                     print(f"✅ Feature class created: {out_fc_path}")
+
         print("\nAll layers processed.")
         return out_gdb
 
