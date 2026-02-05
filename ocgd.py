@@ -437,6 +437,236 @@ class OCGD:
         arcpy.env.addOutputsToMap = add_to_map
         return aprx, workspace
 
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Crawl TIGERweb REST API ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def crawl_tigerweb(self, export: bool = False) -> dict:
+        """
+        Function to crawl the TIGERweb REST API and create a full inventory of services and layers.
+        Args:
+            export (bool, optional): Whether to export the inventory to a JSON file. Defaults to False.
+        Returns
+            inventory (dict): A dictionary containing the full inventory of TIGERweb services and layers.
+        Raises:
+            None
+        Example:
+            >>> inventory = crawl_tigerweb(export=True)
+        Notes:
+            The crawl_tigerweb function retrieves the full inventory of TIGERweb services and layers from the Census REST API.
+        """
+
+        # Set the base REST API URL for TIGERweb services
+        base_rest = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb"
+        base_params = {"f": "json"}
+
+        # Initialize the inventory dictionary
+        inventory = {"series": {}, "standalone": {}}
+
+        exclusion_list = ["Labels", "Tribal", "Estates", "Subbarrios", "Alaska", "American Indian", "Off-Reservation", "Hawaiian", "Census Divisions", "Census Regions", "New England", "States", "Oklahoma", "Voting Districts"]
+
+        # Get the base REST services
+        base_response = requests.get(base_rest, params = base_params, timeout = 30)
+        base_response.raise_for_status()
+        base_data = base_response.json()
+        # only keep services that contain "TIGERweb/tigerWMS_" in the name
+        base_data = [service for service in base_data.get("services", []) if "TIGERweb/tigerWMS_" in service["name"]]
+
+        for service in base_data:
+            service_name = service["name"].replace("TIGERweb/tigerWMS_", "")
+            service_type = service["type"]
+
+            # if the last four characters of service_name are digits:
+            if re.search(r'\d{4}$', service_name):                
+                # Get the unique names without the year
+                # category = "series"
+                category_name = re.sub(r'\d{4}$', '', service_name)
+                category_year = re.search(r'\d{4}$', service_name).group()
+
+                print(f"\nSeries Service: {category_name}, Year: {category_year} ({service_type})")
+
+                # Get the service REST URL and parameters
+                service_rest = f"{base_rest}/tigerWMS_{service_name}/{service_type}"
+                service_param = {"f": "pjson"}
+
+                # Add to the inventory dictionary
+                if category_name not in inventory["series"]:
+                    inventory["series"][category_name] = {}
+                if category_year not in inventory["series"][category_name]:
+                    inventory["series"][category_name][category_year] = {
+                        "rest": service_rest,
+                        "name": service_name,
+                        "type": service_type
+                    }
+
+                # Get the service details
+                service_response = requests.get(service_rest, params = service_param, timeout = 30)
+                service_response.raise_for_status()
+                service_data = service_response.json()
+
+                # Update the inventory with service details
+                inventory["series"][category_name][category_year].update({
+                    "currentVersion": service_data.get("currentVersion"),
+                    "cimVersion": service_data.get("cimVersion"),
+                    "mapName": service_data.get("mapName"),
+                    "description": service_data.get("description"),
+                    "spatialReference": service_data.get("spatialReference", {}).get("latestWkid", None),
+                })
+
+                # Get the layers for the service
+                if "layers" in service_data:
+                    inventory["series"][category_name][category_year]["layers"] = {}
+
+                    # Iterate through each layer in the service
+                    for layer in service_data.get("layers", []):
+                        if layer.get("type") != "Feature Layer":
+                            continue
+                        # If the layer["name"] contains any of the exclusion terms, skip it
+                        if any(exclusion in layer["name"] for exclusion in exclusion_list):
+                            continue
+
+                        layer_type = layer["type"]
+                        layer_id = layer["id"]
+                        layer_name = layer["name"]
+                        layer_label = f"{layer_name} ({layer_id})"
+                        print(f"- {layer_type}: {layer_name} (ID: {layer_id})")
+
+                        # Get the layer REST URL and parameters
+                        layer_rest = f"{base_rest}//tigerWMS_{service_name}/{service_type}/{layer_id}"
+                        layer_param = {"f": "pjson"}
+
+                        # Get the layer details
+                        layer_response = requests.get(layer_rest, params = layer_param, timeout = 30)
+                        layer_response.raise_for_status()
+                        layer_data = layer_response.json()
+                        layer_id = layer_data["id"]
+                        layer_type = layer_data["type"]
+                        layer_name = layer_data["name"]
+                        layer_description = layer_data["description"]
+                        layer_version = layer_data["currentVersion"]
+                        layer_cim_version = layer_data["cimVersion"]
+                        layer_geometry = layer_data["geometryType"]
+                        layer_fields = [f["name"] for f in layer_data["fields"]]
+                        # If both "STATE" and "COUNTY" are not in layer_fields set gp_method to "query", else if only "STATE" is in layer_fields set gp_method to "spatial with query", else set gp_method to "spatial only"
+                        if "STATE" in layer_fields and "COUNTY" in layer_fields:
+                            gp_method = "query"
+                        elif "STATE" in layer_fields:
+                            gp_method = "spatial with query"
+                        else:
+                            gp_method = "spatial only"
+
+                        # Update the inventory with layer details
+                        inventory["series"][category_name][category_year]["layers"][layer_label] = {
+                            "rest": layer_rest,
+                            "id": layer_id,
+                            "name": layer_name,
+                            "type": layer_type,
+                            "description": layer_description,
+                            "currentVersion": layer_version,
+                            "cimVersion": layer_cim_version,
+                            "geometryType": layer_geometry,
+                            "gp_method": gp_method,
+                            "fields": layer_fields
+                        }
+
+            else:
+                category_name = service_name
+
+                print(f"\nStandalone Service: {category_name} ({service_type})")
+
+                # Get the service REST URL and parameters
+                service_rest = f"{base_rest}/tigerWMS_{service_name}/{service_type}"
+                service_param = {"f": "pjson"}
+
+                if category_name not in inventory["standalone"]:
+                    inventory["standalone"][category_name] = {
+                        "rest": service_rest,
+                        "name": service_name,
+                        "type": service_type
+                    }
+
+                # Get the service details
+                service_response = requests.get(service_rest, params = service_param, timeout = 30)
+                service_response.raise_for_status()
+                service_data = service_response.json()
+
+                # Update the inventory with service details
+                inventory["standalone"][category_name].update({
+                    "currentVersion": service_data.get("currentVersion"),
+                    "cimVersion": service_data.get("cimVersion"),
+                    "mapName": service_data.get("mapName"),
+                    "description": service_data.get("description"),
+                    "spatialReference": service_data.get("spatialReference", {}).get("latestWkid", None),
+                })
+
+                # Get the layers for the service
+                if "layers" in service_data:
+                    inventory["standalone"][category_name]["layers"] = {}
+
+                    # Iterate through each layer in the service
+                    for layer in service_data.get("layers", []):
+                        if layer.get("type") != "Feature Layer":
+                            continue
+
+                        # If the layer["name"] contains any of the exclusion terms, skip it
+                        if any(exclusion in layer["name"] for exclusion in exclusion_list):
+                            continue
+
+                        layer_type = layer["type"]
+                        layer_id = layer["id"]
+                        layer_name = layer["name"]
+                        layer_label = f"{layer_name} ({layer_id})"
+                        print(f"- {layer_type}: {layer_name} (ID: {layer_id})")
+
+                        # Get the layer REST URL and parameters
+                        layer_rest = f"{base_rest}//tigerWMS_{service_name}/{service_type}/{layer_id}"
+                        layer_param = {"f": "pjson"}
+
+                        # Get the layer details
+                        layer_response = requests.get(layer_rest, params = layer_param, timeout = 30)
+                        layer_response.raise_for_status()
+                        layer_data = layer_response.json()
+                        layer_id = layer_data["id"]
+                        layer_type = layer_data["type"]
+                        layer_name = layer_data["name"]
+                        layer_description = layer_data["description"]
+                        layer_version = layer_data["currentVersion"]
+                        layer_cim_version = layer_data["cimVersion"]
+                        layer_geometry = layer_data["geometryType"]
+                        layer_fields = [f["name"] for f in layer_data["fields"]]
+                        # If both "STATE" and "COUNTY" are not in layer_fields set gp_method to "query", else if only "STATE" is in layer_fields set gp_method to "spatial with query", else set gp_method to "spatial only"
+                        if "STATE" in layer_fields and "COUNTY" in layer_fields:
+                            gp_method = "query"
+                        elif "STATE" in layer_fields:
+                            gp_method = "spatial with query"
+                        else:
+                            gp_method = "spatial only"
+
+                        # Update the inventory with layer details
+                        inventory["standalone"][category_name]["layers"][layer_label] = {
+                            "rest": layer_rest,
+                            "id": layer_id,
+                            "name": layer_name,
+                            "type": layer_type,
+                            "description": layer_description,
+                            "currentVersion": layer_version,
+                            "cimVersion": layer_cim_version,
+                            "geometryType": layer_geometry,
+                            "gp_method": gp_method,
+                            "fields": layer_fields
+                        }
+
+        if export:
+            # Export inventory to JSON file
+            output_path = os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json")
+            with open(output_path, "w", encoding = "utf-8") as f:
+                json.dump(inventory, f, indent=4)
+            print(f"Inventory exported to {output_path}")
+
+        # Return the final inventory
+        return inventory
+
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Get TIGERweb dictionary ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
