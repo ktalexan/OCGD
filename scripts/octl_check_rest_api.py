@@ -37,6 +37,23 @@ prj_dirs = octl.prj_dirs
 # Get the spatial reference from the OCTL class object (Web Mercator, WKID 3857)
 out_sr = octl.sr
 
+ROOT_REST_URL = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb"
+
+
+
+# Crawl the TIGERweb REST API to create a full inventory and export it to a JSON file
+logger = octl.logger
+logger.enable(meta = prj_meta, filename = f"octl_cb_twr_crawl_{octl.version}.log", replace = True)
+print("\nCrawling TIGERweb REST API to create full inventory...\n")
+# Run the crawl_tigerweb method to get the full inventory
+full_inventory = octl.crawl_tigerweb(export = True)
+logger.disable()
+
+
+
+
+
+
 # scratch_path = octl.scratch_gdb()
 
 # url = "https://api.census.gov/data.json"
