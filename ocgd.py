@@ -1151,7 +1151,7 @@ class OCTL(OCGD):
                 desc = "General Data Updating and Mentenance"
             case 1:
                 step = "Part 1: Raw Data Processing"
-                desc = "Processing Raw Tiger/Line Shapefiles Folder"
+                desc = "Processing Raw Tiger/Line TigerWeb REST API Services and Creating Geodatabases"
             case 2:
                 step = "Part 2: Part 2: ArcGis Pro Project Map Processing"
                 desc = "Initialize the ArcGIS Pro Project with Maps and Layers, and process map layers from the TL Geodatabases"
