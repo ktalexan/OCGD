@@ -501,8 +501,48 @@ class OCGD:
             "Correctional Facilities": "CF",
             "Colleges and Universities": "UN",
             "Military Installations": "MI",
-        }        
+        }
 
+        group_codes = {
+            "Public Use Microdata Areas": "Census",
+            "ZIP Code Tabulation Areas": "Census",
+            "Zip Code Tabulation Areas": "Census",
+            "Tracts": "Census",
+            "Block Groups": "Census",
+            "Blocks": "Census",
+            "Unified School Districts": "Schools",
+            "Secondary School Districts": "Schools",
+            "Elementary School Districts": "Schools",
+            "County Subdivisions": "Places",
+            "Consolidated Cities": "Places",
+            "Incorporated Places": "Places",
+            "Designated Places": "Places",
+            "Congressional Districts": "Legislative",
+            "State Legislative Districts - Upper": "Legislative",
+            "State Legislative Districts - Lower": "Legislative",
+            "Urban Areas": "Urban",
+            "Urban Clusters": "Urban",
+            "Urban Growth Areas": "Urban",
+            "Urbanized Areas": "Urban",
+            "Combined Statistical Areas": "Statistical",
+            "Metropolitan Divisions": "Statistical",
+            "Metropolitan Statistical Areas": "Statistical",
+            "Micropolitan Statistical Areas": "Statistical",
+            "Counties": "Places",
+            "Economic Places": "Places",
+            "Traffic Analysis Zones": "Transportation",
+            "Traffic Analysis Districts": "Transportation",
+            "Primary Roads": "Transportation",
+            "Secondary Roads": "Transportation",
+            "Local Roads": "Transportation",
+            "Railroads": "Transportation",
+            "Linear Hydrography": "Hydro",
+            "Areal Hydrography": "Hydro",
+            "National Park Service Areas": "LandUse",
+            "Correctional Facilities": "LandUse",
+            "Colleges and Universities": "LandUse",
+            "Military Installations": "LandUse",
+        }
 
         # Initialize the inventory dictionary
         inventory = {
@@ -588,8 +628,8 @@ class OCGD:
                         layer_type = layer["type"]
                         layer_id = layer["id"]
                         layer_name = layer["name"]
-                        layer_label = f"{layer_name} ({layer_id})"
-                        print(f"- {layer_type}: {layer_name} (ID: {layer_id})")
+                        layer_label = layer_name
+                        print(f"- {layer_type}: {layer_label} (ID: {layer_id})")
 
                         # Get the layer REST URL and parameters
                         layer_rest = f"{base_rest}//tigerWMS_{service_name}/{service_type}/{layer_id}"
@@ -602,6 +642,7 @@ class OCGD:
                         layer_id = layer_data["id"]
                         layer_type = layer_data["type"]
                         layer_name = layer_data["name"]
+                        layer_group = None
                         layer_alias = None
                         layer_code = None
                         layer_description = layer_data["description"]
@@ -617,11 +658,39 @@ class OCGD:
                         else:
                             ocgd_method = "spatial only"
 
+                        # Determine the layer group based on the layer name and the group_codes dictionary
+                        for group_key, group_value in group_codes.items():
+                            if group_key in layer_name:
+                                layer_group = group_value
+
                         # Determine the layer code and alias based on the layer name and the cb_codes dictionary
                         for cb_code_key, cb_code_value in cb_codes.items():
                             if cb_code_key in layer_name:
                                 layer_code = cb_code_value
                                 layer_alias = cb_code_key
+
+                        if "Counties" in layer_name:
+                            layer_alias = "Orange County"
+
+                        if "Congressional Districts" in layer_name and re.match(r'^\d{3}th', layer_name):
+                            layer_congress = int(re.match(r'^\d{3}', layer_name).group())
+                            layer_alias = f"Congressional Districts-{layer_congress}th US Congress"
+                            layer_code = f"{layer_code}{layer_congress}"
+
+                        if "State Legislative Districts - Upper" in layer_name:
+                            layer_alias = "State Senate Legislative Districts"
+
+                        if "State Legislative Districts - Lower" in layer_name:
+                            layer_alias = "State Assembly Legislative Districts"
+
+                        if "Corrected" in layer_name:
+                            layer_alias = f"{layer_alias} Corrected"
+                            layer_code = f"{layer_code}_Corrected"
+
+                        if re.match(r'^\d{4}', layer_name):
+                            layer_year = int(re.match(r'^\d{4}', layer_name).group())
+                            layer_alias = f"{layer_alias}-{layer_year}"
+                            layer_code = f"{layer_code}{layer_year}"
 
                         # Update the inventory with layer details
                         inventory["series"][category_name][category_year]["layers"][layer_label] = {
@@ -629,6 +698,7 @@ class OCGD:
                             "id": layer_id,
                             "name": layer_name,
                             "type": layer_type,
+                            "group": layer_group,
                             "code": layer_code,
                             "alias": layer_alias,
                             "description": layer_description,
@@ -681,12 +751,13 @@ class OCGD:
                         # If the layer["name"] contains any of the exclusion terms, skip it
                         if any(exclusion in layer["name"] for exclusion in exclusion_list):
                             continue
+
                         cl += 1 # Increment the layer counter
                         layer_type = layer["type"]
                         layer_id = layer["id"]
                         layer_name = layer["name"]
-                        layer_label = f"{layer_name} ({layer_id})"
-                        print(f"- {layer_type}: {layer_name} (ID: {layer_id})")
+                        layer_label = layer_name                        
+                        print(f"- {layer_type}: {layer_label} (ID: {layer_id})")
 
                         # Get the layer REST URL and parameters
                         layer_rest = f"{base_rest}//tigerWMS_{service_name}/{service_type}/{layer_id}"
@@ -699,6 +770,9 @@ class OCGD:
                         layer_id = layer_data["id"]
                         layer_type = layer_data["type"]
                         layer_name = layer_data["name"]
+                        layer_group = None
+                        layer_alias = None
+                        layer_code = None
                         layer_description = layer_data["description"]
                         layer_version = layer_data["currentVersion"]
                         layer_cim_version = layer_data["cimVersion"]
@@ -712,20 +786,49 @@ class OCGD:
                         else:
                             ocgd_method = "spatial only"
 
+                        # Determine the layer group based on the layer name and the group_codes dictionary
+                        for group_key, group_value in group_codes.items():
+                            if group_key in layer_name:
+                                layer_group = group_value
+
                         # Determine the layer code and alias based on the layer name and the cb_codes dictionary
                         for cb_code_key, cb_code_value in cb_codes.items():
                             if cb_code_key in layer_name:
                                 layer_code = cb_code_value
                                 layer_alias = cb_code_key
 
+                        if "Counties" in layer_name:
+                            layer_alias = "Orange County"
+
+                        if "Congressional Districts" in layer_name and re.match(r'^\d{3}th', layer_name):
+                            layer_congress = int(re.match(r'^\d{3}', layer_name).group())
+                            layer_alias = f"Congressional Districts-{layer_congress}th US Congress"
+                            layer_code = f"{layer_code}{layer_congress}"
+
+                        if "State Legislative Districts - Upper" in layer_name:
+                            layer_alias = "State Senate Legislative Districts"
+
+                        if "State Legislative Districts - Lower" in layer_name:
+                            layer_alias = "State Assembly Legislative Districts"
+
+                        if "Corrected" in layer_name:
+                            layer_alias = f"{layer_alias} Corrected"
+                            layer_code = f"{layer_code}_Corrected"
+
+                        if re.match(r'^\d{4}', layer_name):
+                            layer_year = int(re.match(r'^\d{4}', layer_name).group())
+                            layer_alias = f"{layer_alias}-{layer_year}"
+                            layer_code = f"{layer_code}{layer_year}"
+
                         # Update the inventory with layer details
                         inventory["standalone"][category_name]["layers"][layer_label] = {
                             "rest": layer_rest,
                             "id": layer_id,
                             "name": layer_name,
+                            "type": layer_type,
+                            "group": layer_group,
                             "code": layer_code,
                             "alias": layer_alias,
-                            "type": layer_type,
                             "description": layer_description,
                             "currentVersion": layer_version,
                             "cimVersion": layer_cim_version,
@@ -749,6 +852,156 @@ class OCGD:
         # Return the final inventory
         return inventory
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Create OCTL master codebook from TIGERweb inventory ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def create_octl_master_cb(self, cb: dict = None) -> dict:
+        """
+        Function to create the OCTL master codebook from the TIGERweb inventory.
+        Args:
+            cb (dict, optional): The TIGERweb inventory dictionary. If None, it will be loaded from the codebook directory. Defaults to None.
+        Returns:
+            octl_cb (dict): A dictionary containing the OCTL master codebook.
+        Raises:
+            None
+        Example:
+            >>> octl_cb = create_octl_master_cb()
+        Notes:
+            The create_octl_master_cb function creates the OCTL master codebook from the TIGERweb inventory.
+        """
+        # Load the TIGERweb inventory codebook (if not provided)
+        if cb is None:
+            cb_path = os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json")
+            if not os.path.exists(cb_path):
+                # Crawl the TIGERweb REST API to create a full inventory and export it to a JSON file
+                logger.enable(meta = self.prj_meta, filename = f"octl_cb_twr_crawl_{self.version}.log", replace = True)
+                print("\nCrawling TIGERweb REST API to create full inventory...\n")
+                # Run the crawl_tigerweb method to get the full inventory
+                cb = self.crawl_tigerweb(export = True)
+                logger.disable()
+            else:
+                # Import the full inventory JSON file (if not already in memory)
+                with open(os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json"), "r", encoding = "utf-8") as f:
+                    cb = json.load(f)
+
+        # Create an intermediate dictionary
+        intermediate_dict = dict()
+
+        # Iterate through the codebook to populate the intermediate dictionary with layer information
+        for cb_type, cb_content in cb.items():
+            if cb_type == "series":
+                for category, category_content in cb_content.items():
+                    if category not in ["ACS", "Census", "ECON"]:
+                        continue
+                    for year, year_content in category_content.items():
+                        for layer, layer_content in year_content["layers"].items():
+                            intermediate_dict[layer] = {
+                                "type": layer_content["type"],
+                                "code": layer_content["code"],
+                                "group": layer_content["group"],
+                                "group_code": layer_content["code"][:2],
+                                "ocgd_method": layer_content["ocgd_method"]
+                            }
+            elif cb_type == "standalone":
+                for category, category_content in cb_content.items():
+                    if category != "PhysicalFeatures":
+                        continue
+                    for layer, layer_content in category_content["layers"].items():
+                        intermediate_dict[layer] = {
+                            "type": layer_content["type"],
+                            "code": layer_content["code"],
+                            "group": layer_content["group"],
+                            "group_code": layer_content["code"][:2],
+                            "ocgd_method": layer_content["ocgd_method"]
+                        }
+            else:
+                continue
+
+        # Order the intermediate_dict by key
+        intermediate_dict = dict(sorted(intermediate_dict.items()))
+
+        # Create a layer lookup dictionary to map the layer names to their codes and groups
+        layer_lookup = {
+            "Counties": {"code": "CO", "group": "Places"},
+            "County Subdivisions": {"code": "CS", "group": "Places"},
+            "Designated Places": {"code": "DP", "group": "Places"},
+            "Incorporated Places": {"code": "CP", "group": "Places"},
+            "Economic Places": {"code": "EP", "group": "Places"},
+            "Public Use Microdata Areas": {"code": "PU", "group": "Census"},
+            "ZIP Code Tabulation Areas": {"code": "ZC", "group": "Census"},
+            "Zip Code Tabulation Areas": {"code": "ZC", "group": "Census"},
+            "Tracts": {"code": "TR", "group": "Census"},
+            "Block Groups": {"code": "BG", "group": "Census"},
+            "Blocks": {"code": "BL", "group": "Census"},
+            "Combined Statistical Areas": {"code": "CA", "group": "Statistical"},
+            "Metropolitan Divisions": {"code": "MD", "group": "Statistical"},
+            "Metropolitan Statistical Areas": {"code": "MS", "group": "Statistical"},
+            "Congressional Districts": {"code": "CD", "group": "Legislative"},
+            "State Legislative Districts - Lower": {"code": "LL", "group": "Legislative"},
+            "State Legislative Districts - Upper": {"code": "LU", "group": "Legislative"},
+            "Elementary School Districts": {"code": "SE", "group": "Schools"},
+            "Secondary School Districts": {"code": "SS", "group": "Schools"},
+            "Unified School Districts": {"code": "SU", "group": "Schools"},
+            "Urban Areas": {"code": "UA", "group": "Urban"},
+            "Urban Areas - Corrected": {"code": "UA", "group": "Urban"},
+            "Urban Clusters": {"code": "UC", "group": "Urban"},
+            "Urbanized Areas": {"code": "UR", "group": "Urban"},
+            "Areal Hydrography": {"code": "AH", "group": "Hydro"},
+            "Linear Hydrography": {"code": "LH", "group": "Hydro"},
+            "Railroads": {"code": "RL", "group": "Transportation"},
+            "Primary Roads": {"code": "PR", "group": "Transportation"},
+            "Secondary Roads": {"code": "SR", "group": "Transportation"},
+            "Local Roads": {"code": "LR", "group": "Transportation"},
+            "Traffic Analysis Districts": {"code": "TD", "group": "Transportation"},
+            "Traffic Analysis Zones": {"code": "TZ", "group": "Transportation"},
+            "Colleges and Universities": {"code": "UN", "group": "LandUse"},
+            "Correctional Facilities": {"code": "CF", "group": "LandUse"},
+            "Military Installations": {"code": "MI", "group": "LandUse"},
+            "National Park Service Areas": {"code": "NP", "group": "LandUse"}
+        }
+
+        # Create a master lookup dictionary to map the layer names to their codes, groups, types, ocgd methods, and metadata
+        master_dict = dict()
+        for key, values in layer_lookup.items():
+            master_dict[key] = values
+            if key == "Counties":
+                master_dict[key]["alias"] = "Orange County"
+            elif key == "State Legislative Districts - Upper":
+                master_dict[key]["alias"] = "State Senate Legislative Districts"
+            elif key == "State Legislative Districts - Lower":
+                master_dict[key]["alias"] = "State Assembly Legislative Districts"
+            else:
+                master_dict[key]["alias"] = key
+            master_dict[key]["type"] = "Feature Layer"
+            master_dict[key]["ocgd_method"] = ""
+            master_dict[key]["layers"] = {}
+            for layer, content in intermediate_dict.items():
+                if key in layer:
+                    master_dict[key]["type"] = content["type"]
+                    master_dict[key]["ocgd_method"] = content["ocgd_method"]
+                    master_dict[key]["layers"][layer] = content["code"]
+            master_dict[key]["metadata"] = {
+                "title": f"OCTL {master_dict[key]['alias']}",
+                "tags": f"Orange County, California, OCTL, TigerLines, TIGERweb, {master_dict[key]['type']}, {master_dict[key]['group']}, {layer_lookup[key]['code']}, {master_dict[key]['alias']}",
+                "summary": f"Orange County {master_dict[key]['alias']}",
+                "description": f"Orange County {master_dict[key]['alias']} from the US Census Bureau's TIGER/Line Shapefiles, accessed via the TIGERweb REST API. This layer is part of the Orange County Tiger/Lines (OCTL) geospatial data processing project, which aims to provide comprehensive and up-to-date geospatial data for Orange County, California. The OCTL project processes and curates TIGER/Line data to create a reliable and accessible geospatial data resource for various applications, including urban planning, transportation analysis, demographic studies, and more. Version: {cb["metadata"]["version"]}. Last updated: {cb["metadata"]["date"]}.",
+                "credits": "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services",
+                "accessConstraints": """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href=\"https://creativecommons.org/licenses/by-sa/3.0/\" target=\"_blank\">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works, OC Survey Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href=\"https://www.ocgov.com/contact-county/disclaimer\" target=\"_blank\">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style=\"text-align:center;\"><a href=\"https://www.linkedin.com/in/ktalexan/\" target=\"_blank\"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style=\"text-align:center;\">GIS Analyst | Spatial Complex Systems Scientist</div><div style=\"text-align:center;\">OC Public Works/OC Survey Geospatial Applications</div><div style=\"text-align:center;\"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href=\"mailto:kostas.alexandridis@ocpw.ocgov.com\" target=\"_blank\">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>""",
+                "thumbnailUri": "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d14451a55d0415947c7af3/data"
+            }
+            # Sort the keys of the master_dict[key] in this order: "type", "code", "group", "group_code", "ocgd_method", "layers"
+            master_dict[key] = dict(sorted(master_dict[key].items(), key = lambda item: ["type", "alias", "code", "group", "group_code", "ocgd_method", "layers", "metadata"].index(item[0])))
+                    
+        # Sort the keys of the master_dict in alphabetical order
+        master_dict = dict(sorted(master_dict.items()))
+
+        # Export the master_dict to a JSON file
+        with open(os.path.join(self.prj_dirs["codebook"], "octl_cb_master.json"), "w", encoding = "utf-8") as f:
+            json.dump(master_dict, f, indent = 4)
+
+        # Return the master_dict    
+        return master_dict
+
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Create GDB from TIGERweb REST API ----
@@ -769,15 +1022,7 @@ class OCGD:
         Notes:
             The create_gdb_from_twr function creates a file geodatabase from the TIGERweb REST API layers for a specified level and year.
         """
-
-        # If out_gdb is None, create a scratch geodatabase
-        if out_gdb is None:
-            out_gdb = self.scratch_gdb()
-
-        # Set the arcpy environment to the output geodatabase
-        arcpy.env.workspace = out_gdb
-        arcpy.env.overwriteOutput = True
-
+        print("\n--- Checking inventory for specified level and year ---")
         # Import the full inventory JSON file (if not already in memory)
         with open(os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json"), "r", encoding = "utf-8") as f:
             inventory = json.load(f)
@@ -792,7 +1037,6 @@ class OCGD:
             # Run the crawl_tigerweb method to get the full inventory
             inventory = self.crawl_tigerweb(export = True)
             logger.disable()
-
 
         # Find the key for the specified level in the full inventory
         for cat, content in inventory.items():
@@ -813,10 +1057,34 @@ class OCGD:
         cb_layers = cb["layers"]
         cb_counties = None
 
+        print("\n--- Creating geodatabase and feature datasets ---")
+
+        feature_datasets = ["Places", "Census", "Statistical", "Urban", "Legislative", "Schools", "Transportation", "Hydro", "LandUse"]
+
+        # If out_gdb is None, create a scratch geodatabase
+        if out_gdb is None:
+            out_gdb = self.scratch_gdb()
+
+        # Set the arcpy environment to the output geodatabase
+        arcpy.env.workspace = out_gdb
+        arcpy.env.overwriteOutput = True
+
+        # Ensure output GDB exists
+        if not arcpy.Exists(out_gdb):
+            folder = os.path.dirname(out_gdb)
+            gdb_name = os.path.basename(out_gdb)
+            arcpy.CreateFileGDB_management(folder, gdb_name)
+        
+        # create feature datastse for the layer from the feature_dataset list
+        for fd in feature_datasets:
+            if fd not in arcpy.ListDatasets():
+                arcpy.CreateFeatureDataset_management(out_gdb, fd, self.sr)
+                print(f"- Created feature dataset: {fd}")
+
         # Part 1: Create Counties feature class as reference
+        print("\n--- Processing layer: Counties ---")
 
         # Find the Counties layer information and populate variables
-        print("\n--- Finding Counties layer ---")
         for layer in cb_layers:
             if "Counties" in layer:
                 cb_counties = cb_layers[layer]
@@ -829,22 +1097,19 @@ class OCGD:
                         cb_counties = current_layers[layer]
                         break
         
-        print("\n--- Processing layer: Counties ---")
         # Get the key layer information from the codebook
         layer_rest = cb_counties["rest"]
         layer_alias = cb_counties["alias"]
         layer_code = cb_counties["code"]    # The output feature class name (same as layer code)
         out_fc_name = layer_code
         layer_method = cb_counties["ocgd_method"]
-        
+        layer_group = cb_counties["group"]  # The feature dataset name to use for this layer
+
+        # Update the output geodatabase path to include the feature dataset for this layer
+        out_path = os.path.join(out_gdb, layer_group)
+
         # Define the query to run
         query = "STATE = '06' AND COUNTY = '059'"  # Orange County, CA
-
-        # Ensure output GDB exists
-        if not arcpy.Exists(out_gdb):
-            folder = os.path.dirname(out_gdb)
-            gdb_name = os.path.basename(out_gdb)
-            arcpy.CreateFileGDB_management(folder, gdb_name)
 
         # Temporary layer name
         temp_layer = "temp_layer"
@@ -873,8 +1138,8 @@ class OCGD:
 
             # Export the (possibly projected) layer to a feature class
             print("- Exporting temporary layer to a feature class")
-            out_fc_path = os.path.join(out_gdb, out_fc_name)
-            arcpy.FeatureClassToFeatureClass_conversion(temp_layer, out_gdb, out_fc_name)
+            out_fc_path = os.path.join(out_path, out_fc_name)
+            arcpy.FeatureClassToFeatureClass_conversion(temp_layer, out_path, out_fc_name)
             
             # Set the alias name for the output feature class
             print(f"- Setting alias: {layer_alias} for the output feature class: {out_fc_name}")
@@ -892,8 +1157,6 @@ class OCGD:
             print("- Cleaning up temporary layers")
             if arcpy.Exists(temp_layer):
                 arcpy.Delete_management(temp_layer)
-            
-
 
         # Part 2: Process other layers
 
@@ -914,19 +1177,17 @@ class OCGD:
             layer_alias = cb_layer["alias"]
             layer_code = cb_layer["code"]    # The output feature class name (same as layer code)
             layer_method = cb_layer["ocgd_method"]
+            layer_group = cb_layer["group"]  # The feature dataset name to use for this layer
+
+            # Define the path to the Counties feature class for spatial selection (the one created earlier)
+            county_path = os.path.join(out_gdb, "Places", "CO")
+
+            # Update the output geodatabase path to include the feature dataset for this layer
+            out_path = os.path.join(out_gdb, layer_group)
 
             # Define output feature class name and path
             out_fc_name = layer_code
-            out_fc_path = os.path.join(out_gdb, out_fc_name)
-
-            # Define the path to the Counties feature class for spatial selection (the one created earlier)
-            county_path = os.path.join(out_gdb, "CO")
-
-            # Ensure output GDB exists
-            if not arcpy.Exists(out_gdb):
-                folder = os.path.dirname(out_gdb)
-                gdb_name = os.path.basename(out_gdb)
-                arcpy.CreateFileGDB_management(folder, gdb_name)
+            out_fc_path = os.path.join(out_path, out_fc_name)
 
             # Temporary layer name
             temp_layer = "temp_layer"
@@ -958,8 +1219,8 @@ class OCGD:
 
                     # Export the (possibly projected) layer to a feature class
                     print("- Exporting temporary layer to a feature class")
-                    out_fc_path = os.path.join(out_gdb, out_fc_name)
-                    arcpy.FeatureClassToFeatureClass_conversion(temp_layer, out_gdb, out_fc_name)
+                    out_fc_path = os.path.join(out_path, out_fc_name)
+                    arcpy.FeatureClassToFeatureClass_conversion(temp_layer, out_path, out_fc_name)
 
                 except arcpy.ExecuteError:
                     print("ArcPy Error:", arcpy.GetMessages(2))
@@ -1027,8 +1288,8 @@ class OCGD:
 
                 # Export the selection to a new fc
                 print("- Exporting selected features to a feature class")
-                out_fc_path = os.path.join(out_gdb, out_fc_name)
-                arcpy.conversion.FeatureClassToFeatureClass(temp_layer, out_gdb, out_fc_name)
+                out_fc_path = os.path.join(out_path, out_fc_name)
+                arcpy.conversion.FeatureClassToFeatureClass(temp_layer, out_path, out_fc_name)
 
                 # Clean up temporary layer
                 if arcpy.Exists(temp_layer):
@@ -1046,6 +1307,14 @@ class OCGD:
 
                     print(f"✅ Feature class created: {out_fc_path}")
 
+        # After processing all layers, if any future dataset in the geodatabase is empty, delete it
+        print("\n--- Finalizing geodatabase ---")
+
+        for fd in arcpy.ListDatasets():
+            if arcpy.ListFeatureClasses(feature_dataset = fd) == []:
+                arcpy.Delete_management(os.path.join(out_gdb, fd))
+                print(f"- Deleted empty feature dataset: {fd}")
+        
         print("\nAll layers processed.")
         return out_gdb
 

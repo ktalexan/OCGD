@@ -87,12 +87,20 @@ print("\nCrawl TIGERweb REST API to Create Full Inventory\n")
 # logger.enable(meta = prj_meta, filename = f"octl_cb_twr_crawl_{octl.version}.log", replace = True)
 # print("\nCrawling TIGERweb REST API to create full inventory...\n")
 # # Run the crawl_tigerweb method to get the full inventory
-# full_inventory = octl.crawl_tigerweb(export = True)
+# cb = octl.crawl_tigerweb(export = True)
+# print("\nCreating master codebook from the full inventory...\n")
+# # The full inventory is now stored in the codebook directory as "octl_cb_twr.json"
+# master_cb = octl.create_octl_master_cb()
 # logger.disable()
 
 # Import the full inventory JSON file (if not already in memory)
 with open(os.path.join(prj_dirs["codebook"], "octl_cb_twr.json"), "r", encoding = "utf-8") as f:
     cb = json.load(f)
+
+# Import the master codebook JSON file (if not already in memory)
+with open(os.path.join(prj_dirs["codebook"], "octl_cb_master.json"), "r", encoding = "utf-8") as f:
+    master_cb = json.load(f)
+
 
 # Extract the years available for the American Community Survey (ACS) from the codebook
 acs_years = list(cb["series"]["ACS"].keys())
