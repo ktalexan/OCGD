@@ -43,3 +43,5 @@ logger = octl.logger
 
 master_cb = octl.create_octl_master_cb()
 print(json.dumps(master_cb, indent = 4))
+
+master_cb["Counties"]["metadata"]

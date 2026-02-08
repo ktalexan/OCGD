@@ -67,3 +67,31 @@ CRE Variables:
 - Completed the CRE codebook function of the class. It now obtains and exports the CRE census variable codebook for a given year into a JSON dictionary (also saves it to the codebook directory) - 2/1/2026 5:35 AM
 
 - Completed the CRE table query function of the class. It now obtains the data table of the CRE estimates for a given year (so it can joined based on geoid with the Tiger/Line geographies) - 2/1/2026 5:36 AM
+
+## ACS Feature Classes
+
+| Dataset | Code | Feature Class | For | In |
+| :---- | :---- | :---- | :---- | :---- |
+| Places | CO | Orange County | "county:059" | "state:06" |
+| Places | CS | County Subdivisions | "county subdivision:*" | ["state:06", "county:059"] |
+| Places | DP | Designated Places | "place:*" | "state:06" |
+| Places | CP | Incorporated Places | "place:*" | "state:06" |
+| Census | BG | Block Groups | "block group:*" | ["state:06", "county:059", "tract:*"] |
+| Census | TR | Tracts | "tract:*" | ["state:06", "county:059"] |
+| Census | PU | Public Use Microdata Areas | "public use microdata area:*" | "state:06" |
+| Census | ZC | Zip Code Tabulation Areas | "zip code tabulation area:*" | "" |
+| Statistical | CA | Consolidated Statistical Areas |
+| Statistical | MD | Metropolitan Divisions |
+| Statistical | MS | Metropolitan Statistical Areas | metropolitan statistical area/micropolitan statistical area:* | "" |
+| Urban | UA | Urban Areas | "urban area:*" | "" |
+| Schools | SE | Elementary School Districts | "school district (elementary):*" | "state:06" |
+| Schools | SS | Secondary School Districts | "school district (secondary):*" | "state:06" |
+| Schools | SU | Unified School Districts | "school district (unified):*" | "state:06" |
+| Legislative | CD | Congressional Districts | "congressional district:*" | "state:06" |
+| Legislative | LU | State Senate Legislative Districts (Upper) | "state legislative district (upper chamber):*" | "state:06" |
+| Legislative | LL | State Assembly Legislative Districts (Lower) | "state legislative district (lower chamber):*" | "state:06" |
+
+https://api.census.gov/data/2024/acs/acs5?get=NAME,B01001_001E&for=
+metropolitan statistical area/micropolitan statistical area:*
+
+https://api.census.gov/data/2024/acs/acs5?get=NAME,B01001_001E&for=county:037&in=state:06 metropolitan statistical area/micropolitan statistical area (or part):31080 metropolitan division (or part):31084

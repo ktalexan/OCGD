@@ -70,14 +70,14 @@ class DualOutput:
         path = os.path.join(os.getcwd(), "logs", os.path.basename(filename))
         # Ensure the directory exists
         os.makedirs(os.path.dirname(path), exist_ok = True)
-        # If the file does not exist, open it and writh an initial line
+        # If the file does not exist, open it and with an initial line
         if not os.path.isfile(path):
             with open(path, "w", encoding="utf-8") as f:
                 # If it is a markdown file, write the header as the meta.get("project_name")
                 if self._filetype == "markdown":
                     f.write(f"# {self.project_name}\n- Title: {self.project_title}\n- Version: {self.project_version}\n- Author: {self.project_author}\n- Filename: **{os.path.basename(filename)}**\n")
                 elif self._filetype == "log":
-                    # Wtite the project name and title in uppercase
+                    # Write the project name and title in uppercase
                     f.write(f"Project Name: {self.project_name.upper()}\nProject Title: {self.project_title.upper()}\nVersion: {self.project_version}\nAuthor: {self.project_author}\nFilename: {os.path.basename(filename)}\n\n")
         # Return the opened file object
         return open(path, "a", encoding="utf-8")
@@ -86,7 +86,7 @@ class DualOutput:
     ## fx: Enable logging ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def enable(self, meta: Optional[dict] = None, filename: Optional[str] = None, replace: bool = False):
-        logid = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         if self._orig is not None:
             return
         # Prefer provided meta, otherwise use stored meta
@@ -123,9 +123,9 @@ class DualOutput:
 
         if self._filetype == "markdown":
             print("----\n")
-            print(f"\n> [!NOTE]\n> - Log ID: {logid}\n> - Date: {datetime.datetime.now().strftime('%B %d, %Y')}\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
+            print(f"\n> [!NOTE]\n> - Log ID: {log_id}\n> - Date: {datetime.datetime.now().strftime('%B %d, %Y')}\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
         else:
-            print(f"---- Start of log ID: {logid} ----")
+            print(f"---- Start of log ID: {log_id} ----")
             print(f"Date: {datetime.datetime.now().strftime('%B %d, %Y')}")
             print(f"Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n\n")
 
@@ -874,11 +874,11 @@ class OCGD:
             cb_path = os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json")
             if not os.path.exists(cb_path):
                 # Crawl the TIGERweb REST API to create a full inventory and export it to a JSON file
-                logger.enable(meta = self.prj_meta, filename = f"octl_cb_twr_crawl_{self.version}.log", replace = True)
+                self.logger.enable(meta = self.prj_meta, filename = f"octl_cb_twr_crawl_{self.version}.log", replace = True)
                 print("\nCrawling TIGERweb REST API to create full inventory...\n")
                 # Run the crawl_tigerweb method to get the full inventory
                 cb = self.crawl_tigerweb(export = True)
-                logger.disable()
+                self.logger.disable()
             else:
                 # Import the full inventory JSON file (if not already in memory)
                 with open(os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json"), "r", encoding = "utf-8") as f:
@@ -893,7 +893,7 @@ class OCGD:
                 for category, category_content in cb_content.items():
                     if category not in ["ACS", "Census", "ECON"]:
                         continue
-                    for year, year_content in category_content.items():
+                    for year_content in category_content.values():
                         for layer, layer_content in year_content["layers"].items():
                             intermediate_dict[layer] = {
                                 "type": layer_content["type"],
@@ -1026,16 +1026,22 @@ class OCGD:
         # Import the full inventory JSON file (if not already in memory)
         with open(os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json"), "r", encoding = "utf-8") as f:
             inventory = json.load(f)
+        
+        # Import the master codebook JSON file (if not already in memory)
+        with open(os.path.join(self.prj_dirs["codebook"], "octl_cb_master.json"), "r", encoding = "utf-8") as f:
+            master_cb = json.load(f)
 
         # Check if the codebook is older than 3 months. If it is, recrawl the TIGERweb REST API to update the full inventory and export it to a JSON file.
         cb_date = datetime.datetime.strptime(inventory["metadata"]["date"], "%B %Y") if inventory["metadata"]["date"] else None
         if cb_date and (datetime.datetime.now() - cb_date).days > 90:
-            print("\nThe codebook is older than 3 months. Recrawling TIGERweb REST API to update the full inventory...\n")
+            print("\nThe codebook is older than 3 months. Re-crawling TIGERweb REST API to update the full inventory...\n")
             logger = self.logger
             logger.enable(meta = self.prj_meta, filename = f"octl_cb_twr_crawl_{self.version}.log", replace = True)
             print("\nCrawling TIGERweb REST API to create full inventory...\n")
             # Run the crawl_tigerweb method to get the full inventory
             inventory = self.crawl_tigerweb(export = True)
+            # Update the codebook variable with the new inventory
+            master_cb = self.create_octl_master_cb()
             logger.disable()
 
         # Find the key for the specified level in the full inventory
@@ -1074,8 +1080,27 @@ class OCGD:
             folder = os.path.dirname(out_gdb)
             gdb_name = os.path.basename(out_gdb)
             arcpy.CreateFileGDB_management(folder, gdb_name)
+
+            # Set the metadata title for the geodatabase
+            if level in ["ACS", "Census", "ECON"]:
+                md_info = f"{level} {year}"
+            else:
+                md_info = f"{level}"
+            
+            # Create a metadata object for the geodatabase
+            md_gdb = md.Metadata(out_gdb)
+            md_gdb.title = f"OCTL {md_info} TigerLine Geodatabase"
+            md_gdb.tags = f"Orange County, California, OCTL, TigerLine, Geodatabase, {level}"
+            md_gdb.summary = f"Orange County TigerLine Geodatabase for the {md_info} data"
+            md_gdb.description = f"Orange County TigerLine Geodatabase for the {md_info} data. The data contains feature classes for all TigerLine data available for Orange County, California. Version: {self.version}, last updated on {self.data_date}."
+            md_gdb.credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services"
+            md_gdb.accessConstraints = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works, OC Survey Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works/OC Survey Geospatial Applications</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
+            md_gdb.thumbnailUri = "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d14451a55d0415947c7af3/data"
+            md_gdb.save()
+            print(f"✅ Geodatabase created: {out_gdb}")
+
         
-        # create feature datastse for the layer from the feature_dataset list
+        # create feature dataset for the layer from the feature_dataset list
         for fd in feature_datasets:
             if fd not in arcpy.ListDatasets():
                 arcpy.CreateFeatureDataset_management(out_gdb, fd, self.sr)
@@ -1148,6 +1173,21 @@ class OCGD:
 
             print(f"✅ Feature class created: {out_fc_path}")
 
+            # Update the County layer metadata
+            if "Counties" in master_cb:
+                # Get the metadata
+                co_metadata = master_cb["Counties"]["metadata"]
+                co_md = md.Metadata(out_fc_path)
+                co_md.title = co_metadata["title"]
+                co_md.tags = co_metadata["tags"]
+                co_md.summary = co_metadata["summary"]
+                co_md.description = co_metadata["description"]
+                co_md.credits = co_metadata["credits"]
+                co_md.accessConstraints = co_metadata["accessConstraints"]
+                co_md.thumbnailUri = co_metadata["thumbnailUri"]
+                co_md.save()
+                print(f"✅ Metadata updated for: {layer_alias}")
+
         except arcpy.ExecuteError:
             print("- ArcPy Error:", arcpy.GetMessages(2))
         except (OSError, requests.RequestException, RuntimeError) as e:
@@ -1157,6 +1197,7 @@ class OCGD:
             print("- Cleaning up temporary layers")
             if arcpy.Exists(temp_layer):
                 arcpy.Delete_management(temp_layer)
+        
 
         # Part 2: Process other layers
 
@@ -1242,7 +1283,6 @@ class OCGD:
                             arcpy.AlterAliasName(out_fc_path, layer_alias)
                         
                         print(f"✅ Feature class created: {out_fc_path}")
-
             else:
                 print(f"- Using {layer_method} method")
 
@@ -1307,6 +1347,23 @@ class OCGD:
 
                     print(f"✅ Feature class created: {out_fc_path}")
 
+            if arcpy.Exists(out_fc_path):
+                # Update the metadata for the output feature class using the master codebook
+                for master_layer in master_cb:
+                    if master_layer in layer:
+                        # Update metadata for the output feature class
+                        layer_metadata = master_cb[master_layer]["metadata"]
+                        layer_md = md.Metadata(out_fc_path)
+                        layer_md.title = f"OCTL {layer_alias}"
+                        layer_md.tags = layer_metadata["tags"]
+                        layer_md.summary = layer_metadata["summary"]
+                        layer_md.description = layer_metadata["description"]
+                        layer_md.credits = layer_metadata["credits"]
+                        layer_md.accessConstraints = layer_metadata["accessConstraints"]
+                        layer_md.thumbnailUri = layer_metadata["thumbnailUri"]
+                        layer_md.save()
+                        print(f"✅ Metadata updated for: {layer_alias}")
+
         # After processing all layers, if any future dataset in the geodatabase is empty, delete it
         print("\n--- Finalizing geodatabase ---")
 
@@ -1337,7 +1394,7 @@ class OCTL(OCGD):
         """
         Initialize the OCTL class.
         """
-        # Initialize the OCgdm class with provided part/version
+        # Initialize the OCGD class with provided part/version
         super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
@@ -1417,7 +1474,7 @@ class OCTL(OCGD):
         match self.part:
             case 0:
                 step = "Part 0: General Data Updating"
-                desc = "General Data Updating and Mentenance"
+                desc = "General Data Updating and Maintenance"
             case 1:
                 step = "Part 1: Raw Data Processing"
                 desc = "Processing Raw Tiger/Line TigerWeb REST API Services and Creating Geodatabases"
@@ -1494,7 +1551,7 @@ class OCTL(OCGD):
                 "code": "AD",
                 "method": "copy",
                 "gdb": entry_gdb,
-                "title": f"OCTL {year} Adress Ranges Relationship",
+                "title": f"OCTL {year} Address Ranges Relationship",
                 "tags": f"{entry_tags}, Address, Relationships, Table",
                 "summary": f"Orange County Tiger Lines {year} Address Ranges Relationship Table",
                 "description": f"Orange County Tiger Lines {year} Address Ranges Relationship Table. This table contains address range information for features in the Tiger/Line shapefiles. Version {self.version}, Last Updated: {self.data_date}.",
@@ -3251,7 +3308,7 @@ class OCDC(OCGD):
         """
         Initializes the OCGD class.
         """
-        # Initialize the OCgdm class with provided part/version
+        # Initialize the OCGD class with provided part/version
         super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
@@ -3353,7 +3410,7 @@ class OCACS(OCGD):
         """
         Initializes the OCacs class.
         """
-        # Initialize the OCgdm class with provided part/version
+        # Initialize the OCGD class with provided part/version
         super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
@@ -3448,7 +3505,153 @@ class OCACS(OCGD):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: ACS variables codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def acs_cb_variables(self, year: Optional[int] = None, session: Optional[requests.Session] = None) -> pd.DataFrame:
+    def acs_cb_variables(self, year: Optional[int] = None, session: Optional[requests.Session] = None, write_to_disk: Optional[bool] = False) -> pd.DataFrame:
+        """
+        Fetches the ACS CB variables for the specified year(s) and returns a DataFrame containing the variable information.
+
+        Parameters:
+        - year: Optional integer specifying the ACS year to fetch variables for. If None, variables for all available years will be fetched.
+        - session: Optional requests.Session object to use for making API requests. If None, a new session will be created.
+        - write: Optional boolean indicating whether to write the fetched variables to a file. Default is False.
+
+        Returns:
+        - A pandas DataFrame containing the variable information for the specified year(s).
+        """
+        # Get the list of available ACS years
+        years = self.acs5_years
+        # If the year is provided and is integer
+        if year is not None:
+            if isinstance(year, int) and year in years:
+                years = [year]
+            if not isinstance(year, int):
+                raise ValueError("Year must be an integer.")
+            if year not in years:
+                raise ValueError(f"Year must be one of the following: {years}")
+
+        # Initialize an empty DataFrame to store the variable information across all years
+        master_df = pd.DataFrame()
+
+        # Loop through the ACS years
+        for acs_year in years:
+            # Initialize the variable dictionary for the current year
+            cb = dict()
+
+            # Construct the API URL for the specified year
+            print(f"\nFetching ACS variables for year {acs_year}...")
+            api_url = f"https://api.census.gov/data/{acs_year}/acs/acs5/variables.json"
+            s = session or requests.Session()
+
+            # Make the API request and parse the JSON response
+            resp = s.get(api_url)
+            resp.raise_for_status()
+            data = resp.json()
+
+            # Extract variables from the response
+            raw_variables = data.get("variables", {})
+            print(f"- Total variables fetched for {acs_year}: {len(raw_variables):,}")
+
+            # Keep only variables that start with a letter, followed by a digit,
+            # and end with a capital 'E' (e.g. 'B01001_001E').
+            pattern = re.compile(r'^[A-Za-z]\d.*E$')
+
+            # Filter variables based on the pattern
+            variables = {k: v for k, v in raw_variables.items() if pattern.match(k)}
+            print(f"- Variables after filtering for {acs_year}: {len(variables):,}")
+
+            for var, values in variables.items():
+                if "label" in values:
+                    # make sure the label is string
+                    if not isinstance(values["label"], str):
+                        values["label"] = str(values["label"])
+
+                s = values["label"]
+                # First pass
+                s = s.replace("!!", ": ")
+                s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+                s = re.sub(r"[^A-Za-z0-9\s:\-]", "", s)
+                s = re.sub(r"\s*-\s*", "-", s)
+                s = re.sub(r"-{2,}", "-", s)
+                s = re.sub(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", s)
+                s = re.sub(r":{2,}", ":", s)
+                s = re.sub(r"\s*:\s*", ": ", s)
+                s = re.sub(r"\s+", " ", s)
+                s = s.strip(" \t\n\r:-")
+
+                # Second pass to ensure idempotency (remove any artifacts left by first pass)
+                s = re.sub(r"-{2,}", "-", s)
+                s = re.sub(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", s)
+                s = re.sub(r":{2,}", ":", s)
+                s = re.sub(r"\s*:\s*", ": ", s)
+                s = re.sub(r"\s+", " ", s)
+                s = s.strip(" \t\n\r:-")
+
+                values["label"] = s
+                values["table"] = var[:3]
+                values["used"] = False
+                values["alias"] = re.sub(r"^Estimate\s*: *", "", s)
+
+                # Construct the variable dictionary for the current variable and add it to the main dictionary under the current year
+                cb[var] = {
+                    "year": acs_year,
+                    "table": values.get("table", None),
+                    "group": values.get("group", None),
+                    "variable": var,
+                    "alias": values.get("alias", None),
+                    "oid": 0,
+                    "used": False,
+                    "level": None,
+                    "section": None,
+                    "section_name": None,
+                    "markdown": None,
+                    "label": values.get("label", None),
+                    "concept": values.get("concept", None),
+                    "type": values.get("predicateType", None),
+                    "limit": values.get("limit", None),
+                    "attributes": values.get("attributes", None),
+                    "note": None
+                }
+
+            # Order the variable dictionary by the variable code
+            cb = dict(sorted(cb.items(), key=lambda item: item[0]))
+
+            if write_to_disk:
+                print("- Writing to JSON file...")
+                # Write the variable dictionary to a JSON file
+                output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_{acs_year}_{str(self.version).replace(".", "0")}.json")
+                with open(output_path, "w", encoding = "utf-8") as f:
+                    json.dump(cb, f, indent = 4)
+
+            # Convert the variable dictionary to a pandas DataFrame for easier analysis and manipulation
+            cb_rows = []
+            for var_code, var_info in cb.items():
+                cb_rows.append(var_info)
+            df_cb = pd.DataFrame(cb_rows)
+            print(f"DataFrame for {acs_year} created with {len(df_cb):,} rows and {len(df_cb.columns):,} columns.")
+            print(df_cb.head())
+
+            # Append the current year's DataFrame to the master DataFrame
+            master_df = pd.concat([master_df, df_cb], ignore_index=True)
+
+            print(f"- Variable dictionary and data frame construction for {acs_year} complete.\n")
+
+        # Order the master DataFrame by year and variable code
+        master_df = master_df.sort_values(by=["year", "variable"]).reset_index(drop = True)
+
+        print(f"\nMaster DataFrame created with {len(master_df):,} rows and {len(master_df.columns):,} columns.")
+        if write_to_disk:
+            print("Writing master DataFrame to Excel file...")
+            # After processing all years, write the master DataFrame to an Excel file
+            master_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(self.version).replace('.', '0')}.xlsx")
+            master_df.to_excel(master_output_path, index = False)
+
+        # Return the master DataFrame containing variable information for all specified years
+        return master_df
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: ACS variables codebook - OLD TO BE REMOVED ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def acs_cb_variables_old(self, year: Optional[int] = None, session: Optional[requests.Session] = None) -> pd.DataFrame:
         """
         Fetch ACS variables from the U.S. Census Bureau API for specified years
         Args:
@@ -3676,7 +3879,7 @@ class OCACS(OCGD):
         master_df = master_df.sort_values(by=["variable", "year"]).reset_index(drop = True)
 
         # Save the master dataframe to an Excel file in the codebook directory
-        output_path = os.path.join(self.prj_dirs["codebook"], "acs_cb_variables_master.xlsx")
+        output_path = os.path.join(self.prj_dirs["codebook"], "ocacs_cb_variables_master.xlsx")
         master_df.to_excel(output_path, sheet_name = "Master", index_label = "index")
         print(f"Master ACS variables DataFrame saved to {output_path}")
 
@@ -3741,24 +3944,33 @@ class OCACS(OCGD):
         Notes:
             This function retrieves the GEOID field name and unique values from the specified feature class in the geodatabase for the given year.
         """
+
         # Set the workspace to the geodatabase for the specified year
-        path = os.path.join(self.prj_dirs["gis"], f"tl{year}.gdb")
-        if not os.path.exists(path):
-            raise ValueError(f"Geodatabase for year {year} does not exist at path {path}.")
-        
+        gdb_path = os.path.join(self.prj_dirs["gis"], f"octl_ocacs{year}.gdb")
+        if not os.path.exists(gdb_path):
+            raise ValueError(f"Geodatabase for year {year} does not exist at path {gdb_path}.")
+
         # Set the arcpy workspace to the geodatabase
-        arcpy.env.workspace = path
-        if fc not in arcpy.ListFeatureClasses():
-            raise ValueError(f"Feature class {fc} does not exist in geodatabase {path}.")
-        
+        arcpy.env.workspace = gdb_path
+        arcpy.env.overwriteOutput = True
+
+        for dataset in arcpy.ListDatasets(feature_type = "Feature"):
+            if fc in arcpy.ListFeatureClasses(feature_dataset = dataset):
+                fc_path = os.path.join(dataset, fc)
+                fc_dataset = dataset
+                print(f"Found feature class {fc} in dataset {dataset}.")
+                break
+        if not fc_path:
+            raise ValueError(f"Feature class {fc} does not exist in any feature dataset in geodatabase {gdb_path}.")
+
         # Loop through the fields in the feature class to find the GEOID field
-        for f in arcpy.ListFields(fc):
+        for f in arcpy.ListFields(fc_path):
             # Check if the field name contains "GEOID"
             if f.name.startswith("GEOID"):
                 geoid_field = f.name
                 geoids = set()
                 # Get the unique values for the GEOID field
-                with arcpy.da.SearchCursor(fc, geoid_field) as cursor:
+                with arcpy.da.SearchCursor(fc_path, geoid_field) as cursor:
                     # Loop through the rows in the cursor
                     for row in cursor:
                         geoids.add(row[0])
@@ -3766,8 +3978,8 @@ class OCACS(OCGD):
                 geoids = sorted(list(geoids))
 
                 # Return the GEOID field name and unique values
-                return {"field": geoid_field, "values": geoids}
-        raise ValueError(f"No GEOID field found in feature class {fc}.")
+                return {"dataset": fc_dataset, "field": geoid_field, "values": geoids}
+        raise ValueError(f"No GEOID field found in feature class {fc_path}.")
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4221,7 +4433,7 @@ class OCCR(OCGD):
         """
         Initializes the OCCR class.
         """
-        # Initialize the OCgdm class with provided part/version
+        # Initialize the OCGD class with provided part/version
         super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function

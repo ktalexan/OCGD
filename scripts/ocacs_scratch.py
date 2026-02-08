@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import logging
 import unicodedata
-from typing import Optional, Dict, Any
+from typing import Union, Optional, Dict, Any
 import re
 import shutil
 import importlib
@@ -18,7 +18,7 @@ import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import DualOutput, OCacs
+from ocgd import OCACS
 
 # Load environment variables from .env file
 load_dotenv()
@@ -31,17 +31,28 @@ arcpy.env.workspace = os.getcwd()
 arcpy.env.overwriteOutput = True
 
 # Initialize OCACS instance
-acs = OCacs(part= 1, version= 2026.1)
+ocacs = OCACS(part= 1, version= 2026.1)
 
 # Get the project metadata and directories from the OCACS class object
-prj_meta = acs.prj_meta
-prj_dirs = acs.prj_dirs
+prj_meta = ocacs.prj_meta
+prj_dirs = ocacs.prj_dirs
+
+# Get the logger from the OCACS class object
+logger = ocacs.logger
+
+logger.enable(meta = prj_meta, filename = f"ocacs_cb_vars_{str(ocacs.version).replace(".", "0")}.log", replace = True)
+print("OCACS CB Variables Log\n")
+df_cb_vars = ocacs.acs_cb_variables(write_to_disk = True)
+print("\nACS CB Variables fetch and write to disk completed. Check the log file for details.")
+logger.disable()
+
+
+
 
 # Run and log the ACS CB Variables fetch
-logger = acs.logger
-logger.enable(meta = prj_meta, filename = f"cb_variables_{acs.version}.log", replace = True)
+logger.enable(meta = prj_meta, filename = f"cb_variables_{ocacs.version}.log", replace = True)
 print("ACS CB Variable Log\n")
-df_vars_master = acs.acs_cb_variables(year= None)
+df_vars_master = ocacs.acs_cb_variables(year= None)
 print("\nExample preview of ACS CB Variables DataFrame:")
 print(df_vars_master.head())
 print("\nExample row data of ACS CB Variables DataFrame:")
@@ -49,45 +60,130 @@ print(df_vars_master.iloc[1])
 logger.disable()
 
 
-# sample_vars = acs.get_acs_list(year, "Demographic")
-# df_co_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CO")
+# sample_vars = ocacs.get_acs_list(year, "Demographic")
+# df_co_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CO")
 
-# df_cs_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CS")
+# df_cs_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CS")
 # print(df_cs_d)
 
-# df_pl_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "PL")
+# df_pl_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "PL")
 # print(df_pl_d)
 
 # # Not working
-# df_zc_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "ZC")
+# df_zc_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "ZC")
 # print(df_zc_d)
 
-# df_cd_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CD")
+# df_cd_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "CD")
 # print(df_cd_d)
 
-# df_ll_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "LL")
+# df_ll_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "LL")
 # print(df_ll_d)
 
-# df_lu_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "LU")
+# df_lu_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "LU")
 # print(df_lu_d)
 
-# df_se_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SE")
+# df_se_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SE")
 # print(df_se_d)
 
-# df_ss_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SS")
+# df_ss_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SS")
 # print(df_ss_d)
 
-# df_su_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SU")
+# df_su_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "SU")
 # print(df_su_d)
 
-# df_ua_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "UA")
+# df_ua_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "UA")
 # print(df_ua_d)
 
-# df_pu_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "PU")
+# df_pu_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "PU")
 # print(df_pu_d)
 
-# df_bg_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "BG")
+# df_bg_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "BG")
 # print(df_bg_d)
 
-# df_tr_d = acs.fetch_acs_tables(year = year, variables = sample_vars, geography = "TR")
+# df_tr_d = ocacs.fetch_acs_tables(year = year, variables = sample_vars, geography = "TR")
 # print(df_tr_d)
+
+
+
+cb_sections = {
+    "Demographics": {
+        "D01": "Total Population",
+        "D02": "Sex and Age",
+        "D03": "Median Age by Sex and Race",
+        "D04": "Race",
+        "D05": "Race Alone or in Combination with Other Races",
+        "D06": "Hispanic or Latino Origin",
+        "D07": "Citizen Voting Age Population"
+    },
+    "Social": {
+        "S01": "Households by Type",
+        "S02": "Families by Type",
+        "S03": "Household Relationships",
+        "S04": "Marital Status",
+        "S05": "Fertility Characteristics",
+        "S06": "Grandparent Relationships",
+        "S07": "School Enrollment",
+        "S08": "Educational Attainment",
+        "S09": "Veteran Status",
+        "S10": "Veteran Disability",
+        "S11": "Disability Status and Type",
+        "S12": "Disability Status and Health Insurance Coverage",
+        "S13": "Food Stamp Households",
+        "S14": "Residence 1 Year Ago",
+        "S15": "Place of Birth",
+        "S16": "Citizenship Status",
+        "S17": "Citizenship Status by Year of Entry",
+        "S18": "World Region of Birth of Foreign-Born Population",
+        "S19": "Language Spoken in Households",
+        "S20": "Language Spoken at Home",
+        "S21": "Ancestry",
+        "S22": "People Reporting Ancestry",
+        "S23": "Computer and Internet Use"
+    },
+    "Economic": {
+        "E01": "Employment Status",
+        "E02": "Work Status by Age of Worker",
+        "E03": "Commuting to Work",
+        "E04": "Travel Time to Work",
+        "E05": "Number of Vehicles Available for Workers",
+        "E06": "Median Age by Means of Transportation to Work",
+        "E07": "Means of Transportation to Work by Race",
+        "E08": "Occupation",
+        "E09": "Industry",
+        "E10": "Class of Worker",
+        "E11": "Household Income and Earnings in the Past 12 Months",
+        "E12": "Income and Earnings in Dollars",
+        "E13": "Family Income in Dollars",
+        "E14": "Health Insurance Coverage",
+        "E15": "Ratio of Income to Poverty Level",
+        "E16": "Poverty in Population in the Past 12 Months",
+        "E17": "Poverty in Households in the Past 12 Months",
+        "E18": "Percentage of Families and People Whose Income in the Past 12 Months is Below the Poverty Level",
+        "E19": "Poverty and Income Deficit in Dollars in the Past 12 Months for Families"
+    },
+    "Housing": {
+        "H01": "Housing Occupancy",
+        "H02": "Units in Structure",
+        "H03": "Population in Occupied Housing Units by Tenure by Units in Structure",
+        "H04": "Year Structure Built",
+        "H05": "Rooms",
+        "H06": "Bedrooms",
+        "H07": "Housing Tenure by Race of Householder",
+        "H08": "Total Population in Occupied Housing Units by Tenure",
+        "H09": "Vacancy Status",
+        "H10": "Occupied Housing Units by Race of Householder",
+        "H11": "Year Householder Moved Into Unit",
+        "H12": "Vehicles Available",
+        "H13": "House Heating Fuel",
+        "H14": "Selected Housing Characteristics",
+        "H15": "Occupants per Room",
+        "H16": "Housing Value",
+        "H17": "Price Asked for Vacant For-Sale Only, and Sold, Not Occupied Housing Units",
+        "H18": "Mortgage Status",
+        "H19": "Selected Monthly Owner Costs",
+        "H20": "Selected Monthly Owner Costs as a Percentage of Household Income",
+        "H21": "Contract Rent Distribution and Rent Asked Distribution in Dollars",
+        "H22": "Gross Rent",
+        "H23": "Gross Rent as a Percentage of Household Income"
+    }
+}
