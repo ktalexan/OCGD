@@ -68,6 +68,12 @@ CRE Variables:
 
 - Completed the CRE table query function of the class. It now obtains the data table of the CRE estimates for a given year (so it can joined based on geoid with the Tiger/Line geographies) - 2/1/2026 5:36 AM
 
+### Update 8/2/2026
+
+- Added and modified the codebook function `acs_cb_variables()` in the `ocgd.py` module (OCACS Class) to obtain and export the available ACS variables for a given year and dataset (e.g. ACS 5-year estimates) into a JSON dictionary for each year, and to an excel file for all years (2010-2024) in the codebook directory. This will be used to identify the available variables for the ACS datasets, and to create a codebook for the ACS variables that can be used for analysis and documentation. - 8/2/2026 11:45 PM
+- I kept the old codebook function `acs_cb_variables()` that was used to obtain the variables for a specific year and dataset, and I renamed it to `acs_cb_variables_old()` to avoid confusion with the new function that obtains the variables for all years. At some point, I will delete it from the module - 8/2/2026 11:45 PM
+- Update the workload for today to include 5 hours. 8/2/2026 1:32 AM.
+
 ## ACS Feature Classes
 
 | Dataset | Code | Feature Class | For | In |

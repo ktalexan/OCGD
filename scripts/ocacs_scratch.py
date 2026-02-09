@@ -37,6 +37,85 @@ ocacs = OCACS(part= 1, version= 2026.1)
 prj_meta = ocacs.prj_meta
 prj_dirs = ocacs.prj_dirs
 
+
+
+# Import excel file to dataframe
+df_cb_vars = pd.read_excel(os.path.join(prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(ocacs.version).replace(".", "0")}.xlsx"))
+
+
+years = ocacs.acs5_years
+
+master_schema = {
+    "year": "object",
+    "count_years": "int32",
+    "all_years": "bool",
+    "table": "object",
+    "group": "object",
+    "variable": "object",
+    "alias": "object",
+    "oid": "int32",
+    "used": "bool",
+    "level": "object",
+    "level_group": "object",
+    "category": "object",
+    "label": "object",
+    "concept": "object",
+    "type": "object",
+    "limit": "int32",
+    "attributes": "object",
+    "note": "object",
+    "markdown": "object"
+}
+
+# For each year, add a column to the schema with bool type
+for acs_year in years:
+    master_schema[str(acs_year)] = "bool"
+
+# Create an empty DataFrame with the defined schema called master_df
+master_df = pd.DataFrame(columns=master_schema.keys()).astype(master_schema)
+
+# For each year of the df_cb_vars "year" column, get the variables in the "variables" column
+for year in df_cb_vars["year"].unique():
+    # For each unique variable in the "variable" column for the current year, create a new row in the master_df dataframe with the year and variable
+    for variable in df_cb_vars[df_cb_vars["year"] == year]["variable"].unique():
+        if variable not in master_df["variable"].values:
+            new_row = {
+                "year": f"{master_df["year"]}, {year}",
+                "variable": variable,
+            }
+            master_df = master_df._append(new_row, ignore_index=True)
+
+cb_vars = {}
+for level in ["Demographics", "Social", "Economic", "Housing"]:
+    cb_vars[level] = {}
+    if level == "Demographics":
+        no_sections = 7
+        for i in range(1, no_sections + 1):
+            section_code = f"D{str(i).zfill(2)}"
+            cb_vars[level][section_code] = {}
+    elif level == "Social":
+        no_sections = 23
+        for i in range(1, no_sections + 1):
+            section_code = f"S{str(i).zfill(2)}"
+            cb_vars[level][section_code] = {}
+    elif level == "Economic":
+        no_sections = 19
+        for i in range(1, no_sections + 1):
+            section_code = f"E{str(i).zfill(2)}"
+            cb_vars[level][section_code] = {}
+    elif level == "Housing":
+        no_sections = 23
+        for i in range(1, no_sections + 1):
+            section_code = f"H{str(i).zfill(2)}"
+            cb_vars[level][section_code] = {}
+
+for year in ocacs.years:
+    cb_vars["Demographics"]["D01"][year] = ["B01003_001E"]
+    cb_vars["Demographics"]["D02"][year] = ["B01001_001E", "B01001_002E", "B01001_026E", "B01001_003E", "B01001_004E", "B01001_005E", "B01001_006E", "B01001_007E", "B01001_008E", "B01001_009E", "B01001_010E", "B01001_011E", "B01001_012E", "B01001_013E", "B01001_014E", "B01001_015E", "B01001_016E", "B01001_017E", "B01001_018E", "B01001_019E", "B01001_020E", "B01001_021E", "B01001_022E", "B01001_023E", "B01001_024E", "B01001_025E", "B01001_027E", "B01001_028E", "B01001_029E", "B01001_030E", "B01001_031E", "B01001_032E", "B01001_033E", "B01001_034E", "B01001_035E", "B01001_036E", "B01001_037E", "B01001_038E", "B01001_039E", "B01001_040E", "B01001_041E", "B01001_042E", "B01001_043E", "B01001_044E", "B01001_045E", "B01001_046E", "B01001_047E", "B01001_048E", "B01001_049E"]
+
+
+
+
 # Get the logger from the OCACS class object
 logger = ocacs.logger
 

@@ -3530,12 +3530,13 @@ class OCACS(OCGD):
 
         # Initialize an empty DataFrame to store the variable information across all years
         master_df = pd.DataFrame()
+        cum_df = pd.DataFrame()
 
         # Loop through the ACS years
         for acs_year in years:
             # Initialize the variable dictionary for the current year
             cb = dict()
-
+            
             # Construct the API URL for the specified year
             print(f"\nFetching ACS variables for year {acs_year}...")
             api_url = f"https://api.census.gov/data/{acs_year}/acs/acs5/variables.json"
@@ -3611,6 +3612,19 @@ class OCACS(OCGD):
                     "note": None
                 }
 
+                if acs_year == years[0]:
+                    # Add a row with the variable, alias, and year to the cumulative DataFrame
+                    new_row = {"variable": var, "alias": values.get("alias", None), "years": str(acs_year)}
+                    cum_df = pd.concat([cum_df, pd.DataFrame([new_row])], ignore_index = True)
+                else:
+                    # If the variable already exists in the cumulative DataFrame, update the years column to include the current year
+                    if var in cum_df["variable"].values and values.get("alias", None) == cum_df.loc[cum_df["variable"] == var, "alias"].values[0]:
+                        cum_df.loc[cum_df["variable"] == var, "years"] += f", {acs_year}"
+                    else:
+                        # If the variable does not exist in the cumulative DataFrame, add a new row with the variable, alias, and year
+                        new_row = {"variable": var, "alias": values.get("alias", None), "years": str(acs_year)}
+                        cum_df = pd.concat([cum_df, pd.DataFrame([new_row])], ignore_index = True)
+
             # Order the variable dictionary by the variable code
             cb = dict(sorted(cb.items(), key=lambda item: item[0]))
 
@@ -3623,7 +3637,7 @@ class OCACS(OCGD):
 
             # Convert the variable dictionary to a pandas DataFrame for easier analysis and manipulation
             cb_rows = []
-            for var_code, var_info in cb.items():
+            for var_info in cb.values():
                 cb_rows.append(var_info)
             df_cb = pd.DataFrame(cb_rows)
             print(f"DataFrame for {acs_year} created with {len(df_cb):,} rows and {len(df_cb.columns):,} columns.")
@@ -3637,12 +3651,56 @@ class OCACS(OCGD):
         # Order the master DataFrame by year and variable code
         master_df = master_df.sort_values(by=["year", "variable"]).reset_index(drop = True)
 
+        # Update the year_count column to the cumulative DataFrame that counts the number of years each variable appears in
+        cum_df["year_count"] = cum_df["years"].apply(lambda x: len(x.split(", ")))
+        # Update the column all_years to the cumulative DataFrame that is True if the variable appears in all years and False otherwise
+        cum_df["all_years"] = cum_df["year_count"] == len(years)
+
+        # Add a table column to the cumulative DataFrame that extracts the table code from the 3 first characters of the variable code (e.g. 'B01' from 'B01001_001E')
+        cum_df["table"] = cum_df["variable"].apply(lambda x: x[:3])
+        # Add a group column to the cumulative DataFrame that extracts the group name from the variable code before the underscore (e.g. 'B01001' from 'B01001_001E')
+        cum_df["group"] = cum_df["variable"].apply(lambda x: x.split("_")[0])
+
+        # Add oid, used, level, section, section_name, markdown, and note as empty columns to the cumulative DataFrame
+        cum_df["oid"] = 0
+        cum_df["used"] = False
+        cum_df["level"] = None
+        cum_df["section"] = None
+        cum_df["section_name"] = None
+        cum_df["markdown"] = None
+        cum_df["note"] = None
+
+        # Reorder the columns in the cumulative DataFrame to match the order of the master DataFrame
+        cum_df = cum_df[["years", "year_count", "all_years", "table", "group", "variable", "alias", "oid", "used", "level", "section", "section_name", "markdown", "note"]]
+
+        # For each year in years, add a column to the cumulative DataFrame with bool type that is True if the variable appears in that year and False otherwise
+        for acs_year in years:
+            cum_df[str(acs_year)] = cum_df["years"].apply(lambda x: str(acs_year) in x.split(", "))
+
+        # Sort the cumulative DataFrame by variable and year_count in descending order
+        cum_df = cum_df.sort_values(by=["variable", "year_count"], ascending=[True, False]).reset_index(drop=True)
+
         print(f"\nMaster DataFrame created with {len(master_df):,} rows and {len(master_df.columns):,} columns.")
+        print(f"Cumulative DataFrame created with {len(cum_df):,} rows and {len(cum_df.columns):,} columns.")
         if write_to_disk:
-            print("Writing master DataFrame to Excel file...")
+            # print("Writing master DataFrame to Excel file...")
+            # # After processing all years, write the master DataFrame to an Excel file
+            # master_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(self.version).replace('.', '0')}.xlsx")
+            # master_df.to_excel(master_output_path, index = False, sheet_name = "Master")
+
+            # print("Write the cumulative variable DataFrame to an Excel file...")
+            # cum_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_cumulative_{str(self.version).replace('.', '0')}.xlsx")
+            # cum_df.to_excel(cum_output_path, index = False, sheet_name = "Cumulative")
+
+            # print("Writing master and cumulative DataFrames to Excel file...")
+            print("Writing master and cumulative DataFrames to Excel file...")
             # After processing all years, write the master DataFrame to an Excel file
             master_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(self.version).replace('.', '0')}.xlsx")
-            master_df.to_excel(master_output_path, index = False)
+            # Write both DataFrames to the same Excel workbook using two sheets
+            with pd.ExcelWriter(master_output_path, engine = "auto") as writer:
+                master_df.to_excel(writer, index = False, sheet_name = "Master")
+                cum_df.to_excel(writer, index = False, sheet_name = "Cumulative")
+
 
         # Return the master DataFrame containing variable information for all specified years
         return master_df
