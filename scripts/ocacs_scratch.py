@@ -1,5 +1,4 @@
 # Import necessary libraries
-from __future__ import annotations
 import os
 import sys
 import datetime
@@ -50,18 +49,14 @@ logger.disable()
 
 
 
-
-
-
-
-
-
-
-# Import excel file to dataframe
-df_cb_vars = pd.read_excel(os.path.join(prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(ocacs.version).replace(".", "0")}.xlsx"))
-
+ocacs_cb_vars_master = ocacs.construct_master_variables_dict(write_to_file = True)
 
 years = ocacs.acs5_years
+for year in years:
+    print(f"{year}\n- Demographic: {len(ocacs_cb_vars_master[str(year)]['Demographic']['all_variables'])} variables\n- Social: {len(ocacs_cb_vars_master[str(year)]['Social']['all_variables'])} variables\n- Economic: {len(ocacs_cb_vars_master[str(year)]['Economic']['all_variables'])} variables\n- Housing: {len(ocacs_cb_vars_master[str(year)]['Housing']['all_variables'])} variables")
+
+
+
 
 master_schema = {
     "year": "object",

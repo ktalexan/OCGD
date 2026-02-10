@@ -2756,14 +2756,14 @@ class OCTL(OCGD):
             print("No tables found in the specified directory.")
 
         # Create a geodatabase for the year
-        tl_gdb = self.create_gdb(tl_metadata["year"])
+        octl_gdb = self.create_gdb(tl_metadata["year"])
 
         print(f"Processing {cb['county']['file']}...")
 
         # Define the input and output feature classes for the county feature class
         in_oc = os.path.join(scratch_gdb, tl_metadata["layers"]["county"]["file"]
 )
-        out_oc = os.path.join(tl_gdb, cb["county"]["code"])
+        out_oc = os.path.join(octl_gdb, cb["county"]["code"])
 
         # Get the field name from the arcpy.ListFields(in_oc) if field.name contains "STATEFP" and "COUNTYFP"
         state_field = ""
@@ -2810,7 +2810,7 @@ class OCTL(OCGD):
             code = cb[f]["code"]
             # Define the input and output feature classes
             in_fc = os.path.join(scratch_gdb, fc)
-            out_fc = os.path.join(tl_gdb, code)
+            out_fc = os.path.join(octl_gdb, code)
             method = cb[f]["method"]
             print(f"Processing {fc}...")
 
@@ -2875,7 +2875,7 @@ class OCTL(OCGD):
                     )
                     self.arcpy_messages("-")
                     # Export the selection to a new fc
-                    arcpy.conversion.FeatureClassToFeatureClass("temp_lyr", tl_gdb, code)
+                    arcpy.conversion.FeatureClassToFeatureClass("temp_lyr", octl_gdb, code)
                     self.arcpy_messages("-")
                     # Delete the temporary layer
                     arcpy.management.Delete("temp_lyr")
@@ -2922,7 +2922,7 @@ class OCTL(OCGD):
         
         # Get a list of all feature classes in the TL geodatabase
         try:
-            arcpy.env.workspace = tl_gdb
+            arcpy.env.workspace = octl_gdb
             tl_fcs = arcpy.ListFeatureClasses()
             tl_tables = arcpy.ListTables()
             tl_features = sorted(tl_fcs) + sorted(tl_tables)
@@ -2930,7 +2930,7 @@ class OCTL(OCGD):
             arcpy.env.workspace = os.getcwd()
         
         # Apply metadata to the TL geodatabase
-        print(f"\nApplying metadata to the TL geodatabase: {os.path.basename(tl_gdb)}")
+        print(f"\nApplying metadata to the TL geodatabase: {os.path.basename(octl_gdb)}")
         for fc in tl_features:
             # Select the key from the cb dictionary where the value of cb[key]["code"] matches fc
             key = next((k for k, v in cb.items() if v["code"] == fc), None)
@@ -2946,7 +2946,7 @@ class OCTL(OCGD):
             mdo.thumbnailUri = cb[key]["uri"]
 
             # Apply the metadata to the feature class
-            md_fc = md.Metadata(os.path.join(tl_gdb, fc))
+            md_fc = md.Metadata(os.path.join(octl_gdb, fc))
             if not md_fc.isReadOnly:
                 md_fc.copy(mdo)
                 md_fc.save()
@@ -2955,8 +2955,8 @@ class OCTL(OCGD):
                 print(f"- Metadata is read-only for {final_list[fc]} ({fc})")
             
             # Create a metadata object for the TL geodatabase
-            print(f"\nApplying metadata to the TL geodatabase: {os.path.basename(tl_gdb)}")
-            md_gdb = md.Metadata(tl_gdb)
+            print(f"\nApplying metadata to the TL geodatabase: {os.path.basename(octl_gdb)}")
+            md_gdb = md.Metadata(octl_gdb)
             md_gdb.title = f"TL{tl_metadata["year"]} TigerLine Geodatabase"
             md_gdb.tags = "Orange County, California, OCTL, TigerLine, Geodatabase"
             md_gdb.summary = f"Orange County TigerLine Geodatabase for the {tl_metadata["year"]} year data"
@@ -3277,6 +3277,95 @@ class OCTL(OCGD):
         return feature_list
 
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Get OCTL geodatabase structure ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def get_octl_gdb_structure(self) -> dict:
+        """
+        Get the structure of the OCTL geodatabase for a given year.
+        Args:
+            Nothing
+        Returns:
+            gdb_structure (dict): A dictionary containing the structure of the OCTL geodatabase for the given year.
+        Raises:
+            Nothing
+        Example:
+            >>> gdb_structure = get_octl_gdb_structure(2020)
+        Notes:
+            This function gets the structure of the OCTL geodatabase for a given year.
+        """
+
+        # Initialize the OCTL geodatabase structure dictionary
+        gdb_octl_dict = {"ocacs": {}, "ocdc": {}, "ocec": {}, "ocpf": {}, "support": {}}
+
+        # Get the list of geodatabases for each OCTL category
+        gdb_ocacs_list = [f for f in os.listdir(self.prj_dirs["gis"]) if f.startswith("octl_ocacs") and f.endswith(".gdb")]
+        gdb_ocdc_list = [f for f in os.listdir(self.prj_dirs["gis"]) if f.startswith("octl_ocdc") and f.endswith(".gdb")]
+        gdb_ocec_list = [f for f in os.listdir(self.prj_dirs["gis"]) if f.startswith("octl_ocec") and f.endswith(".gdb")]
+        gdb_ocpf_list = [f for f in os.listdir(self.prj_dirs["gis"]) if f.startswith("octl_ocpf") and f.endswith(".gdb")]
+        gdb_support_list = [f for f in os.listdir(self.prj_dirs["gis"]) if f.startswith("octl_sup") and f.endswith(".gdb")]
+
+        # Get the OCACS geodatabases and their structure
+        for gdb in gdb_ocacs_list:
+            year = gdb.split("octl_ocacs")[1].split(".gdb")[0]
+            # print(year)
+            gdb_octl_dict["ocacs"][year] = {"gdb": gdb}
+            arcpy.env.workspace = os.path.join(self.prj_dirs["gis"], gdb)
+            # Get the list of feature datasets in the geodatabase
+            gdb_fds =arcpy.ListDatasets(feature_type = "Feature")
+            for fd in gdb_fds:
+                gdb_fd_fcs = list(arcpy.ListFeatureClasses(feature_dataset = fd))
+                gdb_octl_dict["ocacs"][year][fd] = gdb_fd_fcs
+
+        # Get the OCDC geodatabases and their structure
+        for gdb in gdb_ocdc_list:
+            year = gdb.split("octl_ocdc")[1].split(".gdb")[0]
+            gdb_octl_dict["ocdc"][year] = {"gdb": gdb}
+            arcpy.env.workspace = os.path.join(self.prj_dirs["gis"], gdb)
+            # Get the list of feature datasets in the geodatabase
+            gdb_fds =arcpy.ListDatasets(feature_type = "Feature")
+            for fd in gdb_fds:
+                gdb_fd_fcs = list(arcpy.ListFeatureClasses(feature_dataset = fd))
+                gdb_octl_dict["ocdc"][year][fd] = gdb_fd_fcs
+
+        # Get the OCEC geodatabases and their structure
+        for gdb in gdb_ocec_list:
+            year = gdb.split("octl_ocec")[1].split(".gdb")[0]
+            gdb_octl_dict["ocec"][year] = {"gdb": gdb}
+            arcpy.env.workspace = os.path.join(self.prj_dirs["gis"], gdb)
+            # Get the list of feature datasets in the geodatabase
+            gdb_fds =arcpy.ListDatasets(feature_type = "Feature")
+            for fd in gdb_fds:
+                gdb_fd_fcs = list(arcpy.ListFeatureClasses(feature_dataset = fd))
+                gdb_octl_dict["ocec"][year][fd] = gdb_fd_fcs
+
+        # Get the OCPF geodatabases and their structure
+        for gdb in gdb_ocpf_list:
+            gdb_octl_dict["ocpf"] = {"gdb": gdb}
+            arcpy.env.workspace = os.path.join(self.prj_dirs["gis"], gdb)
+            # Get the list of feature datasets in the geodatabase
+            gdb_fds =arcpy.ListDatasets(feature_type = "Feature")
+            for fd in gdb_fds:
+                gdb_fd_fcs = list(arcpy.ListFeatureClasses(feature_dataset = fd))
+                gdb_octl_dict["ocpf"][fd] = gdb_fd_fcs
+
+        # Get the support geodatabases and their structure
+        for gdb in gdb_support_list:
+            gdb_octl_dict["support"] = {"gdb": gdb}
+            arcpy.env.workspace = os.path.join(self.prj_dirs["gis"], gdb)
+            # Get the list of feature datasets in the geodatabase
+            gdb_fds =arcpy.ListDatasets(feature_type = "Feature")
+            for fd in gdb_fds:
+                gdb_fd_fcs = list(arcpy.ListFeatureClasses(feature_dataset = fd))
+                gdb_octl_dict["support"][fd] = gdb_fd_fcs
+
+        # Return the gdb structure dictionary
+        return gdb_octl_dict
+
+
+
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the OCDC main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3502,6 +3591,77 @@ class OCACS(OCGD):
         return metadata
 
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Construct master variables dictionary ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def construct_master_variables_dict(self, write_to_file: bool = True) -> dict:
+        # Get the list of ACS5 years
+        years = self.acs5_years
+
+        # Get the path to the edited excel file containing the variables to include in the codebook. The file should be named "ocacs_cb_vars_cumulative_{version}_edited.xlsx" and should be located in the codebook directory. The version number in the filename should match the version attribute of the class, with dots replaced by zeros (e.g. version 2026.1 should be "ocacs_cb_vars_cumulative_202601_edited.xlsx").
+        excel_file_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_cumulative_{str(self.version).replace(".", "0")}_edited.xlsx")
+
+        # Import the edited excel file to a dataframe
+        df_cb_vars_edited = pd.read_excel(excel_file_path)
+        # only keep the rows where the "used" column is True
+        df_cb_vars_include = df_cb_vars_edited[df_cb_vars_edited["used"] == True]
+
+        # Create a master dictionary to store the variables for each year, level, and section
+        cb_master = dict()
+
+        # Loop through each of the ACS5 years
+        for year in years:
+            # Filter the dataframe to only include the rows where the column with the year as the name is True
+            df_year = df_cb_vars_include[df_cb_vars_include[str(year)] == True]
+            # Add the year as a key to the master dictionary
+            cb_master[str(year)] = dict()
+
+            # Loop through each level in the dataframe
+            for level in df_year["level"].unique():
+                # Filter the dataframe to only include the rows where the level is equal to the current level
+                df_level = df_year[df_year["level"] == level]
+                # Add the level as a key to the master dictionary under the year
+                cb_master[str(year)][level] = dict()
+                # Loop through each section in the dataframe
+                for section in df_level["section"].unique():
+                    # Filter the dataframe to only include the rows where the section is equal to the current section
+                    df_section = df_level[df_level["section"] == section]
+
+                    # for each section, add the key and the df_section["section_name"].unique()[0] as the value to the cb_master under the year and level
+                    cb_master[str(year)][level][section] = {"section": section, "section_name": df_section["section_name"].unique()[0], "variables": {}}
+
+                    # Create a dictionary to store the variables for the current section
+                    variables_dict = {}
+
+                    # For each variable in df_section, add them into a list and add that list to the cb_master under the year, level, and section
+                    for variable in df_section["variable"].unique():
+                        # for each variable, get the alias from the df_section
+                        variable_alias = df_section[df_section["variable"] == variable]["alias"].unique()[0]
+                        # Append the variables_dict with the pair of variable and variable_alias. It should look like {"variable1": "alias1", "variable2": "alias2", ...}
+                        variables_dict[variable] = variable_alias
+
+                    # Add the variables_dict to the cb_master under the year, level, and section
+                    cb_master[str(year)][level][section]["variables"] = variables_dict
+        
+        # For each year and level in the cb_master, add the variables from each section into a single dictionary and add that dictionary to the cb_master under the year and level with the key "all_variables". 
+        for year, levels in cb_master.items():
+            for level, sections in levels.items():
+                all_variables_dict = {}
+                for section, section_info in sections.items():
+                    all_variables_dict.update(section_info["variables"])
+                cb_master[year][level]["all_variables"] = all_variables_dict
+
+        if write_to_file:
+            # Write the master dictionary to a JSON file in the codebook directory with the name "ocacs_cb_master_{version}.json", where the version number is the version attribute of the class with dots replaced by zeros (e.g. version 2026.1 should be "ocacs_cb_master_202601.json").
+            output_file_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(self.version).replace('.', '0')}.json")
+            with open(output_file_path, "w", encoding = "utf-8") as json_file:
+                json.dump(cb_master, json_file, indent=4)
+            print(f"Master variables dictionary written to {output_file_path}")
+        
+        # Return the master dictionary
+        return cb_master
+
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: ACS variables codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3590,6 +3750,8 @@ class OCACS(OCGD):
                 values["table"] = var[:3]
                 values["used"] = False
                 values["alias"] = re.sub(r"^Estimate\s*: *", "", s)
+                # Convert all words in alias to lowercase
+                values["alias_match"] = values["alias"].lower()
 
                 # Construct the variable dictionary for the current variable and add it to the main dictionary under the current year
                 cb[var] = {
@@ -3614,15 +3776,19 @@ class OCACS(OCGD):
 
                 if acs_year == years[0]:
                     # Add a row with the variable, alias, and year to the cumulative DataFrame
-                    new_row = {"variable": var, "alias": values.get("alias", None), "years": str(acs_year)}
+                    new_row = {"variable": var, "alias": values.get("alias", None), "years": str(acs_year), "label": values.get("label", None), "concept": values.get("concept", None), "type": values.get("predicateType", None), "attributes": values.get("attributes", None), "alias_match": values.get("alias_match", None)}
                     cum_df = pd.concat([cum_df, pd.DataFrame([new_row])], ignore_index = True)
                 else:
-                    # If the variable already exists in the cumulative DataFrame, update the years column to include the current year
-                    if var in cum_df["variable"].values and values.get("alias", None) == cum_df.loc[cum_df["variable"] == var, "alias"].values[0]:
-                        cum_df.loc[cum_df["variable"] == var, "years"] += f", {acs_year}"
+                    # If the variable already exists in the cumulative DataFrame, update the years column
+                    # Use a mask to find any rows that match BOTH the variable and the alias_match (not just the first match)
+                    alias_match = values.get("alias_match", None)
+                    mask = (cum_df["variable"] == var) & (cum_df["alias_match"] == alias_match)
+                    if mask.any():
+                        # Append the year to all matching rows' years field
+                        cum_df.loc[mask, "years"] = cum_df.loc[mask, "years"].apply(lambda x: f"{x}, {acs_year}")
                     else:
-                        # If the variable does not exist in the cumulative DataFrame, add a new row with the variable, alias, and year
-                        new_row = {"variable": var, "alias": values.get("alias", None), "years": str(acs_year)}
+                        # If no matching row exists, add a new row with the variable, alias, and year
+                        new_row = {"variable": var, "alias": values.get("alias", None), "years": str(acs_year), "label": values.get("label", None), "concept": values.get("concept", None), "type": values.get("predicateType", None), "attributes": values.get("attributes", None), "alias_match": values.get("alias_match", None)}
                         cum_df = pd.concat([cum_df, pd.DataFrame([new_row])], ignore_index = True)
 
             # Order the variable dictionary by the variable code
@@ -3671,7 +3837,7 @@ class OCACS(OCGD):
         cum_df["note"] = None
 
         # Reorder the columns in the cumulative DataFrame to match the order of the master DataFrame
-        cum_df = cum_df[["years", "year_count", "all_years", "table", "group", "variable", "alias", "oid", "used", "level", "section", "section_name", "markdown", "note"]]
+        cum_df = cum_df[["years", "year_count", "all_years", "table", "group", "variable", "alias", "oid", "used", "level", "section", "section_name", "markdown", "note", "label", "concept", "type", "attributes"]]
 
         # For each year in years, add a column to the cumulative DataFrame with bool type that is True if the variable appears in that year and False otherwise
         for acs_year in years:
@@ -3683,24 +3849,14 @@ class OCACS(OCGD):
         print(f"\nMaster DataFrame created with {len(master_df):,} rows and {len(master_df.columns):,} columns.")
         print(f"Cumulative DataFrame created with {len(cum_df):,} rows and {len(cum_df.columns):,} columns.")
         if write_to_disk:
-            # print("Writing master DataFrame to Excel file...")
-            # # After processing all years, write the master DataFrame to an Excel file
-            # master_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(self.version).replace('.', '0')}.xlsx")
-            # master_df.to_excel(master_output_path, index = False, sheet_name = "Master")
-
-            # print("Write the cumulative variable DataFrame to an Excel file...")
-            # cum_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_cumulative_{str(self.version).replace('.', '0')}.xlsx")
-            # cum_df.to_excel(cum_output_path, index = False, sheet_name = "Cumulative")
-
-            # print("Writing master and cumulative DataFrames to Excel file...")
-            print("Writing master and cumulative DataFrames to Excel file...")
+            print("Writing master DataFrame to Excel file...")
             # After processing all years, write the master DataFrame to an Excel file
             master_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(self.version).replace('.', '0')}.xlsx")
-            # Write both DataFrames to the same Excel workbook using two sheets
-            with pd.ExcelWriter(master_output_path, engine = "auto") as writer:
-                master_df.to_excel(writer, index = False, sheet_name = "Master")
-                cum_df.to_excel(writer, index = False, sheet_name = "Cumulative")
+            master_df.to_excel(master_output_path, index = False, sheet_name = "Master")
 
+            print("Write the cumulative variable DataFrame to an Excel file...")
+            cum_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_cumulative_{str(self.version).replace('.', '0')}.xlsx")
+            cum_df.to_excel(cum_output_path, index = False, sheet_name = "Cumulative")
 
         # Return the master DataFrame containing variable information for all specified years
         return master_df
@@ -4320,14 +4476,14 @@ class OCACS(OCGD):
         print(f"Converting TigerLine feature class to spatial data frame for year: {year} and geography: {geography}...")
 
         # Set the TL geodatabase path
-        tl_gdb_path = os.path.join(self.prj_dirs["gis"], f"tl{year}.gdb")
+        octl_gdb_path = os.path.join(self.prj_dirs["gis"], f"tl{year}.gdb")
 
         try:
-            arcpy.env.workspace = tl_gdb_path
+            arcpy.env.workspace = octl_gdb_path
             arcpy.env.overwriteOutput = True
 
             # Load the TL feature class into a spatial data frame
-            tl_sdf = pd.DataFrame.spatial.from_featureclass(os.path.join(tl_gdb_path, geography))
+            tl_sdf = pd.DataFrame.spatial.from_featureclass(os.path.join(octl_gdb_path, geography))
         finally:
             arcpy.env.workspace = os.getcwd()
 
@@ -4503,7 +4659,7 @@ class OCCR(OCGD):
             "TR"   # Census Tract
         ]
 
-        # Define the CR DataFrame schema
+        # Define the OCCR DataFrame schema
         self.schema = {
             "GEOID": "object",
             "GEO_ID": "object",
@@ -4559,17 +4715,17 @@ class OCCR(OCGD):
         # Match the part to a specific step and description (with default case)
         match self.part:
             case 1:
-                step = "Part 1: Create CR Feature Classes"
-                desc = "Creating feature classes for the CR data from the Census API data frames and the Tiger/Line Census Tract geographies."
+                step = "Part 1: Create OCCR Feature Classes"
+                desc = "Creating feature classes for the OCCR data from the Census API data frames and the Tiger/Line Census Tract geographies."
             case 2:
                 step = "Part 2: Imported Data Geocoding"
                 desc = "Geocoding the imported data and preparing it for GIS processing."
             case 3:
                 step = "Part 3: GIS Data Processing"
-                desc = "GIS Geoprocessing and formatting of the OCUP data."
+                desc = "GIS Geoprocessing and formatting of the OCCR data."
             case 4:
                 step = "Part 4: GIS Map Processing"
-                desc = "Creating maps and visualizations of the OCUP data."
+                desc = "Creating maps and visualizations of the OCCR data."
             case 5:
                 step = "Part 5: GIS Data Sharing"
                 desc = "Exporting and sharing the GIS data to ArcGIS Online."
@@ -4602,33 +4758,33 @@ class OCCR(OCGD):
     ## fx: Load CR codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    def generate_cr_codebook(self, year: int, write_to_file: bool = False) -> dict:
+    def generate_occr_codebook(self, year: int, write_to_file: bool = False) -> dict:
         """
-        Generate CR codebook for a given year and list of headers.
+        Generate OCCR codebook for a given year and list of headers.
         Args:
-            year (int): The CR year (e.g., 2020, 2021, 2022).
+            year (int): The OCCR year (e.g., 2020, 2021, 2022).
         Returns:
-            Dictionary containing the CR variable metadata.
+            Dictionary containing the OCCR variable metadata.
         Raises:
             RuntimeError: If the CENSUS_API_KEY1 environment variable is not set.
         Example:
-            >>> cr_cb = generate_cr_codebook(2020)
+            >>> occr_cb = generate_occr_codebook(2020)
         Notes:
-            This function fetches CR variable metadata from the Census API.
+            This function fetches OCCR variable metadata from the Census API.
         """
         # Define a dictionary to hold variable metadata
-        cr_cb = dict()
+        occr_cb = dict()
 
         # Define the headers to fetch metadata for
         var_list = ["GEO_ID", "SUMLEVEL", "GEOCOMP", "NAME", "POPUNI", "PRED0_E", "PRED12_E", "PRED3_E", "PRED0_PE", "PRED12_PE", "PRED3_PE", "PRED0_M", "PRED12_M", "PRED3_M", "PRED0_PM", "PRED12_PM", "PRED3_PM", "STATE", "COUNTY", "TRACT"]
 
-        # Loop through each CR variable and fetch its metadata
-        for cr_var in var_list:
+        # Loop through each OCCR variable and fetch its metadata
+        for occr_var in var_list:
             # Define the URL for the variable metadata
-            cr_info_url = f"https://api.census.gov/data/{year}/cr/variables/{cr_var}.json"
+            occr_info_url = f"https://api.census.gov/data/{year}/cr/variables/{occr_var}.json"
 
             # Make the API request for variable metadata
-            info_response = requests.get(cr_info_url, timeout = 60)
+            info_response = requests.get(occr_info_url, timeout = 60)
             
             # Check for valid JSON response
             try:
@@ -4637,36 +4793,36 @@ class OCCR(OCGD):
                 raise RuntimeError(f"Invalid JSON response from Census API (status={info_response.status_code}): {info_response.text[:500]}") from exc
             
             # Add the variable metadata to the dictionary
-            cr_cb[cr_var] = info_data
+            occr_cb[occr_var] = info_data
 
         # Write the codebook to a JSON file
-        cr_cb_path = os.path.join(self.prj_dirs["codebook"], f"cr_cb_{year}.json")
+        occr_cb_path = os.path.join(self.prj_dirs["codebook"], f"occr_cb_{year}.json")
         if write_to_file:
-            with open(cr_cb_path, "w", encoding = "utf-8") as f:
-                json.dump(cr_cb, f, indent = 4)
-            print(f"CR codebook for year {year} written to {cr_cb_path}")
+            with open(occr_cb_path, "w", encoding = "utf-8") as f:
+                json.dump(occr_cb, f, indent = 4)
+            print(f"OCCR codebook for year {year} written to {occr_cb_path}")
 
         # Return the codebook dictionary
-        return cr_cb
+        return occr_cb
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Fetch CR tables ----
+    ## fx: Fetch OCCR tables ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def fetch_cr_tables(self, year: int) -> pd.DataFrame:
+    def fetch_occr_tables(self, year: int) -> pd.DataFrame:
         """
-        Fetch CR data for a given year and geography.
+        Fetch OCCR data for a given year and geography.
         Args:
-            year (int): The CR year (e.g., 2020, 2021, 2022).
+            year (int): The OCCR year (e.g., 2020, 2021, 2022).
         Returns:
-            DataFrame containing the requested CR data for each geography.
+            DataFrame containing the requested OCCR data for each geography.
         Raises:
             RuntimeError: If the CENSUS_API_KEY1 environment variable is not set.
         Example:
-            >>> df_cr = fetch_cr_tables(2020)
+            >>> df_occr = fetch_occr_tables(2020)
         Notes:
-            This function fetches CR data from the Census API.
+            This function fetches OCCR data from the Census API.
         """
-        print(f"Fetching CR data for year: {year}...")
+        print(f"Fetching OCCR data for year: {year}...")
         
         # Get Census API key from environment variable
         api_key = os.getenv("CENSUS_API_KEY1")
@@ -4674,10 +4830,10 @@ class OCCR(OCGD):
             raise RuntimeError("Environment variable CENSUS_API_KEY1 is not set")
 
         # Base URL for ACS5 API
-        cr_api_url = f"https://api.census.gov/data/{year}/cr?get=GEO_ID,SUMLEVEL,GEOCOMP,NAME,POPUNI,PRED0_E,PRED12_E,PRED3_E,PRED0_PE,PRED12_PE,PRED3_PE,PRED0_M,PRED12_M,PRED3_M,PRED0_PM,PRED12_PM,PRED3_PM&for=tract:*&in=state:06&in=county:059&key={api_key}"
+        occr_api_url = f"https://api.census.gov/data/{year}/cr?get=GEO_ID,SUMLEVEL,GEOCOMP,NAME,POPUNI,PRED0_E,PRED12_E,PRED3_E,PRED0_PE,PRED12_PE,PRED3_PE,PRED0_M,PRED12_M,PRED3_M,PRED0_PM,PRED12_PM,PRED3_PM&for=tract:*&in=state:06&in=county:059&key={api_key}"
 
         # Make the API request
-        api_response = requests.get(cr_api_url, timeout = 60)
+        api_response = requests.get(occr_api_url, timeout = 60)
         # Check for valid JSON response
         try:
             api_data = api_response.json()
@@ -4723,105 +4879,117 @@ class OCCR(OCGD):
         # Set the geoid column by removing the '1400000US' prefix from the GEO_ID column
         records_df["GEOID"] = records_df["GEO_ID"].str.replace("1400000US", "", regex=False)
 
-        # Rename the "NAME" column to "CR_NAME"
-        records_df = records_df.rename(columns={"NAME": "CR_NAME"})
+        # Rename the "NAME" column to "OCCR_NAME"
+        records_df = records_df.rename(columns={"NAME": "OCCR_NAME"})
 
         # Return the final DataFrame
         return records_df
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: Create CR feature class ----
+    ## fx: Create OCCR feature class ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def create_cr_feature_class(self, year: int):
+    def create_occr_feature_class(self, year: int):
         """
-        Create CR feature class for the specified year.
+        Create OCCR feature class for the specified year.
         Args:
-            year (int): The CR year (e.g., 2020, 2021, 2022).
+            year (int): The OCCR year (e.g., 2020, 2021, 2022).
         Returns:
             None
         Raises:
             None
         Example:
-            >>> create_cr_feature_class(2020)
+            >>> create_occr_feature_class(2020)
         Notes:
-            This function creates a CR feature class by joining CR data with TL tract data.
+            This function creates a OCCR feature class by joining OCCR data with TL tract data.
         """
         # Geoid of the ocean side tract to remove
         remove_geoid = "06059990100"
 
-        print(f"Creating CR feature class for year: {year}...")
-        # Fetch the CR tables for the specified year
-        cr_db = self.fetch_cr_tables(year= year)
+        print(f"Creating OCCR feature class for year: {year}...")
+        # Fetch the OCCR tables for the specified year
+        occr_db = self.fetch_occr_tables(year= year)
 
         print(f"- Removing ocean side tract GEOID: {remove_geoid} if it exists...")
         # Remove specific GEOID record if it exists
-        cr_db = cr_db[cr_db["GEOID"] != remove_geoid]
+        occr_db = occr_db[occr_db["GEOID"] != remove_geoid]
         # Path to TL geodatabase
-        tl_gdb = os.path.join(self.prj_dirs["gis"], f"tl{year}.gdb")
+        octl_gdb = os.path.join(self.prj_dirs["gis"], f"octl_ocacs{year}.gdb")
 
-        print(f"- Setting arcpy environment to TL geodatabase: tl{year}.gdb...")
+        print(f"- Setting arcpy environment to TL geodatabase: octl_ocacs{year}.gdb...")
         # Set the arcpy environment to the TL geodatabase
-        arcpy.env.workspace = tl_gdb
+        arcpy.env.workspace = octl_gdb
         arcpy.env.overwriteOutput = True
 
         # Path to TL tract feature class
-        tl_tract = os.path.join(tl_gdb, "TR")
+        octl_tract = os.path.join(octl_gdb, "Census", "TR")
 
-        print("- Loading TL tract feature class into a spatial DataFrame...")
-        # Load TL tract feature class into a spatial DataFrame
-        tl_sdf = pd.DataFrame.spatial.from_featureclass(tl_tract)
-        print(f"- Removing ocean side tract GEOID: {remove_geoid} from TL SDF if it exists...")
+        print("- Loading OCTL tract feature class into a spatial DataFrame...")
+        # Load OCTL tract feature class into a spatial DataFrame
+        octl_sdf = pd.DataFrame.spatial.from_featureclass(octl_tract)
+        print(f"- Removing ocean side tract GEOID: {remove_geoid} from OCTL SDF if it exists...")
         # Remove specific GEOID record if it exists
-        tl_sdf = tl_sdf[tl_sdf["GEOID"] != remove_geoid]
+        octl_sdf = octl_sdf[octl_sdf["GEOID"] != remove_geoid]
 
         # Ensure GEOID columns are comparable (strings without extra whitespace)
-        tl_sdf["GEOID"] = tl_sdf["GEOID"].astype(str).str.strip()
-        cr_db["GEOID"] = cr_db["GEOID"].astype(str).str.strip()
+        octl_sdf["GEOID"] = octl_sdf["GEOID"].astype(str).str.strip()
+        occr_db["GEOID"] = occr_db["GEOID"].astype(str).str.strip()
 
         print("- Checking if the number of records between TL SDF and CR DB match before join...")
-        diff_count = tl_sdf.shape[0] - cr_db.shape[0]
+        diff_count = octl_sdf.shape[0] - occr_db.shape[0]
         if diff_count == 0:
-            print(f"The number of records in TL SDF and CR DB match: {tl_sdf.shape[0]} records each.")
+            print(f"The number of records in TL SDF and CR DB match: {octl_sdf.shape[0]} records each.")
         elif diff_count > 0:
-            print(f"Warning: TL SDF has {diff_count} more records ({tl_sdf.shape[0]}) than CR DB ({cr_db.shape[0]}).")
+            print(f"Warning: TL SDF has {diff_count} more records ({octl_sdf.shape[0]}) than CR DB ({occr_db.shape[0]}).")
         elif diff_count < 0:
-            print(f"Warning TL SDF has {-diff_count} fewer records ({tl_sdf.shape[0]}) than CR DB ({cr_db.shape[0]}).")
+            print(f"Warning TL SDF has {-diff_count} fewer records ({octl_sdf.shape[0]}) than CR DB ({occr_db.shape[0]}).")
         
         print("- Joining CR data with TL SDF on GEOID...")
         # Perform a left join: keep all tl_sdf records and add matching cr_db columns
         # If there are overlapping column names besides `GEOID`, keep tl_sdf's versions
-        cols_to_merge = [c for c in cr_db.columns if c != "GEOID"]
-        tl_sdf = tl_sdf.merge(cr_db[ ["GEOID"] + cols_to_merge ], on="GEOID", how="left")
-        print(f"- After join, tl_sdf shape: {tl_sdf.shape}")
+        cols_to_merge = [c for c in occr_db.columns if c != "GEOID"]
+        octl_sdf = octl_sdf.merge(occr_db[ ["GEOID"] + cols_to_merge ], on="GEOID", how="left")
+        print(f"- After join, octl_sdf shape: {octl_sdf.shape}")
         # Path to output CR geodatabase
-        cr_gdb = self.prj_dirs["gis_occr_gdb"]
+        occr_gdb = self.prj_dirs["gis_occr_gdb"]
 
-        print(f"- Setting up CR geodatabase: {os.path.basename(cr_gdb)}...")
+        print(f"- Setting up OCCR geodatabase: {os.path.basename(occr_gdb)}...")
         # Set the arcpy environment to the feature dataset
-        arcpy.env.workspace = cr_gdb
+        arcpy.env.workspace = occr_gdb
         arcpy.env.overwriteOutput = True
 
-        # Path to output CR feature class
-        cr_fc = os.path.join(cr_gdb, f"CRTR{year}")
-        print(f"- Creating CR feature class: CRTR{year}...")
+        # Creating geodatabase metadata
+        print("- Creating metadata for OCCR geodatabase...")
+        occr_gdb_md = md.Metadata(occr_gdb)
+        occr_gdb_md.title = "OC Community Resilience Estimates (OCCR) Geodatabase"
+        occr_gdb_md.tags = "Orange County, California, Community Resilience Estimates, CRE, OCCR, Census Tracts, Geodatabase"
+        occr_gdb_md.summary = f"Geodatabase containing feature classes for the Orange County Community Resilience Estimates (OCCR) for years {min(self.cr_years)} - {max(self.cr_years)} at Census Tracts geography level."
+        occr_gdb_md.description = f"Geodatabase containing feature classes for the Orange County Community Resilience Estimates (OCCR) for years {min(self.cr_years)} - {max(self.cr_years)} at Census Tracts geography level. The data contains composite social vulnerability indicators derived from U.S. Census data. Version: {self.version}, last updated on {self.data_date}."
+        occr_gdb_md.credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works Geospatial Services"
+        occr_gdb_md.accessConstraints = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works Geospatial Services</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
+        occr_gdb_md.thumbnailUri = "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d144c9b1e7f0c8b8a1e4/info/iteminfo/thumbnail/thumbnail.png"
+        occr_gdb_md.save()
+
+        # Path to output OCCR feature class
+        occr_fc = os.path.join(occr_gdb, f"TR{year}")
+        print(f"- Creating OCCR feature class: TR{year}...")
         # Remove the output feature class if it already exists
-        if arcpy.Exists(cr_fc):
-            print(f"  - Deleting existing feature class: CRTR{year}")
-            arcpy.Delete_management(cr_fc)
-            print(f"  - Deleted existing feature class: CRTR{year}")
+        if arcpy.Exists(occr_fc):
+            print(f"  - Deleting existing feature class: TR{year}")
+            arcpy.Delete_management(occr_fc)
+            print(f"  - Deleted existing feature class: TR{year}")
 
-        print(f"- Converting merged DataFrame to feature class: CRTR{year}...")
+        print(f"- Converting merged DataFrame to feature class: TR{year}...")
         # Convert the merged DataFrame to a feature class in the geodatabase
-        tl_sdf.spatial.to_featureclass(location = cr_fc, overwrite = True, has_z = None, has_m = None, sanitize_columns = False)
+        octl_sdf.spatial.to_featureclass(location = occr_fc, overwrite = True, has_z = None, has_m = None, sanitize_columns = False)
 
-        print("- Setting aliases for CR feature class and fields...")
+        print("- Setting aliases for OCCR feature class and fields...")
         # Set a friendly alias for the output feature class
         alias_name = f"OC Community Resilience Estimates {year} Census Tracts"
         try:
             # Change the alias name
-            arcpy.AlterAliasName(cr_fc, alias_name)
-            print(f"  - Alias for 'CRTR{year}' successfully changed to '{alias_name}'.")
+            arcpy.AlterAliasName(occr_fc, alias_name)
+            print(f"  - Alias for 'TR{year}' successfully changed to '{alias_name}'.")
         except arcpy.ExecuteError:
             # ArcPy-specific errors
             print("  - ArcPy Error:", arcpy.GetMessages(2))
@@ -4838,32 +5006,32 @@ class OCCR(OCGD):
                 continue
             try:
                 # Only attempt to alter the field if it exists in the output feature class
-                fields = arcpy.ListFields(cr_fc, field_key)
+                fields = arcpy.ListFields(occr_fc, field_key)
                 if not fields:
                     # Field not present; skip
                     # (sanitize_columns=False above should preserve names but some fields may be absent)
                     continue
                 # Use AlterField to change only the alias (keep the same field name)
-                arcpy.AlterField_management(cr_fc, field_key, field_key, alias)
+                arcpy.AlterField_management(occr_fc, field_key, field_key, alias)
                 print(f"  - Field alias for '{field_key}' set to '{alias}'.")
             except arcpy.ExecuteError:
                 print(f"  - ArcPy Error altering alias for field {field_key}:", arcpy.GetMessages(2))
             except (RuntimeError, OSError, ValueError, TypeError, AttributeError) as e:
                 print(f"  - Error altering alias for field {field_key}:", e)
 
-        print("- Defining metadata for CR feature class...")
+        print("- Defining metadata for OCCR feature class...")
         # Define a metadata object for the feature class
-        cr_md = md.Metadata(cr_fc)
-        cr_md.title = alias_name
-        cr_md.tags = "Orange County, California, Community Resilience Estimates, CR, OCCR, Census Tracts"
-        cr_md.summary = f"Orange County Community Resilience Estimates for year {year} at Census Tracts geography level."
-        cr_md.description = f"Orange County Community Resilience Estimates (OCCR) for year {year} at Census Tracts geography level. The data contains composite social vulnerability indicators derived from U.S. Census data. Version: {self.version}, last updated on {self.data_date}."
-        cr_md.credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works Geospatial Services"
-        cr_md.accessConstraints = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works Geospatial Services</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
-        cr_md.thumbnailUri = "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d14451a55d0415947c7af3/data"
-        cr_md.save()
+        occr_md = md.Metadata(occr_fc)
+        occr_md.title = alias_name
+        occr_md.tags = "Orange County, California, Community Resilience Estimates, CR, OCCR, Census Tracts"
+        occr_md.summary = f"Orange County Community Resilience Estimates for year {year} at Census Tracts geography level."
+        occr_md.description = f"Orange County Community Resilience Estimates (OCCR) for year {year} at Census Tracts geography level. The data contains composite social vulnerability indicators derived from U.S. Census data. Version: {self.version}, last updated on {self.data_date}."
+        occr_md.credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works Geospatial Services"
+        occr_md.accessConstraints = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works Geospatial Services</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
+        occr_md.thumbnailUri = "https://ocpw.maps.arcgis.com/sharing/rest/content/items/67ce28a349d14451a55d0415947c7af3/data"
+        occr_md.save()
 
-        print(f"CR feature class for year {year} created successfully at {cr_fc}.")
+        print(f"CR feature class for year {year} created successfully at {occr_fc}.")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
