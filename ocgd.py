@@ -3598,13 +3598,15 @@ class OCACS(OCGD):
         # Get the list of ACS5 years
         years = self.acs5_years
 
-        # Get the path to the edited excel file containing the variables to include in the codebook. The file should be named "ocacs_cb_vars_cumulative_{version}_edited.xlsx" and should be located in the codebook directory. The version number in the filename should match the version attribute of the class, with dots replaced by zeros (e.g. version 2026.1 should be "ocacs_cb_vars_cumulative_202601_edited.xlsx").
-        excel_file_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_cumulative_{str(self.version).replace(".", "0")}_edited.xlsx")
+        # Get the path to the edited excel file containing the variables to include in the codebook. The file should be named "ocacs_cb_vars.xlsx" and should be located in the codebook directory.
+        excel_file_path = os.path.join(self.prj_dirs["codebook"], "ocacs_cb_vars.xlsx")
 
         # Import the edited excel file to a dataframe
-        df_cb_vars_edited = pd.read_excel(excel_file_path)
+        df_cb_vars = pd.read_excel(excel_file_path)
+
         # only keep the rows where the "used" column is True
-        df_cb_vars_include = df_cb_vars_edited[df_cb_vars_edited["used"] == True]
+        df_cb_vars = df_cb_vars[df_cb_vars["used"]]
+        #df_cb_vars_include = df_cb_vars[df_cb_vars["used"] == True]
 
         # Create a master dictionary to store the variables for each year, level, and section
         cb_master = dict()
@@ -3612,7 +3614,8 @@ class OCACS(OCGD):
         # Loop through each of the ACS5 years
         for year in years:
             # Filter the dataframe to only include the rows where the column with the year as the name is True
-            df_year = df_cb_vars_include[df_cb_vars_include[str(year)] == True]
+            df_year = df_cb_vars[df_cb_vars[str(year)]]
+            # df_year = df_cb_vars[df_cb_vars[str(year)] == True]
             # Add the year as a key to the master dictionary
             cb_master[str(year)] = dict()
 
@@ -3652,8 +3655,8 @@ class OCACS(OCGD):
                 cb_master[year][level]["all_variables"] = all_variables_dict
 
         if write_to_file:
-            # Write the master dictionary to a JSON file in the codebook directory with the name "ocacs_cb_master_{version}.json", where the version number is the version attribute of the class with dots replaced by zeros (e.g. version 2026.1 should be "ocacs_cb_master_202601.json").
-            output_file_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(self.version).replace('.', '0')}.json")
+            # Write the master dictionary to a JSON file in the codebook directory with the name "ocacs_cb_vars_{version}.json", where the version number is the version attribute of the class with dots replaced by zeros (e.g. version 2026.1 should be "ocacs_cb_vars_202601.json").
+            output_file_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars.json")
             with open(output_file_path, "w", encoding = "utf-8") as json_file:
                 json.dump(cb_master, json_file, indent=4)
             print(f"Master variables dictionary written to {output_file_path}")
@@ -3665,439 +3668,207 @@ class OCACS(OCGD):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: ACS variables codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def acs_cb_variables(self, year: Optional[int] = None, session: Optional[requests.Session] = None, write_to_disk: Optional[bool] = False) -> pd.DataFrame:
+    def acs_cb_variables(self, year: int, write_to_disk: Optional[bool] = False) -> pd.DataFrame:
         """
         Fetches the ACS CB variables for the specified year(s) and returns a DataFrame containing the variable information.
-
-        Parameters:
-        - year: Optional integer specifying the ACS year to fetch variables for. If None, variables for all available years will be fetched.
-        - session: Optional requests.Session object to use for making API requests. If None, a new session will be created.
-        - write: Optional boolean indicating whether to write the fetched variables to a file. Default is False.
-
-        Returns:
-        - A pandas DataFrame containing the variable information for the specified year(s).
-        """
-        # Get the list of available ACS years
-        years = self.acs5_years
-        # If the year is provided and is integer
-        if year is not None:
-            if isinstance(year, int) and year in years:
-                years = [year]
-            if not isinstance(year, int):
-                raise ValueError("Year must be an integer.")
-            if year not in years:
-                raise ValueError(f"Year must be one of the following: {years}")
-
-        # Initialize an empty DataFrame to store the variable information across all years
-        master_df = pd.DataFrame()
-        cum_df = pd.DataFrame()
-
-        # Loop through the ACS years
-        for acs_year in years:
-            # Initialize the variable dictionary for the current year
-            cb = dict()
-            
-            # Construct the API URL for the specified year
-            print(f"\nFetching ACS variables for year {acs_year}...")
-            api_url = f"https://api.census.gov/data/{acs_year}/acs/acs5/variables.json"
-            s = session or requests.Session()
-
-            # Make the API request and parse the JSON response
-            resp = s.get(api_url)
-            resp.raise_for_status()
-            data = resp.json()
-
-            # Extract variables from the response
-            raw_variables = data.get("variables", {})
-            print(f"- Total variables fetched for {acs_year}: {len(raw_variables):,}")
-
-            # Keep only variables that start with a letter, followed by a digit,
-            # and end with a capital 'E' (e.g. 'B01001_001E').
-            pattern = re.compile(r'^[A-Za-z]\d.*E$')
-
-            # Filter variables based on the pattern
-            variables = {k: v for k, v in raw_variables.items() if pattern.match(k)}
-            print(f"- Variables after filtering for {acs_year}: {len(variables):,}")
-
-            for var, values in variables.items():
-                if "label" in values:
-                    # make sure the label is string
-                    if not isinstance(values["label"], str):
-                        values["label"] = str(values["label"])
-
-                s = values["label"]
-                # First pass
-                s = s.replace("!!", ": ")
-                s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
-                s = re.sub(r"[^A-Za-z0-9\s:\-]", "", s)
-                s = re.sub(r"\s*-\s*", "-", s)
-                s = re.sub(r"-{2,}", "-", s)
-                s = re.sub(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", s)
-                s = re.sub(r":{2,}", ":", s)
-                s = re.sub(r"\s*:\s*", ": ", s)
-                s = re.sub(r"\s+", " ", s)
-                s = s.strip(" \t\n\r:-")
-
-                # Second pass to ensure idempotency (remove any artifacts left by first pass)
-                s = re.sub(r"-{2,}", "-", s)
-                s = re.sub(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", s)
-                s = re.sub(r":{2,}", ":", s)
-                s = re.sub(r"\s*:\s*", ": ", s)
-                s = re.sub(r"\s+", " ", s)
-                s = s.strip(" \t\n\r:-")
-
-                values["label"] = s
-                values["table"] = var[:3]
-                values["used"] = False
-                values["alias"] = re.sub(r"^Estimate\s*: *", "", s)
-                # Convert all words in alias to lowercase
-                values["alias_match"] = values["alias"].lower()
-
-                # Construct the variable dictionary for the current variable and add it to the main dictionary under the current year
-                cb[var] = {
-                    "year": acs_year,
-                    "table": values.get("table", None),
-                    "group": values.get("group", None),
-                    "variable": var,
-                    "alias": values.get("alias", None),
-                    "oid": 0,
-                    "used": False,
-                    "level": None,
-                    "section": None,
-                    "section_name": None,
-                    "markdown": None,
-                    "label": values.get("label", None),
-                    "concept": values.get("concept", None),
-                    "type": values.get("predicateType", None),
-                    "limit": values.get("limit", None),
-                    "attributes": values.get("attributes", None),
-                    "note": None
-                }
-
-                if acs_year == years[0]:
-                    # Add a row with the variable, alias, and year to the cumulative DataFrame
-                    new_row = {"variable": var, "alias": values.get("alias", None), "years": str(acs_year), "label": values.get("label", None), "concept": values.get("concept", None), "type": values.get("predicateType", None), "attributes": values.get("attributes", None), "alias_match": values.get("alias_match", None)}
-                    cum_df = pd.concat([cum_df, pd.DataFrame([new_row])], ignore_index = True)
-                else:
-                    # If the variable already exists in the cumulative DataFrame, update the years column
-                    # Use a mask to find any rows that match BOTH the variable and the alias_match (not just the first match)
-                    alias_match = values.get("alias_match", None)
-                    mask = (cum_df["variable"] == var) & (cum_df["alias_match"] == alias_match)
-                    if mask.any():
-                        # Append the year to all matching rows' years field
-                        cum_df.loc[mask, "years"] = cum_df.loc[mask, "years"].apply(lambda x: f"{x}, {acs_year}")
-                    else:
-                        # If no matching row exists, add a new row with the variable, alias, and year
-                        new_row = {"variable": var, "alias": values.get("alias", None), "years": str(acs_year), "label": values.get("label", None), "concept": values.get("concept", None), "type": values.get("predicateType", None), "attributes": values.get("attributes", None), "alias_match": values.get("alias_match", None)}
-                        cum_df = pd.concat([cum_df, pd.DataFrame([new_row])], ignore_index = True)
-
-            # Order the variable dictionary by the variable code
-            cb = dict(sorted(cb.items(), key=lambda item: item[0]))
-
-            if write_to_disk:
-                print("- Writing to JSON file...")
-                # Write the variable dictionary to a JSON file
-                output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_{acs_year}_{str(self.version).replace(".", "0")}.json")
-                with open(output_path, "w", encoding = "utf-8") as f:
-                    json.dump(cb, f, indent = 4)
-
-            # Convert the variable dictionary to a pandas DataFrame for easier analysis and manipulation
-            cb_rows = []
-            for var_info in cb.values():
-                cb_rows.append(var_info)
-            df_cb = pd.DataFrame(cb_rows)
-            print(f"DataFrame for {acs_year} created with {len(df_cb):,} rows and {len(df_cb.columns):,} columns.")
-            print(df_cb.head())
-
-            # Append the current year's DataFrame to the master DataFrame
-            master_df = pd.concat([master_df, df_cb], ignore_index=True)
-
-            print(f"- Variable dictionary and data frame construction for {acs_year} complete.\n")
-
-        # Order the master DataFrame by year and variable code
-        master_df = master_df.sort_values(by=["year", "variable"]).reset_index(drop = True)
-
-        # Update the year_count column to the cumulative DataFrame that counts the number of years each variable appears in
-        cum_df["year_count"] = cum_df["years"].apply(lambda x: len(x.split(", ")))
-        # Update the column all_years to the cumulative DataFrame that is True if the variable appears in all years and False otherwise
-        cum_df["all_years"] = cum_df["year_count"] == len(years)
-
-        # Add a table column to the cumulative DataFrame that extracts the table code from the 3 first characters of the variable code (e.g. 'B01' from 'B01001_001E')
-        cum_df["table"] = cum_df["variable"].apply(lambda x: x[:3])
-        # Add a group column to the cumulative DataFrame that extracts the group name from the variable code before the underscore (e.g. 'B01001' from 'B01001_001E')
-        cum_df["group"] = cum_df["variable"].apply(lambda x: x.split("_")[0])
-
-        # Add oid, used, level, section, section_name, markdown, and note as empty columns to the cumulative DataFrame
-        cum_df["oid"] = 0
-        cum_df["used"] = False
-        cum_df["level"] = None
-        cum_df["section"] = None
-        cum_df["section_name"] = None
-        cum_df["markdown"] = None
-        cum_df["note"] = None
-
-        # Reorder the columns in the cumulative DataFrame to match the order of the master DataFrame
-        cum_df = cum_df[["years", "year_count", "all_years", "table", "group", "variable", "alias", "oid", "used", "level", "section", "section_name", "markdown", "note", "label", "concept", "type", "attributes"]]
-
-        # For each year in years, add a column to the cumulative DataFrame with bool type that is True if the variable appears in that year and False otherwise
-        for acs_year in years:
-            cum_df[str(acs_year)] = cum_df["years"].apply(lambda x: str(acs_year) in x.split(", "))
-
-        # Sort the cumulative DataFrame by variable and year_count in descending order
-        cum_df = cum_df.sort_values(by=["variable", "year_count"], ascending=[True, False]).reset_index(drop=True)
-
-        print(f"\nMaster DataFrame created with {len(master_df):,} rows and {len(master_df.columns):,} columns.")
-        print(f"Cumulative DataFrame created with {len(cum_df):,} rows and {len(cum_df.columns):,} columns.")
-        if write_to_disk:
-            print("Writing master DataFrame to Excel file...")
-            # After processing all years, write the master DataFrame to an Excel file
-            master_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_master_{str(self.version).replace('.', '0')}.xlsx")
-            master_df.to_excel(master_output_path, index = False, sheet_name = "Master")
-
-            print("Write the cumulative variable DataFrame to an Excel file...")
-            cum_output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_cumulative_{str(self.version).replace('.', '0')}.xlsx")
-            cum_df.to_excel(cum_output_path, index = False, sheet_name = "Cumulative")
-
-        # Return the master DataFrame containing variable information for all specified years
-        return master_df
-
-
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## fx: ACS variables codebook - OLD TO BE REMOVED ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def acs_cb_variables_old(self, year: Optional[int] = None, session: Optional[requests.Session] = None) -> pd.DataFrame:
-        """
-        Fetch ACS variables from the U.S. Census Bureau API for specified years
         Args:
-            year (Optional[int], optional): Specific year to fetch variables for. If None, fetches for all available years. Defaults to None.
-            session (Optional[requests.Session], optional): An optional requests session for making API calls. Defaults to None.
+            year (int): The year for which to fetch the ACS variables. Must be one of the available ACS5 years.
+            write_to_disk (bool, optional): Whether to write the resulting DataFrame to a CSV file in the codebook directory. Defaults to False.
         Returns:
-            pd.DataFrame: A DataFrame containing the ACS variables for the specified years.
+            cb (dict): A dictionary containing the variable information for the specified year(s).
+            cb_df (pd.DataFrame): A DataFrame containing the variable information for the specified year(s).
         Raises:
-            ValueError: If the provided year is not an integer or not in the list of available years.
+            ValueError: If the year is not an integer or is not one of the available ACS
         Example:
-            >>> df_vars = acs_cb_variables(year=2020)
+            >>> cb, cb_df = acs_cb_variables(2020, write_to_disk=True)
         Notes:
-            This function fetches ACS variables from the U.S. Census Bureau API for specified years.
+            This function fetches the ACS CB variables for the specified year(s) and returns a DataFrame containing the variable information. The resulting DataFrame can optionally be written to a CSV file in the codebook directory.
         """
         # Get the list of available ACS years
         years = self.acs5_years
+
         # If the year is provided and is integer
         if year is not None:
             if isinstance(year, int) and year in years:
-                years = [year]
-            if not isinstance(year, int):
-                raise ValueError("Year must be an integer.")
-            if year not in years:
-                raise ValueError(f"Year must be one of the following: {years}")
-
-        # Define the master schema dictionary for the DataFrame
-        master_schema = {
-            "year": "object",
-            "count_years": "int32",
-            "all_years": "bool",
-            "table": "object",
-            "group": "object",
-            "variable": "object",
-            "alias": "object",
-            "oid": "int32",
-            "used": "bool",
-            "level": "object",
-            "level_group": "object",
-            "category": "object",
-            "label": "object",
-            "concept": "object",
-            "type": "object",
-            "limit": "int32",
-            "attributes": "object",
-            "note": "object",
-            "markdown": "object"
-        }
-
-        # For each year, add a column to the schema with bool type
-        for acs_year in years:
-            master_schema[str(acs_year)] = "bool"
-        
-        # Create an empty DataFrame with the defined schema called master_df
-        master_df = pd.DataFrame(columns=master_schema.keys()).astype(master_schema)
-
-        for acs_year in years:
-            print(f"Fetching ACS variables for year {acs_year}...")
-            # Construct the API URL for the specified year
-            api_url = f"https://api.census.gov/data/{acs_year}/acs/acs5/variables.json"
-            s = session or requests.Session()
-
-            # Make the API request and parse the JSON response
-            resp = s.get(api_url)
-            resp.raise_for_status()
-            data = resp.json()
-
-            # Extract variables from the response
-            variables = data.get("variables", {})
-
-            # Keep only variables that start with a letter, followed by a digit,
-            # and end with a capital 'E' (e.g. 'B01001_001E').
-            pattern = re.compile(r'^[A-Za-z]\d.*E$')
-
-            # Filter variables based on the pattern
-            filtered_vars = {k: v for k, v in variables.items() if pattern.match(k)}
-
-            # Convert the filtered variables dictionary to a pandas DataFrame and add the API year as a column
-            df = pd.DataFrame.from_dict(filtered_vars, orient="index")
-            # store year as string to avoid dtype conflicts when merging multiple years
-            df["year"] = str(acs_year)
-
-            # Move the index (variable names) into a regular column named 'variable' so the variable names appear as the first column in the returned DataFrame.
-            df = df.reset_index().rename(columns={"index": "variable"})
-
-            # Add comparison-cleaned columns for `variable` and `label` to ease later comparisons
-            # variable: strip leading/trailing spaces
-            df["_cmp_variable"] = df["variable"].astype(str).str.strip()
-
-            # Clean the 'label' column per user rules
-            if "label" in df.columns:
-                # Vectorized cleaning using pandas string methods
-                # Two-pass cleaning: first pass normalizes and removes unwanted chars,
-                # second pass enforces dash-between-words and removes any leftover duplicates.
-                s = df["label"].astype(str)
-                # First pass
-                s = s.str.replace("!!", ": ", regex=False)
-                s = s.str.normalize("NFKD").str.encode("ascii", "ignore").str.decode("ascii")
-                s = s.str.replace(r"[^A-Za-z0-9\s:\-]", "", regex=True)
-                s = s.str.replace(r"\s*-\s*", "-", regex=True)
-                s = s.str.replace(r"-{2,}", "-", regex=True)
-                s = s.str.replace(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", regex=True)
-                s = s.str.replace(r":{2,}", ":", regex=True)
-                s = s.str.replace(r"\s*:\s*", ": ", regex=True)
-                s = s.str.replace(r"\s+", " ", regex=True)
-                s = s.str.strip(" \t\n\r:-")
-
-                # Second pass to ensure idempotency (remove any artifacts left by first pass)
-                s = s.str.replace(r"-{2,}", "-", regex=True)
-                s = s.str.replace(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", regex=True)
-                s = s.str.replace(r":{2,}", ":", regex=True)
-                s = s.str.replace(r"\s*:\s*", ": ", regex=True)
-                s = s.str.replace(r"\s+", " ", regex=True)
-                s = s.str.strip(" \t\n\r:-")
-
-                df["label"] = s
-
-                # label: remove all spaces and colons, convert to lower
-                df["_cmp_label"] = df["label"].astype(str).str.replace(r"[ :]", "", regex=True).str.lower().str.strip()
-                # Remove all diacretics, spaces and dashes from the label comparison column
-                df["_cmp_label"] = df["_cmp_label"].str.replace(r"[^\w\s]", "", regex = True)
-
-                # Rename the 'predicateType' column to 'type' for clarity
-                if "predicateType" in df.columns:
-                    df = df.rename(columns={"predicateType": "type"})
-
-                # Add additional metadata columns
-                #df["oid"] = pd.Series("", index=df.index, dtype="int")
-                # table is the first 3 characters of the variable name and it is dtype object
-                df["table"] = df["variable"].str.slice(0, 3)
-                df["used"] = pd.Series(False, index=df.index, dtype="bool")
-                df["alias"] = df["label"].str.replace(r"^Estimate\s*", "", regex = True).str.strip(" :")
-                df["level"] = pd.Series(None, index=df.index, dtype="object")
-                df["level_group"] = pd.Series(None, index=df.index, dtype="object")
-                df["category"] = pd.Series(None, index=df.index, dtype="object")
-                df["note"] = pd.Series(None, index=df.index, dtype="object")
-
-                # Reorder columns and ensure the 'year' column is preserved.
-                cols_order = list(master_schema.keys())
-
-                # Keep only columns that actually exist in the dataframe (prevents KeyError)
-                cols_order = [c for c in cols_order if c in df.columns]
-                df = df[cols_order]
-
-            # If a 'group' column exists, sort by group then variable, then reset index
-            if "group" in df.columns:
-                df = df.sort_values(by=["group", "variable"]).reset_index(drop = True)
-
-            print("- Data fetched. Processing Master DataFrame...")
-            # Check if master_df is empty
-            if master_df.empty:
-                # Append the current year's dataframe to the master dataframe
-                master_df = pd.concat([master_df, df], ignore_index=True)
-                # Ensure master_df has comparison columns
-                master_df["_cmp_variable"] = master_df["variable"].astype(str).str.strip()
-                if "label" in master_df.columns:
-                    master_df["_cmp_label"] = master_df["label"].astype(str).str.replace(r"[ :]", "", regex = True).str.lower().str.strip()
-                    # Remove all diacretics, spaces and dashes from the label comparison column
-                    master_df["_cmp_label"] = master_df["_cmp_label"].str.replace(r"[^\w\s]", "", regex = True)
+                print(f"Year {year} is valid. Proceeding with variable fetch.")
             else:
-                # For each of the records in the current year's dataframe (df), check if the variable already exists in the master dataframe (master_df) in the "variable" column, and if yes, check if the label is the same. If both are the same, do not add the record, but add the year to the existing record's "year" column as a comma-separated list. If the variable exists but the label is different, add the new record as a new row, and add a note to the "note" column of the master_df "same variable, different label". If the variable does not exist, add the new record as a new row.
-                for _, row in df.iterrows():
-                    var = row["variable"]
-                    label = row.get("label", None)
+                if not isinstance(year, int):
+                    raise ValueError("Year must be an integer.")
+                elif year not in years:
+                    raise ValueError(f"Year must be one of the following: {years}")
 
-                    # Cleaned comparison values
-                    var_cmp = str(var).strip()
-                    label_cmp = str(label).replace(" ", "").replace(":", "").lower().strip() if label is not None else ""
+        # Load the master JSON variables codebook
+        ocacs_cb_vars_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars.json")
+        if os.path.exists(ocacs_cb_vars_path):
+            with open(ocacs_cb_vars_path, "r", encoding = "utf-8") as f:
+                ocacs_cb_vars = json.load(f)
+            print(f"Master variables codebook loaded from {ocacs_cb_vars_path}")
+        else:
+            print(f"Master variables codebook not found at {ocacs_cb_vars_path}")
+            return None
 
-                    # Check if the variable exists in the master_df using cleaned comparison
-                    existing_rows = master_df[master_df["_cmp_variable"] == var_cmp]
+        # Get the variable dictionary for the specified year from the master codebook
+        var_cb = ocacs_cb_vars.get(str(year), {})
 
-                    if not existing_rows.empty:
-                        # Variable exists, check for label using cleaned comparison
-                        match_idx = existing_rows[existing_rows["_cmp_label"] == label_cmp].index
-                        if len(match_idx) > 0:
-                            # Same label, update year (handle None/NaN and avoid duplicates)
-                            idx = match_idx[0]
-                            existing_years = master_df.loc[idx, "year"]
-                            new_year = str(row["year"]) if not pd.isna(row["year"]) else ""
-                            if pd.isna(existing_years) or str(existing_years).strip() == "":
-                                master_df.loc[idx, "year"] = new_year
-                            else:
-                                existing_list = [y.strip() for y in str(existing_years).split(",") if y.strip()]
-                                if new_year and new_year not in existing_list:
-                                    master_df.loc[idx, "year"] = f"{existing_years}, {new_year}"
-                        else:
-                            # Different label, add new row with note and comparison cols
-                            new_row = row.copy()
-                            new_row["note"] = f"same variable ({var}), different label (existing: '{existing_rows.iloc[0]['label']}', new: '{label}')"
-                            # ensure comparison columns are present for the new row
-                            new_row["_cmp_variable"] = var_cmp
-                            new_row["_cmp_label"] = label_cmp
-                            master_df = pd.concat([master_df, pd.DataFrame([new_row])], ignore_index=True)
-                    else:
-                        # Variable does not exist, add new row (include comparison cols)
-                        new_row = row.copy()
-                        new_row["_cmp_variable"] = var_cmp
-                        new_row["_cmp_label"] = label_cmp
-                        master_df = pd.concat([master_df, pd.DataFrame([new_row])], ignore_index=True)
+        # Get the list of variables for each level and section for the specified year from the master codebook
+        demographic_variables = var_cb.get("Demographic", {}).get("all_variables", [])
+        social_variables = var_cb.get("Social", {}).get("all_variables", [])
+        economic_variables = var_cb.get("Economic", {}).get("all_variables", [])
+        housing_variables = var_cb.get("Housing", {}).get("all_variables", [])
 
-        # Remove the comparison columns before returning/saving
-        master_df = master_df.drop(columns=["_cmp_variable", "_cmp_label"])
+        # Combine all variables into a single list for easier filtering
+        all_variables = set(demographic_variables) | set(social_variables) | set(economic_variables) | set(housing_variables)
 
-        # For each row, create a markdown string in the format "🆔 {variable}: {alias}" from the variable and alias values in the row
-        master_df["markdown"] = master_df.apply(lambda x: f"🆔 {x['variable']}: {x['alias']}" if pd.notna(x['alias']) else f"🆔 {x['variable']}", axis=1)
+        # Initialize the variable dictionary for the current year
+        cb = dict()
+        
+        # Construct the API URL for the specified year
+        print(f"\nFetching ACS variables for year {year}...")
+        api_url = f"https://api.census.gov/data/{year}/acs/acs5/variables.json"
+        s = requests.Session()
 
-        # Compute the count_years column as the number of years each variable appears in
-        master_df["count_years"] = master_df["year"].apply(lambda x: len(str(x).split(",")) if pd.notna(x) else 0)
+        # Make the API request and parse the JSON response
+        resp = s.get(api_url)
+        resp.raise_for_status()
+        data = resp.json()
 
-        # Compute the all_years column as True if count_years equals the total number of years fetched
-        total_years = len(years)
-        master_df["all_years"] = master_df["count_years"] == total_years
+        # Extract variables from the response
+        raw_variables = data.get("variables", {})
+        print(f"- Total variables fetched for {year}: {len(raw_variables):,}")
 
-        # For each year column, set to True if the year is in the variable's year list, else False
-        for acs_year in years:
-            year_str = str(acs_year)
-            # bind year_str into the lambda default argument to avoid late-binding of the loop variable
-            master_df[year_str] = master_df["year"].apply(lambda x, ys=year_str: ys in [y.strip() for y in str(x).split(",")] if pd.notna(x) else False)
+        # Keep only variables that start with a letter, followed by a digit,
+        # and end with a capital 'E' (e.g. 'B01001_001E').
+        pattern = re.compile(r'^[A-Za-z]\d.*E$')
 
-        # Reorder columns by master_schema keys
-        cols_order = list(master_schema.keys())
-        master_df = master_df[cols_order]
+        # Filter variables based on the pattern
+        variables = {k: v for k, v in raw_variables.items() if pattern.match(k)}
+        print(f"- Variables after filtering for {year}: {len(variables):,}")
 
-        # After processing all years, sort the master_df by: years first, then variable and reset index
-        master_df = master_df.sort_values(by=["variable", "year"]).reset_index(drop = True)
+        # Selecting only the variables that are in the master codebook for the current year
+        variables = {k: v for k, v in variables.items() if k in all_variables}
+        print(f"- Variables after selection for {year}: {len(variables):,}")
 
-        # Save the master dataframe to an Excel file in the codebook directory
-        output_path = os.path.join(self.prj_dirs["codebook"], "ocacs_cb_variables_master.xlsx")
-        master_df.to_excel(output_path, sheet_name = "Master", index_label = "index")
-        print(f"Master ACS variables DataFrame saved to {output_path}")
+        for var, values in variables.items():
+            if "label" in values:
+                # make sure the label is string
+                if not isinstance(values["label"], str):
+                    values["label"] = str(values["label"])
 
-        return master_df
+            s = values["label"]
+            # First pass
+            s = s.replace("!!", ": ")
+            s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+            s = re.sub(r"[^A-Za-z0-9\s:\-]", "", s)
+            s = re.sub(r"\s*-\s*", "-", s)
+            s = re.sub(r"-{2,}", "-", s)
+            s = re.sub(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", s)
+            s = re.sub(r":{2,}", ":", s)
+            s = re.sub(r"\s*:\s*", ": ", s)
+            s = re.sub(r"\s+", " ", s)
+            s = s.strip(" \t\n\r:-")
+
+            # Second pass to ensure idempotency (remove any artifacts left by first pass)
+            s = re.sub(r"-{2,}", "-", s)
+            s = re.sub(r"(?<![A-Za-z0-9])-|-(?![A-Za-z0-9])", "", s)
+            s = re.sub(r":{2,}", ":", s)
+            s = re.sub(r"\s*:\s*", ": ", s)
+            s = re.sub(r"\s+", " ", s)
+            s = s.strip(" \t\n\r:-")
+
+            values["label"] = s
+            values["table"] = var[:3]
+            values["alias"] = re.sub(r"^Estimate\s*: *", "", s)
+
+            # Determine the level, section, and alias for the variable based on the master codebook for the current year
+            if var in demographic_variables:
+                values["level"] = "Demographic"
+                for section, section_content in var_cb.get("Demographic", {}).items():
+                    if section == "all_variables":
+                        continue
+                    if var in section_content.get("variables", []):
+                        values["section"] = section_content["section"]
+                        values["section_name"] = section_content["section_name"]
+                        values["alias"] = section_content["variables"].get(var, values["alias"])    
+                        break                
+            elif var in social_variables:
+                values["level"] = "Social"
+                for section, section_content in var_cb.get("Social", {}).items():
+                    if section == "all_variables":
+                        continue
+                    if var in section_content.get("variables", []):
+                        values["section"] = section_content["section"]
+                        values["section_name"] = section_content["section_name"]
+                        values["alias"] = section_content["variables"].get(var, values["alias"])
+                        break
+            elif var in economic_variables:
+                values["level"] = "Economic"
+                for section, section_content in var_cb.get("Economic", {}).items():
+                    if section == "all_variables":
+                        continue
+                    if var in section_content.get("variables", []):
+                        values["section"] = section_content["section"]
+                        values["section_name"] = section_content["section_name"]
+                        values["alias"] = section_content["variables"].get(var, values["alias"])
+                        break
+            elif var in housing_variables:
+                values["level"] = "Housing"
+                for section, section_content in var_cb.get("Housing", {}).items():
+                    if section == "all_variables":
+                        continue
+                    if var in section_content.get("variables", []):
+                        values["section"] = section_content["section"]
+                        values["section_name"] = section_content["section_name"]
+                        values["alias"] = section_content["variables"].get(var, values["alias"])
+                        break
+            else:
+                values["level"] = "Unknown"
+                values["section"] = None
+                values["section_name"] = None
+                values["alias"] = None
+
+            # Construct the variable dictionary for the current variable and add it to the main dictionary under the current year
+            cb[var] = {
+                "year": year,
+                "table": values.get("table", None),
+                "group": values.get("group", None),
+                "variable": var,
+                "alias": values.get("alias", None),
+                "level": values.get("level", None),
+                "section": values.get("section", None),
+                "section_name": values.get("section_name", None),
+                "markdown": f"🆔 {var}: {values.get('alias', None)}",
+                "label": values.get("label", None),
+                "concept": values.get("concept", None),
+                "type": values.get("predicateType", None),
+                "limit": values.get("limit", None),
+                "attributes": values.get("attributes", None),
+                "note": None
+            }
+
+        # Order the variable dictionary by the variable code
+        cb = dict(sorted(cb.items(), key=lambda item: item[0]))
+
+        if write_to_disk:
+            print("- Writing to JSON file...")
+            # Write the variable dictionary to a JSON file
+            output_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_{year}.json")
+            with open(output_path, "w", encoding = "utf-8") as f:
+                json.dump(cb, f, indent = 4)
+
+        # Convert the variable dictionary to a pandas DataFrame for easier analysis and manipulation
+        cb_rows = []
+        for var_info in cb.values():
+            cb_rows.append(var_info)
+        df_cb = pd.DataFrame(cb_rows)
+        # Sort the DataFrame by variable, level, and section
+        df_cb = df_cb.sort_values(by=["level", "section", "variable"]).reset_index(drop = True)
+
+        print(f"DataFrame for {year} created with {len(df_cb):,} rows and {len(df_cb.columns):,} columns.")
+        print(df_cb.head())
+
+        print(f"- Variable dictionary and data frame construction for {year} complete.\n")
+
+        return cb, df_cb
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
