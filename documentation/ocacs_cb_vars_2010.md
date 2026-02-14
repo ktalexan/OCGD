@@ -23,7 +23,7 @@ More detailed description of each sub-group within each of the four feature clas
 
 ---
 
-## 📚 Demographic Characteristics<a name="demographic">
+## 📚 Demographic Characteristics <a name="demographic">
 
 
 ## 📚 Demographic Characteristics (8 sections, 140 variables)
