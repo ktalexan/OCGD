@@ -10,7 +10,9 @@
 
 For each of the geographies described in the previous section, four categories of geodemographic characteristics are available:
 
-[Demographic](#demographic)
+[Demographic Characteristics](#demographic)
+
+ - [D01](#d01)
 
 - [**Demographic Characteristics (8 sections, 140 variables)**](#-demographic-characteristics-8-sections-140-variables)
 - [**Economic Characteristics (18 sections, 532 variables)**](#-economic-characteristics-18-sections-532-variables)
@@ -44,7 +46,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Tables](#geodemographic-tables-by-group)
 
-### 🏷️ D01: Total Population (1 variables)
+### 🏷️ D01: Total Population (1 variables) <a name="d01">
 
 > 🆔 B01003_001E: Total Population; 
 
