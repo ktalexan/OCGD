@@ -10,10 +10,10 @@
 
 For each of the geographies described in the previous section, four categories of geodemographic characteristics are available:
 
-- [**Demographic Characteristics (8 sections, 140 variables)**](#-demographic-characteristics-8-sections-140-variables)
-- [**Economic Characteristics (21 sections, 641 variables)**](#-economic-characteristics-21-sections-641-variables)
-- [**Housing Characteristics (26 sections, 448 variables)**](#-housing-characteristics-26-sections-448-variables)
-- [**Social Characteristics (22 sections, 663 variables)**](#-social-characteristics-22-sections-663-variables)
+- [**Demographic Characteristics (8 sections, 140 variables)**](#demographic)
+- [**Economic Characteristics (21 sections, 641 variables)**](#economic)
+- [**Housing Characteristics (26 sections, 448 variables)**](#housing)
+- [**Social Characteristics (22 sections, 663 variables)**](#social)
 
 Each of the geographies is represented by a separate geodatabase structure. Within of each of the geographic level geodatabases, each of the four characteristics is represented by a _feature class_ respectively. In order to easily identify each of the sub-groups within each category, the name of the original census table field was adjusted by prepending to it the subgroup identification code. For example, the original field B01001e1 would become D01_B01001e1 in the new feature class for the demographic characteristics.
 
@@ -23,32 +23,32 @@ More detailed description of each sub-group within each of the four feature clas
 
 
 
-## 📚 Demographic Characteristics (8 sections, 140 variables)
+## 📚 Demographic Characteristics (8 sections, 140 variables) <a name = 'demographic'></a>
 
 The demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.
 
 Code | Name | Variable Count |
 | --- | --- | --- |
-| [D01](#️-d01-total-population-1-variables) | Total Population | 1 |
-| [D02](#️-d02-sex-and-age-49-variables) | Sex and Age | 49 |
-| [D03](#️-d03-median-age-by-sex-and-race-12-variables) | Median Age by Sex and Race | 12 |
-| [D04](#️-d04-race-10-variables) | Race | 10 |
-| [D05](#️-d05-race-alone-or-in-combination-with-other-races-6-variables) | Race Alone or in Combination with Other Races | 6 |
-| [D06](#️-d06-hispanic-or-latino-21-variables) | Hispanic or Latino | 21 |
-| [D07](#️-d07-hispanic-or-latino-by-origin-31-variables) | Hispanic or Latino by Origin | 31 |
-| [D08](#️-d08-citizen-voting-age-population-10-variables) | Citizen Voting Age Population | 10 |
+| [D01](#d01) | Total Population | 1 |
+| [D02](#d02) | Sex and Age | 49 |
+| [D03](#d03) | Median Age by Sex and Race | 12 |
+| [D04](#d04) | Race | 10 |
+| [D05](#d05) | Race Alone or in Combination with Other Races | 6 |
+| [D06](#d06) | Hispanic or Latino | 21 |
+| [D07](#d07) | Hispanic or Latino by Origin | 31 |
+| [D08](#d08) | Citizen Voting Age Population | 10 |
 
 
 [🔙 Back to Tables](#geodemographic-tables-by-group)
 
-### 🏷️ D01: Total Population (1 variables)
+### 🏷️ D01: Total Population (1 variables)<a name = 'd01'></a>
 
 > 🆔 B01003_001E: Total Population; 
 
 
 [🔙 Back to Sections](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D02: Sex and Age (49 variables)
+### 🏷️ D02: Sex and Age (49 variables)<a name = 'd02'></a>
 
 > 🆔 B01001_001E: Total Population (Sex and Age); 
 🆔 B01001_002E: Male; 
@@ -103,7 +103,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D03: Median Age by Sex and Race (12 variables)
+### 🏷️ D03: Median Age by Sex and Race (12 variables)<a name = 'd03'></a>
 
 > 🆔 B01002A_001E: Median age: White alone; 
 🆔 B01002B_001E: Median age: Black or African American alone; 
@@ -121,7 +121,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D04: Race (10 variables)
+### 🏷️ D04: Race (10 variables)<a name = 'd04'></a>
 
 > 🆔 B02001_001E: Total Population (Race); 
 🆔 B02001_002E: White alone; 
@@ -137,7 +137,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D05: Race Alone or in Combination with Other Races (6 variables)
+### 🏷️ D05: Race Alone or in Combination with Other Races (6 variables)<a name = 'd05'></a>
 
 > 🆔 B02008_001E: White; 
 🆔 B02009_001E: Black or African American; 
@@ -149,7 +149,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D06: Hispanic or Latino (21 variables)
+### 🏷️ D06: Hispanic or Latino (21 variables)<a name = 'd06'></a>
 
 > 🆔 B03002_003E: Not Hispanic or Latino: White alone; 
 🆔 B03002_004E: Not Hispanic or Latino: Black or African American alone; 
@@ -176,7 +176,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D07: Hispanic or Latino by Origin (31 variables)
+### 🏷️ D07: Hispanic or Latino by Origin (31 variables)<a name = 'd07'></a>
 
 > 🆔 B03001_001E: Total Population (Hispanic or Latino by Origin); 
 🆔 B03001_002E: Not Hispanic or Latino; 
@@ -213,7 +213,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D08: Citizen Voting Age Population (10 variables)
+### 🏷️ D08: Citizen Voting Age Population (10 variables)<a name = 'd08'></a>
 
 > 🆔 B05003_008E: Male: 18 years and over; 
 🆔 B05003_009E: Male: 18 years and over: Native; 
@@ -232,38 +232,38 @@ Code | Name | Variable Count |
 
 
 
-## 📚 Economic Characteristics (21 sections, 641 variables)
+## 📚 Economic Characteristics (21 sections, 641 variables) <a name = 'economic'></a>
 
 The demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.
 
 Code | Name | Variable Count |
 | --- | --- | --- |
-| [E01](#️-e01-employment-status-7-variables) | Employment Status | 7 |
-| [E02](#️-e02-work-status-by-age-of-worker-36-variables) | Work Status by Age of Worker | 36 |
-| [E03](#️-e03-occupation-by-median-earnings-23-variables) | Occupation by Median Earnings | 23 |
-| [E04](#️-e04-means-of-transportation-to-work-10-variables) | Means of Transportation to Work | 10 |
-| [E05](#️-e05-travel-time-to-work-14-variables) | Travel Time to Work | 14 |
-| [E06](#️-e06-vehicles-available-for-workers-8-variables) | Vehicles Available for Workers | 8 |
-| [E07](#️-e07-vehicles-available-by-sex-of-workers-16-variables) | Vehicles Available by Sex of Workers | 16 |
-| [E08](#️-e08-median-age-by-means-of-transportation-to-work-7-variables) | Median Age by Means of Transportation to Work | 7 |
-| [E09](#️-e09-means-of-transportation-to-work-by-race-63-variables) | Means of Transportation to Work by Race | 63 |
-| [E10](#️-e10-occupation-73-variables) | Occupation | 73 |
-| [E11](#️-e11-industry-55-variables) | Industry | 55 |
-| [E12](#️-e12-class-of-worker-21-variables) | Class of Worker | 21 |
-| [E13](#️-e13-household-income-and-earnings-in-the-past-12-months-46-variables) | Household Income and Earnings in the Past 12 Months | 46 |
-| [E14](#️-e14-income-and-earnings-in-dollars-31-variables) | Income and Earnings in Dollars | 31 |
-| [E15](#️-e15-family-income-in-dollars-17-variables) | Family Income in Dollars | 17 |
-| [E16](#️-e16-health-insurance-coverage-by-age-66-variables) | Health Insurance Coverage by Age | 66 |
-| [E17](#️-e17-ratio-of-income-to-poverty-level-8-variables) | Ratio of Income to Poverty Level | 8 |
-| [E18](#️-e18-poverty-in-population-in-the-past-12-months-35-variables) | Poverty in Population in the Past 12 Months | 35 |
-| [E19](#️-e19-poverty-in-households-in-the-past-12-months-59-variables) | Poverty in Households in the Past 12 Months | 59 |
-| [E20](#️-e20-poverty-status-by-family-41-variables) | Poverty Status by Family | 41 |
-| [E21](#️-e21-aggregate-income-deficit-in-dollars-for-families-5-variables) | Aggregate Income Deficit in Dollars for Families | 5 |
+| [E01](#e01) | Employment Status | 7 |
+| [E02](#e02) | Work Status by Age of Worker | 36 |
+| [E03](#e03) | Occupation by Median Earnings | 23 |
+| [E04](#e04) | Means of Transportation to Work | 10 |
+| [E05](#e05) | Travel Time to Work | 14 |
+| [E06](#e06) | Vehicles Available for Workers | 8 |
+| [E07](#e07) | Vehicles Available by Sex of Workers | 16 |
+| [E08](#e08) | Median Age by Means of Transportation to Work | 7 |
+| [E09](#e09) | Means of Transportation to Work by Race | 63 |
+| [E10](#e10) | Occupation | 73 |
+| [E11](#e11) | Industry | 55 |
+| [E12](#e12) | Class of Worker | 21 |
+| [E13](#e13) | Household Income and Earnings in the Past 12 Months | 46 |
+| [E14](#e14) | Income and Earnings in Dollars | 31 |
+| [E15](#e15) | Family Income in Dollars | 17 |
+| [E16](#e16) | Health Insurance Coverage by Age | 66 |
+| [E17](#e17) | Ratio of Income to Poverty Level | 8 |
+| [E18](#e18) | Poverty in Population in the Past 12 Months | 35 |
+| [E19](#e19) | Poverty in Households in the Past 12 Months | 59 |
+| [E20](#e20) | Poverty Status by Family | 41 |
+| [E21](#e21) | Aggregate Income Deficit in Dollars for Families | 5 |
 
 
 [🔙 Back to Tables](#geodemographic-tables-by-group)
 
-### 🏷️ E01: Employment Status (7 variables)
+### 🏷️ E01: Employment Status (7 variables)<a name = 'e01'></a>
 
 > 🆔 B23025_001E: Total Population, 16+ years; 
 🆔 B23025_002E: In labor force; 
@@ -276,7 +276,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E02: Work Status by Age of Worker (36 variables)
+### 🏷️ E02: Work Status by Age of Worker (36 variables)<a name = 'e02'></a>
 
 > 🆔 B23027_001E: Total Population, 16+ years; 
 🆔 B23027_002E: 16 to 19 years; 
@@ -318,7 +318,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E03: Occupation by Median Earnings (23 variables)
+### 🏷️ E03: Occupation by Median Earnings (23 variables)<a name = 'e03'></a>
 
 > 🆔 B24011_001E: Median Earnings: Civilian Employed Population, 16+ years; 
 🆔 B24011_002E: Management business science and arts occupations; 
@@ -347,7 +347,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E04: Means of Transportation to Work (10 variables)
+### 🏷️ E04: Means of Transportation to Work (10 variables)<a name = 'e04'></a>
 
 > 🆔 B08301_001E: Workers, 16+ years; 
 🆔 B08301_002E: Car truck or van; 
@@ -363,7 +363,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E05: Travel Time to Work (14 variables)
+### 🏷️ E05: Travel Time to Work (14 variables)<a name = 'e05'></a>
 
 > 🆔 B08012_001E: Total Workers 16+ years who did not work at home; 
 🆔 B08012_002E: Less than 5 minutes; 
@@ -383,7 +383,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E06: Vehicles Available for Workers (8 variables)
+### 🏷️ E06: Vehicles Available for Workers (8 variables)<a name = 'e06'></a>
 
 > 🆔 B08014_001E: Workers 16+ years in households; 
 🆔 B08014_002E: No vehicle available; 
@@ -397,7 +397,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E07: Vehicles Available by Sex of Workers (16 variables)
+### 🏷️ E07: Vehicles Available by Sex of Workers (16 variables)<a name = 'e07'></a>
 
 > 🆔 B08014_008E: Male Workers; 
 🆔 B08014_009E: Male: No vehicle available; 
@@ -419,7 +419,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E08: Median Age by Means of Transportation to Work (7 variables)
+### 🏷️ E08: Median Age by Means of Transportation to Work (7 variables)<a name = 'e08'></a>
 
 > 🆔 B08103_001E: Median age: Workers, 16+ years; 
 🆔 B08103_002E: Median age: Car truck or van-drove alone; 
@@ -432,7 +432,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E09: Means of Transportation to Work by Race (63 variables)
+### 🏷️ E09: Means of Transportation to Work by Race (63 variables)<a name = 'e09'></a>
 
 > 🆔 B08105A_001E: White alone; 
 🆔 B08105A_002E: Car truck or van-drove alone; 
@@ -501,7 +501,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E10: Occupation (73 variables)
+### 🏷️ E10: Occupation (73 variables)<a name = 'e10'></a>
 
 > 🆔 C24010_001E: Civilian Employed Population 16+ years; 
 🆔 C24010_002E: Male; 
@@ -580,7 +580,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E11: Industry (55 variables)
+### 🏷️ E11: Industry (55 variables)<a name = 'e11'></a>
 
 > 🆔 C24030_001E: Civilian Employed Population 16+ years; 
 🆔 C24030_002E: Male; 
@@ -641,7 +641,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E12: Class of Worker (21 variables)
+### 🏷️ E12: Class of Worker (21 variables)<a name = 'e12'></a>
 
 > 🆔 B24080_001E: Civilian Employed Population 16+ years; 
 🆔 B24080_002E: Male; 
@@ -668,7 +668,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E13: Household Income and Earnings in the Past 12 Months (46 variables)
+### 🏷️ E13: Household Income and Earnings in the Past 12 Months (46 variables)<a name = 'e13'></a>
 
 > 🆔 B19001_001E: Total Households; 
 🆔 B19001_002E: Less than $10,000; 
@@ -720,7 +720,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E14: Income and Earnings in Dollars (31 variables)
+### 🏷️ E14: Income and Earnings in Dollars (31 variables)<a name = 'e14'></a>
 
 > 🆔 B19061_001E: Aggregate earnings in the past 12 months in 2015 Inflation-adjusted dollars; 
 🆔 B19062_001E: Aggregate wage or salary income in the past 12 months in 2015 Inflation-adjusted dollars; 
@@ -757,7 +757,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E15: Family Income in Dollars (17 variables)
+### 🏷️ E15: Family Income in Dollars (17 variables)<a name = 'e15'></a>
 
 > 🆔 B19101_001E: Total Families; 
 🆔 B19101_002E: Less than $10,000; 
@@ -780,7 +780,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E16: Health Insurance Coverage by Age (66 variables)
+### 🏷️ E16: Health Insurance Coverage by Age (66 variables)<a name = 'e16'></a>
 
 > 🆔 B27010_001E: Civilian non-institutionalized population; 
 🆔 B27010_002E: Under 18 years; 
@@ -852,7 +852,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E17: Ratio of Income to Poverty Level (8 variables)
+### 🏷️ E17: Ratio of Income to Poverty Level (8 variables)<a name = 'e17'></a>
 
 > 🆔 C17002_001E: Total population for whom poverty status is determined; 
 🆔 C17002_002E: Under 50; 
@@ -866,7 +866,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E18: Poverty in Population in the Past 12 Months (35 variables)
+### 🏷️ E18: Poverty in Population in the Past 12 Months (35 variables)<a name = 'e18'></a>
 
 > 🆔 B17021_001E: Total population for whom poverty status is determined; 
 🆔 B17021_002E: Income in the past 12 months below poverty level; 
@@ -907,7 +907,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E19: Poverty in Households in the Past 12 Months (59 variables)
+### 🏷️ E19: Poverty in Households in the Past 12 Months (59 variables)<a name = 'e19'></a>
 
 > 🆔 B17017_001E: Total Households; 
 🆔 B17017_002E: Income in the past 12 months below poverty level; 
@@ -972,7 +972,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E20: Poverty Status by Family (41 variables)
+### 🏷️ E20: Poverty Status by Family (41 variables)<a name = 'e20'></a>
 
 > 🆔 B17010_001E: All Families; 
 🆔 B17010_002E: Income in the past 12 months below poverty level; 
@@ -1019,7 +1019,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E21: Aggregate Income Deficit in Dollars for Families (5 variables)
+### 🏷️ E21: Aggregate Income Deficit in Dollars for Families (5 variables)<a name = 'e21'></a>
 
 > 🆔 B17011_001E: Aggregate income deficit in the past 12 months; 
 🆔 B17011_002E: Aggregate income deficit in the past 12 months: Married-couple family; 
@@ -1033,43 +1033,43 @@ Code | Name | Variable Count |
 
 
 
-## 📚 Housing Characteristics (26 sections, 448 variables)
+## 📚 Housing Characteristics (26 sections, 448 variables) <a name = 'housing'></a>
 
 The demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.
 
 Code | Name | Variable Count |
 | --- | --- | --- |
-| [H01](#️-h01-housing-occupancy-3-variables) | Housing Occupancy | 3 |
-| [H02](#️-h02-housing-tenure-3-variables) | Housing Tenure | 3 |
-| [H03](#️-h03-units-in-structure-11-variables) | Units in Structure | 11 |
-| [H04](#️-h04-population-in-occupied-housing-units-by-tenure-13-variables) | Population in Occupied Housing Units by Tenure | 13 |
-| [H05](#️-h05-year-structure-built-12-variables) | Year Structure Built | 12 |
-| [H06](#️-h06-rooms-12-variables) | Rooms | 12 |
-| [H07](#️-h07-bedrooms-19-variables) | Bedrooms | 19 |
-| [H08](#️-h08-housing-tenure-by-householder-race-28-variables) | Housing Tenure by Householder Race | 28 |
-| [H09](#️-h09-housing-tenure-by-householder-age-21-variables) | Housing Tenure by Householder Age | 21 |
-| [H10](#️-h10-average-household-size-of-occupied-housing-units-3-variables) | Average Household Size of Occupied Housing Units | 3 |
-| [H11](#️-h11-population-in-occupied-housing-units-by-tenure-3-variables) | Population in Occupied Housing Units by Tenure | 3 |
-| [H12](#️-h12-vacancy-status-8-variables) | Vacancy Status | 8 |
-| [H13](#️-h13-race-of-householder-10-variables) | Race of Householder | 10 |
-| [H14](#️-h14-year-householder-moved-into-unit-18-variables) | Year Householder Moved into Unit | 18 |
-| [H15](#️-h15-vehicles-available-15-variables) | Vehicles Available | 15 |
-| [H16](#️-h16-house-heating-fuel-10-variables) | House Heating Fuel | 10 |
-| [H17](#️-h17-selected-characteristics-20-variables) | Selected Characteristics | 20 |
-| [H18](#️-h18-occupants-per-room-13-variables) | Occupants per Room | 13 |
-| [H19](#️-h19-housing-value-34-variables) | Housing Value | 34 |
-| [H20](#️-h20-price-asked-28-variables) | Price Asked | 28 |
-| [H21](#️-h21-mortgage-status-9-variables) | Mortgage Status | 9 |
-| [H22](#️-h22-selected-monthly-owner-costs-48-variables) | Selected Monthly Owner Costs | 48 |
-| [H23](#️-h23-selected-monthly-owner-costs-as-percentage-of-household-income-26-variables) | Selected Monthly Owner Costs as Percentage of Household Income | 26 |
-| [H24](#️-h24-contract-rent-distribution-31-variables) | Contract Rent Distribution | 31 |
-| [H25](#️-h25-gross-rent-38-variables) | Gross Rent | 38 |
-| [H26](#️-h26-gross-rent-percentage-of-household-income-12-variables) | Gross Rent Percentage of Household Income | 12 |
+| [H01](#h01) | Housing Occupancy | 3 |
+| [H02](#h02) | Housing Tenure | 3 |
+| [H03](#h03) | Units in Structure | 11 |
+| [H04](#h04) | Population in Occupied Housing Units by Tenure | 13 |
+| [H05](#h05) | Year Structure Built | 12 |
+| [H06](#h06) | Rooms | 12 |
+| [H07](#h07) | Bedrooms | 19 |
+| [H08](#h08) | Housing Tenure by Householder Race | 28 |
+| [H09](#h09) | Housing Tenure by Householder Age | 21 |
+| [H10](#h10) | Average Household Size of Occupied Housing Units | 3 |
+| [H11](#h11) | Population in Occupied Housing Units by Tenure | 3 |
+| [H12](#h12) | Vacancy Status | 8 |
+| [H13](#h13) | Race of Householder | 10 |
+| [H14](#h14) | Year Householder Moved into Unit | 18 |
+| [H15](#h15) | Vehicles Available | 15 |
+| [H16](#h16) | House Heating Fuel | 10 |
+| [H17](#h17) | Selected Characteristics | 20 |
+| [H18](#h18) | Occupants per Room | 13 |
+| [H19](#h19) | Housing Value | 34 |
+| [H20](#h20) | Price Asked | 28 |
+| [H21](#h21) | Mortgage Status | 9 |
+| [H22](#h22) | Selected Monthly Owner Costs | 48 |
+| [H23](#h23) | Selected Monthly Owner Costs as Percentage of Household Income | 26 |
+| [H24](#h24) | Contract Rent Distribution | 31 |
+| [H25](#h25) | Gross Rent | 38 |
+| [H26](#h26) | Gross Rent Percentage of Household Income | 12 |
 
 
 [🔙 Back to Tables](#geodemographic-tables-by-group)
 
-### 🏷️ H01: Housing Occupancy (3 variables)
+### 🏷️ H01: Housing Occupancy (3 variables)<a name = 'h01'></a>
 
 > 🆔 B25002_001E: Total Housing Units; 
 🆔 B25002_002E: Occupied; 
@@ -1078,7 +1078,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H02: Housing Tenure (3 variables)
+### 🏷️ H02: Housing Tenure (3 variables)<a name = 'h02'></a>
 
 > 🆔 B25003_001E: Total Housing Units; 
 🆔 B25003_002E: Owner occupied; 
@@ -1087,7 +1087,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H03: Units in Structure (11 variables)
+### 🏷️ H03: Units in Structure (11 variables)<a name = 'h03'></a>
 
 > 🆔 B25024_001E: Total Housing Units; 
 🆔 B25024_002E: 1 unit detached; 
@@ -1104,7 +1104,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H04: Population in Occupied Housing Units by Tenure (13 variables)
+### 🏷️ H04: Population in Occupied Housing Units by Tenure (13 variables)<a name = 'h04'></a>
 
 > 🆔 B25033_001E: Total population in occupied housing units; 
 🆔 B25033_002E: Owner occupied; 
@@ -1123,7 +1123,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H05: Year Structure Built (12 variables)
+### 🏷️ H05: Year Structure Built (12 variables)<a name = 'h05'></a>
 
 > 🆔 B25034_001E: Total; 
 🆔 B25034_002E: Built 2014 or later; 
@@ -1141,7 +1141,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H06: Rooms (12 variables)
+### 🏷️ H06: Rooms (12 variables)<a name = 'h06'></a>
 
 > 🆔 B25017_001E: Total Housing Units; 
 🆔 B25017_002E: 1 room; 
@@ -1159,7 +1159,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H07: Bedrooms (19 variables)
+### 🏷️ H07: Bedrooms (19 variables)<a name = 'h07'></a>
 
 > 🆔 B25041_001E: Total Housing Units; 
 🆔 B25041_002E: No bedroom; 
@@ -1184,7 +1184,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H08: Housing Tenure by Householder Race (28 variables)
+### 🏷️ H08: Housing Tenure by Householder Race (28 variables)<a name = 'h08'></a>
 
 > 🆔 B25001_001E: Occupied housing units; 
 🆔 B25003A_001E: Occupied housing units: White alone householder; 
@@ -1218,7 +1218,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H09: Housing Tenure by Householder Age (21 variables)
+### 🏷️ H09: Housing Tenure by Householder Age (21 variables)<a name = 'h09'></a>
 
 > 🆔 B25007_001E: Occupied housing units; 
 🆔 B25007_002E: Owner occupied; 
@@ -1245,7 +1245,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H10: Average Household Size of Occupied Housing Units (3 variables)
+### 🏷️ H10: Average Household Size of Occupied Housing Units (3 variables)<a name = 'h10'></a>
 
 > 🆔 B25010_001E: Average household size: Total; 
 🆔 B25010_002E: Average household size: Owner occupied; 
@@ -1254,7 +1254,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H11: Population in Occupied Housing Units by Tenure (3 variables)
+### 🏷️ H11: Population in Occupied Housing Units by Tenure (3 variables)<a name = 'h11'></a>
 
 > 🆔 B25008_001E: Total population in occupied housing units; 
 🆔 B25008_002E: Owner occupied; 
@@ -1263,7 +1263,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H12: Vacancy Status (8 variables)
+### 🏷️ H12: Vacancy Status (8 variables)<a name = 'h12'></a>
 
 > 🆔 B25004_001E: Total vacant housing units; 
 🆔 B25004_002E: For rent; 
@@ -1277,7 +1277,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H13: Race of Householder (10 variables)
+### 🏷️ H13: Race of Householder (10 variables)<a name = 'h13'></a>
 
 > 🆔 B25006_001E: Occupied Housing Units; 
 🆔 B25006_002E: Householder who is White alone; 
@@ -1293,7 +1293,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H14: Year Householder Moved into Unit (18 variables)
+### 🏷️ H14: Year Householder Moved into Unit (18 variables)<a name = 'h14'></a>
 
 > 🆔 B25038_001E: Occupied Housing Units; 
 🆔 B25038_002E: Owner occupied; 
@@ -1317,7 +1317,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H15: Vehicles Available (15 variables)
+### 🏷️ H15: Vehicles Available (15 variables)<a name = 'h15'></a>
 
 > 🆔 B25044_001E: Occupied Housing Units; 
 🆔 B25044_002E: Owner occupied; 
@@ -1338,7 +1338,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H16: House Heating Fuel (10 variables)
+### 🏷️ H16: House Heating Fuel (10 variables)<a name = 'h16'></a>
 
 > 🆔 B25040_001E: Occupied Housing Units; 
 🆔 B25040_002E: Utility gas; 
@@ -1354,7 +1354,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H17: Selected Characteristics (20 variables)
+### 🏷️ H17: Selected Characteristics (20 variables)<a name = 'h17'></a>
 
 > 🆔 B25016_001E: Occupied Housing Units; 
 🆔 B25016_002E: Owner occupied; 
@@ -1380,7 +1380,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H18: Occupants per Room (13 variables)
+### 🏷️ H18: Occupants per Room (13 variables)<a name = 'h18'></a>
 
 > 🆔 B25014_001E: Occupied Housing Units; 
 🆔 B25014_002E: Owner occupied; 
@@ -1399,7 +1399,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H19: Housing Value (34 variables)
+### 🏷️ H19: Housing Value (34 variables)<a name = 'h19'></a>
 
 > 🆔 B25075_001E: Owner-occupied units; 
 🆔 B25075_002E: Less than $10,000; 
@@ -1439,7 +1439,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H20: Price Asked (28 variables)
+### 🏷️ H20: Price Asked (28 variables)<a name = 'h20'></a>
 
 > 🆔 B25085_001E: Total vacant for-sale only and sold, not occupied housing units; 
 🆔 B25085_002E: Less than $10,000; 
@@ -1473,7 +1473,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H21: Mortgage Status (9 variables)
+### 🏷️ H21: Mortgage Status (9 variables)<a name = 'h21'></a>
 
 > 🆔 B25081_001E: Owner-occupied units; 
 🆔 B25081_002E: Housing units with a mortgage; 
@@ -1488,7 +1488,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H22: Selected Monthly Owner Costs (48 variables)
+### 🏷️ H22: Selected Monthly Owner Costs (48 variables)<a name = 'h22'></a>
 
 > 🆔 B25087_001E: Owner-occupied housing units; 
 🆔 B25087_002E: Housing units with a mortgage; 
@@ -1542,7 +1542,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H23: Selected Monthly Owner Costs as Percentage of Household Income (26 variables)
+### 🏷️ H23: Selected Monthly Owner Costs as Percentage of Household Income (26 variables)<a name = 'h23'></a>
 
 > 🆔 B25091_001E: Owner-occupied housing units; 
 🆔 B25091_002E: Housing units with a mortgage; 
@@ -1574,7 +1574,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H24: Contract Rent Distribution (31 variables)
+### 🏷️ H24: Contract Rent Distribution (31 variables)<a name = 'h24'></a>
 
 > 🆔 B25056_001E: Renter-occupied housing units; 
 🆔 B25056_002E: With cash rent; 
@@ -1611,7 +1611,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H25: Gross Rent (38 variables)
+### 🏷️ H25: Gross Rent (38 variables)<a name = 'h25'></a>
 
 > 🆔 B25063_001E: Occupied units paying rent; 
 🆔 B25063_002E: With cash rent; 
@@ -1655,7 +1655,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-housing-characteristics-26-sections-448-variables)
 
-### 🏷️ H26: Gross Rent Percentage of Household Income (12 variables)
+### 🏷️ H26: Gross Rent Percentage of Household Income (12 variables)<a name = 'h26'></a>
 
 > 🆔 B25070_001E: Occupied units paying rent; 
 🆔 B25070_002E: Less than 10.0 percent; 
@@ -1676,39 +1676,39 @@ Code | Name | Variable Count |
 
 
 
-## 📚 Social Characteristics (22 sections, 663 variables)
+## 📚 Social Characteristics (22 sections, 663 variables) <a name = 'social'></a>
 
 The demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.
 
 Code | Name | Variable Count |
 | --- | --- | --- |
-| [S01](#️-s01-households-by-type-9-variables) | Households by Type | 9 |
-| [S02](#️-s02-families-by-type-20-variables) | Families by Type | 20 |
-| [S03](#️-s03-household-relationships-37-variables) | Household Relationships | 37 |
-| [S04](#️-s04-marital-status-19-variables) | Marital Status | 19 |
-| [S05](#️-s05-fertility-characteristics-19-variables) | Fertility Characteristics | 19 |
-| [S06](#️-s06-grandparent-relationships-22-variables) | Grandparent Relationships | 22 |
-| [S07](#️-s07-school-enrollment-58-variables) | School Enrollment | 58 |
-| [S08](#️-s08-educational-attainment-59-variables) | Educational Attainment | 59 |
-| [S09](#️-s09-veteran-status-7-variables) | Veteran Status | 7 |
-| [S10](#️-s10-veteran-disability-9-variables) | Veteran Disability | 9 |
-| [S11](#️-s11-disability-status-and-type-80-variables) | Disability Status and Type | 80 |
-| [S12](#️-s12-disability-status-and-health-insurance-coverage-30-variables) | Disability Status and Health Insurance Coverage | 30 |
-| [S13](#️-s13-food-stamps-households-10-variables) | Food Stamps Households | 10 |
-| [S14](#️-s14-residence-1-year-ago-5-variables) | Residence 1 year ago | 5 |
-| [S15](#️-s15-place-of-birth-27-variables) | Place of Birth | 27 |
-| [S16](#️-s16-citizenship-status-5-variables) | Citizenship Status | 5 |
-| [S17](#️-s17-citizenship-status-by-year-of-entry-21-variables) | Citizenship Status by Year of Entry | 21 |
-| [S18](#️-s18-world-region-of-birth-of-foreign-born-population-25-variables) | World Region of Birth of Foreign Born Population | 25 |
-| [S20](#️-s20-language-spoken-at-home-67-variables) | Language Spoken at Home | 67 |
-| [S21](#️-s21-ancestry-6-variables) | Ancestry | 6 |
-| [S22](#️-s22-people-reporting-ancestry-109-variables) | People Reporting Ancestry | 109 |
-| [S27](#️-s27-geographical-mobility-19-variables) | Geographical Mobility | 19 |
+| [S01](#s01) | Households by Type | 9 |
+| [S02](#s02) | Families by Type | 20 |
+| [S03](#s03) | Household Relationships | 37 |
+| [S04](#s04) | Marital Status | 19 |
+| [S05](#s05) | Fertility Characteristics | 19 |
+| [S06](#s06) | Grandparent Relationships | 22 |
+| [S07](#s07) | School Enrollment | 58 |
+| [S08](#s08) | Educational Attainment | 59 |
+| [S09](#s09) | Veteran Status | 7 |
+| [S10](#s10) | Veteran Disability | 9 |
+| [S11](#s11) | Disability Status and Type | 80 |
+| [S12](#s12) | Disability Status and Health Insurance Coverage | 30 |
+| [S13](#s13) | Food Stamps Households | 10 |
+| [S14](#s14) | Residence 1 year ago | 5 |
+| [S15](#s15) | Place of Birth | 27 |
+| [S16](#s16) | Citizenship Status | 5 |
+| [S17](#s17) | Citizenship Status by Year of Entry | 21 |
+| [S18](#s18) | World Region of Birth of Foreign Born Population | 25 |
+| [S20](#s20) | Language Spoken at Home | 67 |
+| [S21](#s21) | Ancestry | 6 |
+| [S22](#s22) | People Reporting Ancestry | 109 |
+| [S27](#s27) | Geographical Mobility | 19 |
 
 
 [🔙 Back to Tables](#geodemographic-tables-by-group)
 
-### 🏷️ S01: Households by Type (9 variables)
+### 🏷️ S01: Households by Type (9 variables)<a name = 's01'></a>
 
 > 🆔 B11001_001E: Total Households; 
 🆔 B11001_002E: Family households; 
@@ -1723,7 +1723,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S02: Families by Type (20 variables)
+### 🏷️ S02: Families by Type (20 variables)<a name = 's02'></a>
 
 > 🆔 B11003_001E: Total Families; 
 🆔 B11003_002E: Married-couple family; 
@@ -1749,7 +1749,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S03: Household Relationships (37 variables)
+### 🏷️ S03: Household Relationships (37 variables)<a name = 's03'></a>
 
 > 🆔 B09019_002E: Population in Households; 
 🆔 B09019_003E: In households: In family households; 
@@ -1792,7 +1792,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S04: Marital Status (19 variables)
+### 🏷️ S04: Marital Status (19 variables)<a name = 's04'></a>
 
 > 🆔 B12001_001E: Population, 15+ years; 
 🆔 B12001_002E: Male, 15+ years; 
@@ -1817,7 +1817,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S05: Fertility Characteristics (19 variables)
+### 🏷️ S05: Fertility Characteristics (19 variables)<a name = 's05'></a>
 
 > 🆔 B13002_001E: Women 15 to 50 years; 
 🆔 B13002_002E: Women who had a birth in the past 12 months; 
@@ -1842,7 +1842,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S06: Grandparent Relationships (22 variables)
+### 🏷️ S06: Grandparent Relationships (22 variables)<a name = 's06'></a>
 
 > 🆔 B10002_001E: Grandchildren, under 18 years living with grandparent; 
 🆔 B10002_002E: Grandparent householder responsible for own grandchildren under 18 years; 
@@ -1870,7 +1870,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S07: School Enrollment (58 variables)
+### 🏷️ S07: School Enrollment (58 variables)<a name = 's07'></a>
 
 > 🆔 B14001_001E: Population 3+ years; 
 🆔 B14001_002E: Enrolled in school; 
@@ -1934,7 +1934,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S08: Educational Attainment (59 variables)
+### 🏷️ S08: Educational Attainment (59 variables)<a name = 's08'></a>
 
 > 🆔 B15002_001E: Population 25 Years and Over; 
 🆔 B15002_002E: Male, 25+ years; 
@@ -1999,7 +1999,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S09: Veteran Status (7 variables)
+### 🏷️ S09: Veteran Status (7 variables)<a name = 's09'></a>
 
 > 🆔 B21001_001E: Civilian Population 18+ years; 
 🆔 B21001_002E: Veteran; 
@@ -2012,7 +2012,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S10: Veteran Disability (9 variables)
+### 🏷️ S10: Veteran Disability (9 variables)<a name = 's10'></a>
 
 > 🆔 B21100_001E: Civilian veterans 18+ years; 
 🆔 B21100_002E: Has no service-connected disability rating; 
@@ -2027,7 +2027,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S11: Disability Status and Type (80 variables)
+### 🏷️ S11: Disability Status and Type (80 variables)<a name = 's11'></a>
 
 > 🆔 B18101_004E: Male: Under 5 years: With a disability; 
 🆔 B18101_007E: Male: 5 to 17 years: With a disability; 
@@ -2113,7 +2113,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S12: Disability Status and Health Insurance Coverage (30 variables)
+### 🏷️ S12: Disability Status and Health Insurance Coverage (30 variables)<a name = 's12'></a>
 
 > 🆔 B18135_003E: Under 18 years: With a disability; 
 🆔 B18135_004E: Under 18 years: With a disability: With health insurance coverage; 
@@ -2149,7 +2149,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S13: Food Stamps Households (10 variables)
+### 🏷️ S13: Food Stamps Households (10 variables)<a name = 's13'></a>
 
 > 🆔 B22001_002E: Household received Food StampsSNAP in the past 12 months; 
 🆔 B22001_003E: Household received Food StampsSNAP in the past 12 months: At least one person in household 60 years or over; 
@@ -2165,7 +2165,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S14: Residence 1 year ago (5 variables)
+### 🏷️ S14: Residence 1 year ago (5 variables)<a name = 's14'></a>
 
 > 🆔 B07001_017E: Residence: Same house 1 year ago; 
 🆔 B07001_033E: Residence: Moved within same county; 
@@ -2176,7 +2176,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S15: Place of Birth (27 variables)
+### 🏷️ S15: Place of Birth (27 variables)<a name = 's15'></a>
 
 > 🆔 B05002_001E: Population (Place of Birth); 
 🆔 B05002_002E: Native; 
@@ -2209,7 +2209,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S16: Citizenship Status (5 variables)
+### 🏷️ S16: Citizenship Status (5 variables)<a name = 's16'></a>
 
 > 🆔 B05001_002E: US citizen born in the United States; 
 🆔 B05001_003E: US citizen born in Puerto Rico or US Island Areas; 
@@ -2220,7 +2220,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S17: Citizenship Status by Year of Entry (21 variables)
+### 🏷️ S17: Citizenship Status by Year of Entry (21 variables)<a name = 's17'></a>
 
 > 🆔 B05005_001E: Population born outside the US; 
 🆔 B05005_002E: Entered 2010 or later; 
@@ -2247,7 +2247,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S18: World Region of Birth of Foreign Born Population (25 variables)
+### 🏷️ S18: World Region of Birth of Foreign Born Population (25 variables)<a name = 's18'></a>
 
 > 🆔 B05006_001E: Foreign-born population, excluding population born at sea; 
 🆔 B05006_002E: Europe; 
@@ -2278,7 +2278,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S20: Language Spoken at Home (67 variables)
+### 🏷️ S20: Language Spoken at Home (67 variables)<a name = 's20'></a>
 
 > 🆔 B16004_001E: Population 5 years and over; 
 🆔 B16004_002E: 5 to 17 years; 
@@ -2351,7 +2351,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S21: Ancestry (6 variables)
+### 🏷️ S21: Ancestry (6 variables)<a name = 's21'></a>
 
 > 🆔 B04007_002E: Ancestry specified; 
 🆔 B04007_003E: Ancestry specified: Single ancestry; 
@@ -2363,7 +2363,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S22: People Reporting Ancestry (109 variables)
+### 🏷️ S22: People Reporting Ancestry (109 variables)<a name = 's22'></a>
 
 > 🆔 B04006_001E: Total people reporting ancestry; 
 🆔 B04006_002E: Afghan; 
@@ -2478,7 +2478,7 @@ Code | Name | Variable Count |
 
 [🔙 Back to Sections](#-social-characteristics-22-sections-663-variables)
 
-### 🏷️ S27: Geographical Mobility (19 variables)
+### 🏷️ S27: Geographical Mobility (19 variables)<a name = 's27'></a>
 
 > 🆔 B07003PR_001E: Total; 
 🆔 B07003_001E: Total US Residents; 

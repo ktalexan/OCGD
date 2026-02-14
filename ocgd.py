@@ -3881,15 +3881,18 @@ class OCACS(OCGD):
                 count_sections = len(df_cb[df_cb["level"] == level]["section"].dropna().unique())
                 count_level = len(df_cb[df_cb["level"] == level])
                 level_name = f"{level} Characteristics ({count_sections} sections, {count_level} variables)"
-                level_link = level_name.replace(",", "").replace("(", "").replace(")", "").replace(" ", "-").lower()
-                f.write(f"- [**{level_name}**](#-{level_link})\n")
+                # level_link = level_name.replace(",", "").replace("(", "").replace(")", "").replace(" ", "-").lower()
+                # f.write(f"- [**{level_name}**](#-{level_link})\n")
+                f.write(f"- [**{level_name}**](#{level.lower()})\n")
             f.write("\nEach of the geographies is represented by a separate geodatabase structure. Within of each of the geographic level geodatabases, each of the four characteristics is represented by a _feature class_ respectively. In order to easily identify each of the sub-groups within each category, the name of the original census table field was adjusted by prepending to it the subgroup identification code. For example, the original field B01001e1 would become D01_B01001e1 in the new feature class for the demographic characteristics.\n")
             f.write("\nMore detailed description of each sub-group within each of the four feature classes representing the ACS table characteristics is provided below. The table's columns represent: the subgroup's code; its descriptive name;the universe (summative) level of the reference; the ACS Census table in which the original fields are located; the fields/variables of the data, and; how many fields are included in the subgroup.\n")
             f.write("\n---\n")
             for level in df_cb["level"].unique():
                 count_sections = len(df_cb[df_cb["level"] == level]["section"].dropna().unique())
                 count_level = len(df_cb[df_cb["level"] == level])
-                level_header = f"\n\n\n## 📚 {level} Characteristics ({count_sections} sections, {count_level} variables)\n"
+                # level_header = f"\n\n\n## 📚 {level} Characteristics ({count_sections} sections, {count_level} variables)\n"
+                # f.write(level_header)
+                level_header = f"\n\n\n## 📚 {level} Characteristics ({count_sections} sections, {count_level} variables) <a name = '{level.lower()}'></a>\n"
                 f.write(level_header)
                 f.write("\nThe demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.\n")
                 f.write("\nCode | Name | Variable Count |\n| --- | --- | --- |\n")
@@ -3898,15 +3901,16 @@ class OCACS(OCGD):
                     section_name = df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)]["section_name"].dropna().unique()[0]
                     count_section = len(df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)])
 
-                    section_link = f"#️-{section.lower()}-{section_name.replace(" ", "-").lower()}-{count_section}-variables"
-                    f.write(f"| [{section}]({section_link}) | {section_name} | {count_section} |\n")
+                    # section_link = f"#️-{section.lower()}-{section_name.replace(" ", "-").lower()}-{count_section}-variables"
+                    # f.write(f"| [{section}]({section_link}) | {section_name} | {count_section} |\n")
+                    f.write(f"| [{section}](#{section.lower()}) | {section_name} | {count_section} |\n")
                 f.write("\n\n[🔙 Back to Tables](#geodemographic-tables-by-group)\n\n")
 
                 for section in df_cb[df_cb["level"] == level]["section"].dropna().unique():
                     # find the section_name for the current level and section
                     section_name = df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)]["section_name"].dropna().unique()[0]
                     count_section = len(df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)])
-                    section_header = f"### 🏷️ {section}: {section_name} ({count_section} variables)\n"
+                    section_header = f"### 🏷️ {section}: {section_name} ({count_section} variables)<a name = '{section.lower()}'></a>\n"
                     f.write(section_header)
                     f.write("\n> ")
                     for markdown in df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)]["markdown"].unique():
