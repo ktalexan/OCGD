@@ -3874,7 +3874,9 @@ class OCACS(OCGD):
             f.write("""<img align="left" src="../graphics/ocacs_logo_demographic.jpg" width="200" hspace="25" vspace="15">\n\n""")
             f.write(f"# Orange County Geodemographics<br>{year} ACS 5-Year Data Documentation\n\n")
             f.write(f"*Orange County American Community Survey (ACS) Geodemographic Repository <br> Dr. Kostas Alexandridis, GISP. OC Public Works Geospatial Services*<br>Version: {self.version}, Date: {datetime.datetime.now().strftime('%B %Y')}")
-            f.write("\n\n[<p align =\"right\"><< Back to ReadMe</p>](../README.md)\n\n")
+            f.write("\n\n<p align = 'right'>\n")
+            f.write("\n[<< Back to ReadMe](../README.md)\n")
+            f.write("\n</p>\n\n")
             f.write("\n\n## Geodemographic Tables by Group\n")
             f.write("\nFor each of the geographies described in the previous section, four categories of geodemographic characteristics are available:\n\n")    
             for level in df_cb["level"].unique():
@@ -3900,7 +3902,9 @@ class OCACS(OCGD):
 
                     section_link = f"#️-{section.lower()}-{section_name.replace(" ", "-").lower()}-{count_section}-variables"
                     f.write(f"| [{section}]({section_link}) | {section_name} | {count_section} |\n")
-                f.write("\n\n[<p align=\"right\"><< Back to Tables</p>](#geodemographic-tables-by-group)\n\n")
+                f.write("\n\n<p align = 'right'>\n")
+                f.write("\n[<< Back to Tables](#geodemographic-tables-by-group)\n")
+                f.write("\n</p>\n\n")
 
                 for section in df_cb[df_cb["level"] == level]["section"].dropna().unique():
                     # find the section_name for the current level and section
@@ -3912,8 +3916,10 @@ class OCACS(OCGD):
                     for markdown in df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)]["markdown"].unique():
                         f.write(f"{markdown}; ")
                         f.write("\n")
-                
-                    f.write(f"\n\n[<p align=\"right\"><< Back to Sections</p>](#-{level.lower()}-characteristics-{count_sections}-sections-{count_level}-variables)\n\n")
+
+                    f.write("\n\n<p align = 'right'>\n")
+                    f.write(f"[<< Back to Sections](#-{level.lower()}-characteristics-{count_sections}-sections-{count_level}-variables)\n")
+                    f.write("\n</p>\n\n")
             f.write("\n")
             f.write("---\n\n")
             f.close()
