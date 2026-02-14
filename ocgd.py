@@ -3873,10 +3873,8 @@ class OCACS(OCGD):
         with open(md_path, "w", encoding = "utf-8") as f:
             f.write("""<img align="left" src="../graphics/ocacs_logo_demographic.jpg" width="200" hspace="25" vspace="15">\n\n""")
             f.write(f"# Orange County Geodemographics<br>{year} ACS 5-Year Data Documentation\n\n")
-            f.write(f"*Orange County American Community Survey (ACS) Geodemographic Repository <br> Dr. Kostas Alexandridis, GISP. OC Public Works Geospatial Services*<br>Version: {self.version}, Date: {datetime.datetime.now().strftime('%B %Y')}")
-            f.write("\n\n<p align='right'>\n")
-            f.write("[◀️ Back to ReadMe](../README.md)")
-            f.write("\n</p>\n\n")
+            f.write(f"*Orange County American Community Survey (ACS) Geodemographic Repository <br> Dr. Kostas Alexandridis, GISP. OC Public Works Geospatial Services*<br>Version: {self.version}, Date: {datetime.datetime.now().strftime('%B %Y')}\n\n")
+            f.write("| "" | [◀️ Back to ReadMe](../README.md) |\n| :--- | ---: |\n")
             f.write("\n\n## Geodemographic Tables by Group\n")
             f.write("\nFor each of the geographies described in the previous section, four categories of geodemographic characteristics are available:\n\n")    
             for level in df_cb["level"].unique():
