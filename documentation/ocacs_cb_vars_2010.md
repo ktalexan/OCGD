@@ -4,9 +4,7 @@
 
 *Orange County American Community Survey (ACS) Geodemographic Repository <br> Dr. Kostas Alexandridis, GISP. OC Public Works Geospatial Services*<br>Version: 2026.1, Date: February 2026
 
-|  | [◀️ Back to ReadMe](../README.md) |
-| :--- | ---: |
-
+[<div style="text-align: right;">◀️ Back to ReadMe</div>](../README.md)
 
 ## Geodemographic Tables by Group
 
