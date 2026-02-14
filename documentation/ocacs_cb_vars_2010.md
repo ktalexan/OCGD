@@ -10,6 +10,8 @@
 
 For each of the geographies described in the previous section, four categories of geodemographic characteristics are available:
 
+[Demographic](#demographic)
+
 - [**Demographic Characteristics (8 sections, 140 variables)**](#-demographic-characteristics-8-sections-140-variables)
 - [**Economic Characteristics (18 sections, 532 variables)**](#-economic-characteristics-18-sections-532-variables)
 - [**Housing Characteristics (26 sections, 427 variables)**](#-housing-characteristics-26-sections-427-variables)
@@ -21,6 +23,7 @@ More detailed description of each sub-group within each of the four feature clas
 
 ---
 
+## 📚 Demographic Characteristics<a name="demographic">
 
 
 ## 📚 Demographic Characteristics (8 sections, 140 variables)
