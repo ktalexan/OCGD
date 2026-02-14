@@ -1,6 +1,6 @@
 <img align="left" src="../graphics/ocacs_logo_demographic.jpg" width="200" hspace="25" vspace="15">
 
-# Orange County Geodemographics<br>2024 ACS 5-Year Data Documentation
+# Orange County Geodemographics<br>2014 ACS 5-Year Data Documentation
 
 *Orange County American Community Survey (ACS) Geodemographic Repository <br> Dr. Kostas Alexandridis, GISP. OC Public Works Geospatial Services*<br>Version: 2026.1, Date: February 2026
 
@@ -13,9 +13,9 @@
 For each of the geographies described in the previous section, four categories of geodemographic characteristics are available:
 
 - [**Demographic Characteristics (8 sections, 140 variables)**](#-demographic-characteristics-8-sections-140-variables)
-- [**Economic Characteristics (21 sections, 642 variables)**](#-economic-characteristics-21-sections-642-variables)
-- [**Housing Characteristics (26 sections, 449 variables)**](#-housing-characteristics-26-sections-449-variables)
-- [**Social Characteristics (27 sections, 700 variables)**](#-social-characteristics-27-sections-700-variables)
+- [**Economic Characteristics (21 sections, 641 variables)**](#-economic-characteristics-21-sections-641-variables)
+- [**Housing Characteristics (26 sections, 427 variables)**](#-housing-characteristics-26-sections-427-variables)
+- [**Social Characteristics (22 sections, 651 variables)**](#-social-characteristics-22-sections-651-variables)
 
 Each of the geographies is represented by a separate geodatabase structure. Within of each of the geographic level geodatabases, each of the four characteristics is represented by a _feature class_ respectively. In order to easily identify each of the sub-groups within each category, the name of the original census table field was adjusted by prepending to it the subgroup identification code. For example, the original field B01001e1 would become D01_B01001e1 in the new feature class for the demographic characteristics.
 
@@ -37,8 +37,8 @@ Code | Name | Variable Count |
 | [D04](#️-d04-race-10-variables) | Race | 10 |
 | [D05](#️-d05-race-alone-or-in-combination-with-other-races-6-variables) | Race Alone or in Combination with Other Races | 6 |
 | [D06](#️-d06-hispanic-or-latino-21-variables) | Hispanic or Latino | 21 |
-| [D07](#️-d07-hispanic-or-latino-by-origin-32-variables) | Hispanic or Latino by Origin | 32 |
-| [D08](#️-d08-citizen-voting-age-population-9-variables) | Citizen Voting Age Population | 9 |
+| [D07](#️-d07-hispanic-or-latino-by-origin-31-variables) | Hispanic or Latino by Origin | 31 |
+| [D08](#️-d08-citizen-voting-age-population-10-variables) | Citizen Voting Age Population | 10 |
 
 
 [<div align="right"><< Back to Tables</div>](#geodemographic-tables-by-group)
@@ -178,7 +178,7 @@ Code | Name | Variable Count |
 
 [<div align="right"><< Back to Sections</div>](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D07: Hispanic or Latino by Origin (32 variables)
+### 🏷️ D07: Hispanic or Latino by Origin (31 variables)
 
 > 🆔 B03001_001E: Total Population (Hispanic or Latino by Origin); 
 🆔 B03001_002E: Not Hispanic or Latino; 
@@ -211,22 +211,22 @@ Code | Name | Variable Count |
 🆔 B03001_029E: Hispanic or Latino: Other Hispanic or Latino: Spanish; 
 🆔 B03001_030E: Hispanic or Latino: Other Hispanic or Latino: Spanish American; 
 🆔 B03001_031E: Hispanic or Latino: Other Hispanic or Latino: All other Hispanic or Latino; 
-🆔 B05003_023E: Female: 18 years and over: Foreign-born: Not a US citizen; 
 
 
 [<div align="right"><< Back to Sections</div>](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D08: Citizen Voting Age Population (9 variables)
+### 🏷️ D08: Citizen Voting Age Population (10 variables)
 
 > 🆔 B05003_008E: Male: 18 years and over; 
 🆔 B05003_009E: Male: 18 years and over: Native; 
-🆔 B05003_010E: Male: 18 years and over: Foreign-born; 
-🆔 B05003_011E: Male: 18 years and over: Foreign-born: Naturalized US citizen; 
-🆔 B05003_012E: Male: 18 years and over: Foreign-born: Not a US citizen; 
+🆔 B05003_010E: Male: 18 years and over: Foreign born; 
+🆔 B05003_011E: Male: 18 years and over: Foreign born: Naturalized US citizen; 
+🆔 B05003_012E: Male: 18 years and over: Foreign born: Not a US citizen; 
 🆔 B05003_019E: Female: 18 years and over; 
 🆔 B05003_020E: Female: 18 years and over: Native; 
-🆔 B05003_021E: Female: 18 years and over: Foreign-born; 
-🆔 B05003_022E: Female: 18 years and over: Foreign-born: Naturalized US citizen; 
+🆔 B05003_021E: Female: 18 years and over: Foreign born; 
+🆔 B05003_022E: Female: 18 years and over: Foreign born: Naturalized US citizen; 
+🆔 B05003_023E: Female: 18 years and over: Foreign born: Not a US citizen; 
 
 
 [<div align="right"><< Back to Sections</div>](#-demographic-characteristics-8-sections-140-variables)
@@ -234,7 +234,7 @@ Code | Name | Variable Count |
 
 
 
-## 📚 Economic Characteristics (21 sections, 642 variables)
+## 📚 Economic Characteristics (21 sections, 641 variables)
 
 The demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.
 
@@ -243,7 +243,7 @@ Code | Name | Variable Count |
 | [E01](#️-e01-employment-status-7-variables) | Employment Status | 7 |
 | [E02](#️-e02-work-status-by-age-of-worker-36-variables) | Work Status by Age of Worker | 36 |
 | [E03](#️-e03-occupation-by-median-earnings-23-variables) | Occupation by Median Earnings | 23 |
-| [E04](#️-e04-means-of-transportation-to-work-11-variables) | Means of Transportation to Work | 11 |
+| [E04](#️-e04-means-of-transportation-to-work-10-variables) | Means of Transportation to Work | 10 |
 | [E05](#️-e05-travel-time-to-work-14-variables) | Travel Time to Work | 14 |
 | [E06](#️-e06-vehicles-available-for-workers-8-variables) | Vehicles Available for Workers | 8 |
 | [E07](#️-e07-vehicles-available-by-sex-of-workers-16-variables) | Vehicles Available by Sex of Workers | 16 |
@@ -276,7 +276,7 @@ Code | Name | Variable Count |
 🆔 B23025_007E: Not in labor force; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E02: Work Status by Age of Worker (36 variables)
 
@@ -318,7 +318,7 @@ Code | Name | Variable Count |
 🆔 B23027_036E: 70 years and over: Did not work in the past 12 months; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E03: Occupation by Median Earnings (23 variables)
 
@@ -347,24 +347,23 @@ Code | Name | Variable Count |
 🆔 B24011_036E: Production transportation and material moving occupations: Material moving occupations; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E04: Means of Transportation to Work (11 variables)
+### 🏷️ E04: Means of Transportation to Work (10 variables)
 
 > 🆔 B08301_001E: Workers, 16+ years; 
 🆔 B08301_002E: Car truck or van; 
 🆔 B08301_003E: Car truck or van: Drove alone; 
 🆔 B08301_004E: Car truck or van: Carpooled; 
-🆔 B08301_010E: Public transportation; 
-🆔 B08301_016E: Taxi or ride-hailing services; 
+🆔 B08301_016E: Taxicab; 
 🆔 B08301_017E: Motorcycle; 
 🆔 B08301_018E: Bicycle; 
 🆔 B08301_019E: Walked; 
 🆔 B08301_020E: Other means; 
-🆔 B08301_021E: Worked from home; 
+🆔 B08301_021E: Worked at home; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E05: Travel Time to Work (14 variables)
 
@@ -384,7 +383,7 @@ Code | Name | Variable Count |
 🆔 B08013_001E: Aggregate travel time to work in minutes; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E06: Vehicles Available for Workers (8 variables)
 
@@ -398,7 +397,7 @@ Code | Name | Variable Count |
 🆔 B08015_001E: Aggregate number of vehicles car truck or van used in commuting; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E07: Vehicles Available by Sex of Workers (16 variables)
 
@@ -420,89 +419,89 @@ Code | Name | Variable Count |
 🆔 B08015_003E: Aggregate number of vehicles car truck or van used in commuting: Female; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E08: Median Age by Means of Transportation to Work (7 variables)
 
 > 🆔 B08103_001E: Median age: Workers, 16+ years; 
 🆔 B08103_002E: Median age: Car truck or van-drove alone; 
 🆔 B08103_003E: Median age: Car truck or van-carpooled; 
-🆔 B08103_004E: Median age: Public transportation; 
+🆔 B08103_004E: Median age: Public transportation excluding taxicab; 
 🆔 B08103_005E: Median age: Walked; 
-🆔 B08103_006E: Median age: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08103_007E: Median age: Worked from home; 
+🆔 B08103_006E: Median age: Taxicab motorcycle bicycle or other means; 
+🆔 B08103_007E: Median age: Worked at home; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E09: Means of Transportation to Work by Race (63 variables)
 
 > 🆔 B08105A_001E: White alone; 
 🆔 B08105A_002E: Car truck or van-drove alone; 
 🆔 B08105A_003E: Car truck or van-carpooled; 
-🆔 B08105A_004E: Public transportation; 
+🆔 B08105A_004E: Public transportation excluding taxicab; 
 🆔 B08105A_005E: Walked; 
-🆔 B08105A_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08105A_007E: Worked from home; 
+🆔 B08105A_006E: Taxicab motorcycle bicycle or other means; 
+🆔 B08105A_007E: Worked at home; 
 🆔 B08105B_001E: Black or African American alone; 
 🆔 B08105B_002E: Car truck or van-drove alone; 
 🆔 B08105B_003E: Car truck or van-carpooled; 
-🆔 B08105B_004E: Public transportation; 
+🆔 B08105B_004E: Public transportation excluding taxicab; 
 🆔 B08105B_005E: Walked; 
-🆔 B08105B_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08105B_007E: Worked from home; 
+🆔 B08105B_006E: Taxicab motorcycle bicycle or other means; 
+🆔 B08105B_007E: Worked at home; 
 🆔 B08105C_001E: American Indian and Alaska Native alone; 
 🆔 B08105C_002E: Car truck or van-drove alone; 
 🆔 B08105C_003E: Car truck or van-carpooled; 
-🆔 B08105C_004E: Public transportation; 
+🆔 B08105C_004E: Public transportation excluding taxicab; 
 🆔 B08105C_005E: Walked; 
-🆔 B08105C_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08105C_007E: Worked from home; 
+🆔 B08105C_006E: Taxicab motorcycle bicycle or other means; 
+🆔 B08105C_007E: Worked at home; 
 🆔 B08105D_001E: Asian alone; 
 🆔 B08105D_002E: Car truck or van-drove alone; 
 🆔 B08105D_003E: Car truck or van-carpooled; 
-🆔 B08105D_004E: Public transportation; 
+🆔 B08105D_004E: Public transportation excluding taxicab; 
 🆔 B08105D_005E: Walked; 
-🆔 B08105D_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08105D_007E: Worked from home; 
+🆔 B08105D_006E: Taxicab motorcycle bicycle or other means; 
+🆔 B08105D_007E: Worked at home; 
 🆔 B08105E_001E: Native Hawaiian and Other Pacific Islander alone; 
 🆔 B08105E_002E: Car truck or van-drove alone; 
 🆔 B08105E_003E: Car truck or van-carpooled; 
-🆔 B08105E_004E: Public transportation; 
+🆔 B08105E_004E: Public transportation excluding taxicab; 
 🆔 B08105E_005E: Walked; 
-🆔 B08105E_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08105E_007E: Worked from home; 
+🆔 B08105E_006E: Taxicab motorcycle bicycle or other means; 
+🆔 B08105E_007E: Worked at home; 
 🆔 B08105F_001E: Some Other Race alone; 
 🆔 B08105F_002E: Car truck or van-drove alone; 
 🆔 B08105F_003E: Car truck or van-carpooled; 
-🆔 B08105F_004E: Public transportation; 
+🆔 B08105F_004E: Public transportation excluding taxicab; 
 🆔 B08105F_005E: Walked; 
-🆔 B08105F_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08105F_007E: Worked from home; 
+🆔 B08105F_006E: Taxicab motorcycle bicycle or other means; 
+🆔 B08105F_007E: Worked at home; 
 🆔 B08105G_001E: Two or More Races; 
 🆔 B08105G_002E: Car truck or van-drove alone; 
 🆔 B08105G_003E: Car truck or van-carpooled; 
-🆔 B08105G_004E: Public transportation; 
+🆔 B08105G_004E: Public transportation excluding taxicab; 
 🆔 B08105G_005E: Walked; 
-🆔 B08105G_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08105G_007E: Worked from home; 
+🆔 B08105G_006E: Taxicab motorcycle bicycle or other means; 
+🆔 B08105G_007E: Worked at home; 
 🆔 B08105H_001E: White alone, not Hispanic or Latino; 
 🆔 B08105H_002E: Car truck or van-drove alone; 
 🆔 B08105H_003E: Car truck or van-carpooled; 
-🆔 B08105H_004E: Public transportation; 
+🆔 B08105H_004E: Public transportation excluding taxicab; 
 🆔 B08105H_005E: Walked; 
-🆔 B08105H_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08105H_007E: Worked from home; 
+🆔 B08105H_006E: Taxicab motorcycle bicycle or other means; 
+🆔 B08105H_007E: Worked at home; 
 🆔 B08105I_001E: Hispanic or Latino; 
 🆔 B08105I_002E: Car truck or van-drove alone; 
 🆔 B08105I_003E: Car truck or van-carpooled; 
-🆔 B08105I_004E: Public transportation; 
+🆔 B08105I_004E: Public transportation excluding taxicab; 
 🆔 B08105I_005E: Walked; 
-🆔 B08105I_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
-🆔 B08105I_007E: Worked from home; 
+🆔 B08105I_006E: Taxicab motorcycle bicycle or other means; 
+🆔 B08105I_007E: Worked at home; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E10: Occupation (73 variables)
 
@@ -519,7 +518,7 @@ Code | Name | Variable Count |
 🆔 C24010_011E: Male: Management business science and arts occupations: Education legal community service arts and media occupations; 
 🆔 C24010_012E: Male: Management business science and arts occupations: Education legal community service arts and media occupations: Community and social service occupations; 
 🆔 C24010_013E: Male: Management business science and arts occupations: Education legal community service arts and media occupations: Legal occupations; 
-🆔 C24010_014E: Male: Management business science and arts occupations: Education legal community service arts and media occupations: Educational instruction and library occupations; 
+🆔 C24010_014E: Male: Management business science and arts occupations: Education legal community service arts and media occupations: Education training and library occupations; 
 🆔 C24010_015E: Male: Management business science and arts occupations: Education legal community service arts and media occupations: Arts design entertainment sports and media occupations; 
 🆔 C24010_016E: Male: Management business science and arts occupations: Healthcare practitioners and technical occupations; 
 🆔 C24010_017E: Male: Management business science and arts occupations: Healthcare practitioners and technical occupations: Health diagnosing and treating practitioners and other technical occupations; 
@@ -527,7 +526,7 @@ Code | Name | Variable Count |
 🆔 C24010_019E: Male: Service occupations; 
 🆔 C24010_020E: Male: Service occupations: Healthcare support occupations; 
 🆔 C24010_021E: Male: Service occupations: Protective service occupations; 
-🆔 C24010_022E: Male: Service occupations: Protective service occupations: Firefighting and prevention and other protective service workers including supervisors; 
+🆔 C24010_022E: Male: Service occupations: Protective service occupations: Fire fighting and prevention and other protective service workers including supervisors; 
 🆔 C24010_023E: Male: Service occupations: Protective service occupations: Law enforcement workers including supervisors; 
 🆔 C24010_024E: Male: Service occupations: Food preparation and serving related occupations; 
 🆔 C24010_025E: Male: Service occupations: Building and grounds cleaning and maintenance occupations; 
@@ -555,7 +554,7 @@ Code | Name | Variable Count |
 🆔 C24010_047E: Female: Management business science and arts occupations: Education legal community service arts and media occupations; 
 🆔 C24010_048E: Female: Management business science and arts occupations: Education legal community service arts and media occupations: Community and social service occupations; 
 🆔 C24010_049E: Female: Management business science and arts occupations: Education legal community service arts and media occupations: Legal occupations; 
-🆔 C24010_050E: Female: Management business science and arts occupations: Education legal community service arts and media occupations: Educational instruction and library occupations; 
+🆔 C24010_050E: Female: Management business science and arts occupations: Education legal community service arts and media occupations: Education training and library occupations; 
 🆔 C24010_051E: Female: Management business science and arts occupations: Education legal community service arts and media occupations: Arts design entertainment sports and media occupations; 
 🆔 C24010_052E: Female: Management business science and arts occupations: Healthcare practitioners and technical occupations; 
 🆔 C24010_053E: Female: Management business science and arts occupations: Healthcare practitioners and technical occupations: Health diagnosing and treating practitioners and other technical occupations; 
@@ -563,7 +562,7 @@ Code | Name | Variable Count |
 🆔 C24010_055E: Female: Service occupations; 
 🆔 C24010_056E: Female: Service occupations: Healthcare support occupations; 
 🆔 C24010_057E: Female: Service occupations: Protective service occupations; 
-🆔 C24010_058E: Female: Service occupations: Protective service occupations: Firefighting and prevention and other protective service workers including supervisors; 
+🆔 C24010_058E: Female: Service occupations: Protective service occupations: Fire fighting and prevention and other protective service workers including supervisors; 
 🆔 C24010_059E: Female: Service occupations: Protective service occupations: Law enforcement workers including supervisors; 
 🆔 C24010_060E: Female: Service occupations: Food preparation and serving related occupations; 
 🆔 C24010_061E: Female: Service occupations: Building and grounds cleaning and maintenance occupations; 
@@ -581,7 +580,7 @@ Code | Name | Variable Count |
 🆔 C24010_073E: Female: Production transportation and material moving occupations: Material moving occupations; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E11: Industry (55 variables)
 
@@ -642,7 +641,7 @@ Code | Name | Variable Count |
 🆔 C24030_055E: Female: Public administration; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E12: Class of Worker (21 variables)
 
@@ -669,7 +668,7 @@ Code | Name | Variable Count |
 🆔 B24080_021E: Female: Unpaid family workers; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E13: Household Income and Earnings in the Past 12 Months (46 variables)
 
@@ -690,8 +689,8 @@ Code | Name | Variable Count |
 🆔 B19001_015E: $125,000 to $149,999; 
 🆔 B19001_016E: $150,000 to $199,999; 
 🆔 B19001_017E: $200,000 or more; 
-🆔 B19013_001E: Median household income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19025_001E: Aggregate household income in the past 12 months in 2024 inflation-adjusted dollars; 
+🆔 B19013_001E: Median household income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19025_001E: Aggregate household income in the past 12 months in 2014 Inflation-adjusted dollars; 
 🆔 B19051_002E: With earnings; 
 🆔 B19051_003E: No earnings; 
 🆔 B19052_002E: With wage or salary income; 
@@ -721,44 +720,44 @@ Code | Name | Variable Count |
 🆔 B19083_001E: Gini Index; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E14: Income and Earnings in Dollars (31 variables)
 
-> 🆔 B19061_001E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19062_001E: Aggregate wage or salary income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19063_001E: Aggregate self-employment income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19064_001E: Aggregate interest dividends or net rental income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19065_001E: Aggregate Social Security income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19066_001E: Aggregate Supplemental Security Income SSI in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19067_001E: Aggregate public assistance income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19069_001E: Aggregate retirement income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19070_001E: Aggregate other types of income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19113_001E: Median family income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19202_001E: Median Non-family household income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19214_001E: Aggregate Non-family household income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301A_001E: White alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301B_001E: Black or African American alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301C_001E: American Indian and Alaska Native alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301D_001E: Asian alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301E_001E: Native Hawaiian and Other Pacific Islander alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301F_001E: Some Other Race alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301G_001E: Two or More Races: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301H_001E: White alone, not Hispanic or Latino: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301I_001E: Hispanic or Latino: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301_001E: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19313_001E: Aggregate income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B20002_001E: Median earnings in the past 12 months in 2024 inflation-adjusted dollars: Total; 
-🆔 B20002_002E: Median earnings in the past 12 months in 2024 inflation-adjusted dollars: Male; 
-🆔 B20002_003E: Median earnings in the past 12 months in 2024 inflation-adjusted dollars: Female; 
-🆔 B20003_001E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B20003_002E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars: Male; 
-🆔 B20003_003E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars: Male: Worked full-time year-round in the past 12 months; 
-🆔 B20003_005E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars: Female; 
-🆔 B20003_006E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars: Female: Worked full-time year-round in the past 12 months; 
+> 🆔 B19061_001E: Aggregate earnings in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19062_001E: Aggregate wage or salary income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19063_001E: Aggregate self-employment income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19064_001E: Aggregate interest dividends or net rental income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19065_001E: Aggregate Social Security income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19066_001E: Aggregate Supplemental Security Income SSI in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19067_001E: Aggregate public assistance income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19069_001E: Aggregate retirement income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19070_001E: Aggregate other types of income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19113_001E: Median family income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19202_001E: Median Non-family household income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19214_001E: Aggregate Non-family household income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301A_001E: White alone: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301B_001E: Black or African American alone: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301C_001E: American Indian and Alaska Native alone: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301D_001E: Asian alone: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301E_001E: Native Hawaiian and Other Pacific Islander alone: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301F_001E: Some Other Race alone: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301G_001E: Two or More Races: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301H_001E: White alone, not Hispanic or Latino: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301I_001E: Hispanic or Latino: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19301_001E: Per capita income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B19313_001E: Aggregate income in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B20002_001E: Median earnings in the past 12 months in 2014 Inflation-adjusted dollars: Total; 
+🆔 B20002_002E: Median earnings in the past 12 months in 2014 Inflation-adjusted dollars: Male; 
+🆔 B20002_003E: Median earnings in the past 12 months in 2014 Inflation-adjusted dollars: Female; 
+🆔 B20003_001E: Aggregate earnings in the past 12 months in 2014 Inflation-adjusted dollars; 
+🆔 B20003_002E: Aggregate earnings in the past 12 months in 2014 Inflation-adjusted dollars: Male; 
+🆔 B20003_003E: Aggregate earnings in the past 12 months in 2014 Inflation-adjusted dollars: Male: Worked full-time year-round in the past 12 months; 
+🆔 B20003_005E: Aggregate earnings in the past 12 months in 2014 Inflation-adjusted dollars: Female; 
+🆔 B20003_006E: Aggregate earnings in the past 12 months in 2014 Inflation-adjusted dollars: Female: Worked full-time year-round in the past 12 months; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E15: Family Income in Dollars (17 variables)
 
@@ -781,43 +780,43 @@ Code | Name | Variable Count |
 🆔 B19101_017E: $200,000 or more; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E16: Health Insurance Coverage by Age (66 variables)
 
 > 🆔 B27010_001E: Civilian non-institutionalized population; 
-🆔 B27010_002E: Under 19 years; 
-🆔 B27010_003E: Under 19 years: With one type of health insurance coverage; 
-🆔 B27010_004E: Under 19 years: With one type of health insurance coverage: With employer-based health insurance only; 
-🆔 B27010_005E: Under 19 years: With one type of health insurance coverage: With direct-purchase health insurance only; 
-🆔 B27010_006E: Under 19 years: With one type of health insurance coverage: With Medicare coverage only; 
-🆔 B27010_007E: Under 19 years: With one type of health insurance coverage: With Medicaidmeans-tested public coverage only; 
-🆔 B27010_008E: Under 19 years: With one type of health insurance coverage: With TRICAREmilitary health coverage only; 
-🆔 B27010_009E: Under 19 years: With one type of health insurance coverage: With VA Health Care only; 
-🆔 B27010_010E: Under 19 years: With two or more types of health insurance coverage; 
-🆔 B27010_011E: Under 19 years: With two or more types of health insurance coverage: With employer-based and direct-purchase coverage; 
-🆔 B27010_012E: Under 19 years: With two or more types of health insurance coverage: With employer-based and Medicare coverage; 
-🆔 B27010_013E: Under 19 years: With two or more types of health insurance coverage: With Medicare and Medicaidmeans-tested public coverage; 
-🆔 B27010_014E: Under 19 years: With two or more types of health insurance coverage: Other private only combinations; 
-🆔 B27010_015E: Under 19 years: With two or more types of health insurance coverage: Other public only combinations; 
-🆔 B27010_016E: Under 19 years: With two or more types of health insurance coverage: Other coverage combinations; 
-🆔 B27010_017E: Under 19 years: No health insurance coverage; 
-🆔 B27010_018E: 19 to 34 years; 
-🆔 B27010_019E: 19 to 34 years: With one type of health insurance coverage; 
-🆔 B27010_020E: 19 to 34 years: With one type of health insurance coverage: With employer-based health insurance only; 
-🆔 B27010_021E: 19 to 34 years: With one type of health insurance coverage: With direct-purchase health insurance only; 
-🆔 B27010_022E: 19 to 34 years: With one type of health insurance coverage: With Medicare coverage only; 
-🆔 B27010_023E: 19 to 34 years: With one type of health insurance coverage: With Medicaidmeans-tested public coverage only; 
-🆔 B27010_024E: 19 to 34 years: With one type of health insurance coverage: With TRICAREmilitary health coverage only; 
-🆔 B27010_025E: 19 to 34 years: With one type of health insurance coverage: With VA Health Care only; 
-🆔 B27010_026E: 19 to 34 years: With two or more types of health insurance coverage; 
-🆔 B27010_027E: 19 to 34 years: With two or more types of health insurance coverage: With employer-based and direct-purchase coverage; 
-🆔 B27010_028E: 19 to 34 years: With two or more types of health insurance coverage: With employer-based and Medicare coverage; 
-🆔 B27010_029E: 19 to 34 years: With two or more types of health insurance coverage: With Medicare and Medicaidmeans-tested public coverage; 
-🆔 B27010_030E: 19 to 34 years: With two or more types of health insurance coverage: Other private only combinations; 
-🆔 B27010_031E: 19 to 34 years: With two or more types of health insurance coverage: Other public only combinations; 
-🆔 B27010_032E: 19 to 34 years: With two or more types of health insurance coverage: Other coverage combinations; 
-🆔 B27010_033E: 19 to 34 years: No health insurance coverage; 
+🆔 B27010_002E: Under 18 years; 
+🆔 B27010_003E: Under 18 years: With one type of health insurance coverage; 
+🆔 B27010_004E: Under 18 years: With one type of health insurance coverage: With employer-based health insurance only; 
+🆔 B27010_005E: Under 18 years: With one type of health insurance coverage: With direct-purchase health insurance only; 
+🆔 B27010_006E: Under 18 years: With one type of health insurance coverage: With Medicare coverage only; 
+🆔 B27010_007E: Under 18 years: With one type of health insurance coverage: With Medicaidmeans-tested public coverage only; 
+🆔 B27010_008E: Under 18 years: With one type of health insurance coverage: With TRICAREmilitary health coverage only; 
+🆔 B27010_009E: Under 18 years: With one type of health insurance coverage: With VA Health Care only; 
+🆔 B27010_010E: Under 18 years: With two or more types of health insurance coverage; 
+🆔 B27010_011E: Under 18 years: With two or more types of health insurance coverage: With employer-based and direct-purchase coverage; 
+🆔 B27010_012E: Under 18 years: With two or more types of health insurance coverage: With employer-based and Medicare coverage; 
+🆔 B27010_013E: Under 18 years: With two or more types of health insurance coverage: With Medicare and Medicaidmeans-tested public coverage; 
+🆔 B27010_014E: Under 18 years: With two or more types of health insurance coverage: Other private only combinations; 
+🆔 B27010_015E: Under 18 years: With two or more types of health insurance coverage: Other public only combinations; 
+🆔 B27010_016E: Under 18 years: With two or more types of health insurance coverage: Other coverage combinations; 
+🆔 B27010_017E: Under 18 years: No health insurance coverage; 
+🆔 B27010_018E: 18 to 34 years; 
+🆔 B27010_019E: 18 to 34 years: With one type of health insurance coverage; 
+🆔 B27010_020E: 18 to 34 years: With one type of health insurance coverage: With employer-based health insurance only; 
+🆔 B27010_021E: 18 to 34 years: With one type of health insurance coverage: With direct-purchase health insurance only; 
+🆔 B27010_022E: 18 to 34 years: With one type of health insurance coverage: With Medicare coverage only; 
+🆔 B27010_023E: 18 to 34 years: With one type of health insurance coverage: With Medicaidmeans-tested public coverage only; 
+🆔 B27010_024E: 18 to 34 years: With one type of health insurance coverage: With TRICAREmilitary health coverage only; 
+🆔 B27010_025E: 18 to 34 years: With one type of health insurance coverage: With VA Health Care only; 
+🆔 B27010_026E: 18 to 34 years: With two or more types of health insurance coverage; 
+🆔 B27010_027E: 18 to 34 years: With two or more types of health insurance coverage: With employer-based and direct-purchase coverage; 
+🆔 B27010_028E: 18 to 34 years: With two or more types of health insurance coverage: With employer-based and Medicare coverage; 
+🆔 B27010_029E: 18 to 34 years: With two or more types of health insurance coverage: With Medicare and Medicaidmeans-tested public coverage; 
+🆔 B27010_030E: 18 to 34 years: With two or more types of health insurance coverage: Other private only combinations; 
+🆔 B27010_031E: 18 to 34 years: With two or more types of health insurance coverage: Other public only combinations; 
+🆔 B27010_032E: 18 to 34 years: With two or more types of health insurance coverage: Other coverage combinations; 
+🆔 B27010_033E: 18 to 34 years: No health insurance coverage; 
 🆔 B27010_034E: 35 to 64 years; 
 🆔 B27010_035E: 35 to 64 years: With one type of health insurance coverage; 
 🆔 B27010_036E: 35 to 64 years: With one type of health insurance coverage: With employer-based health insurance only; 
@@ -853,7 +852,7 @@ Code | Name | Variable Count |
 🆔 B27010_066E: 65 years and over: No health insurance coverage; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E17: Ratio of Income to Poverty Level (8 variables)
 
@@ -867,7 +866,7 @@ Code | Name | Variable Count |
 🆔 C17002_008E: 200 and over; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E18: Poverty in Population in the Past 12 Months (35 variables)
 
@@ -878,12 +877,12 @@ Code | Name | Variable Count |
 🆔 B17021_005E: Income in the past 12 months below poverty level: In family households: In married couple families: All relatives; 
 🆔 B17021_006E: Income in the past 12 months below poverty level: In family households: In married couple families: Non-relatives; 
 🆔 B17021_007E: Income in the past 12 months below poverty level: In family households: In other families; 
-🆔 B17021_008E: Income in the past 12 months below poverty level: In family households: In other families: Male householder no spouse present; 
-🆔 B17021_009E: Income in the past 12 months below poverty level: In family households: In other families: Male householder no spouse present: All relatives; 
-🆔 B17021_010E: Income in the past 12 months below poverty level: In family households: In other families: Male householder no spouse present: Non-relatives; 
-🆔 B17021_011E: Income in the past 12 months below poverty level: In family households: In other families: Female householder no spouse present; 
-🆔 B17021_012E: Income in the past 12 months below poverty level: In family households: In other families: Female householder no spouse present: All relatives; 
-🆔 B17021_013E: Income in the past 12 months below poverty level: In family households: In other families: Female householder no spouse present: Non-relatives; 
+🆔 B17021_008E: Income in the past 12 months below poverty level: In family households: In other families: Male householder no wife present; 
+🆔 B17021_009E: Income in the past 12 months below poverty level: In family households: In other families: Male householder no wife present: All relatives; 
+🆔 B17021_010E: Income in the past 12 months below poverty level: In family households: In other families: Male householder no wife present: Non-relatives; 
+🆔 B17021_011E: Income in the past 12 months below poverty level: In family households: In other families: Female householder no husband present; 
+🆔 B17021_012E: Income in the past 12 months below poverty level: In family households: In other families: Female householder no husband present: All relatives; 
+🆔 B17021_013E: Income in the past 12 months below poverty level: In family households: In other families: Female householder no husband present: Non-relatives; 
 🆔 B17021_014E: Income in the past 12 months below poverty level: In non-family households and other living arrangement; 
 🆔 B17021_015E: Income in the past 12 months below poverty level: In non-family households and other living arrangement: Householder; 
 🆔 B17021_016E: Income in the past 12 months below poverty level: In non-family households and other living arrangement: Householder: Living alone; 
@@ -895,12 +894,12 @@ Code | Name | Variable Count |
 🆔 B17021_022E: Income in the past 12 months at or above poverty level: In family households: In married couple families: All relatives; 
 🆔 B17021_023E: Income in the past 12 months at or above poverty level: In family households: In married couple families: Non-relatives; 
 🆔 B17021_024E: Income in the past 12 months at or above poverty level: In family households: In other families; 
-🆔 B17021_025E: Income in the past 12 months at or above poverty level: In family households: In other families: Male householder no spouse present; 
-🆔 B17021_026E: Income in the past 12 months at or above poverty level: In family households: In other families: Male householder no spouse present: All relatives; 
-🆔 B17021_027E: Income in the past 12 months at or above poverty level: In family households: In other families: Male householder no spouse present: Non-relatives; 
-🆔 B17021_028E: Income in the past 12 months at or above poverty level: In family households: In other families: Female householder no spouse present; 
-🆔 B17021_029E: Income in the past 12 months at or above poverty level: In family households: In other families: Female householder no spouse present: All relatives; 
-🆔 B17021_030E: Income in the past 12 months at or above poverty level: In family households: In other families: Female householder no spouse present: Non-relatives; 
+🆔 B17021_025E: Income in the past 12 months at or above poverty level: In family households: In other families: Male householder no wife present; 
+🆔 B17021_026E: Income in the past 12 months at or above poverty level: In family households: In other families: Male householder no wife present: All relatives; 
+🆔 B17021_027E: Income in the past 12 months at or above poverty level: In family households: In other families: Male householder no wife present: Non-relatives; 
+🆔 B17021_028E: Income in the past 12 months at or above poverty level: In family households: In other families: Female householder no husband present; 
+🆔 B17021_029E: Income in the past 12 months at or above poverty level: In family households: In other families: Female householder no husband present: All relatives; 
+🆔 B17021_030E: Income in the past 12 months at or above poverty level: In family households: In other families: Female householder no husband present: Non-relatives; 
 🆔 B17021_031E: Income in the past 12 months at or above poverty level: In non-family households and other living arrangement; 
 🆔 B17021_032E: Income in the past 12 months at or above poverty level: In non-family households and other living arrangement: Householder; 
 🆔 B17021_033E: Income in the past 12 months at or above poverty level: In non-family households and other living arrangement: Householder: Living alone; 
@@ -908,7 +907,7 @@ Code | Name | Variable Count |
 🆔 B17021_035E: Income in the past 12 months at or above poverty level: In non-family households and other living arrangement: Other living arrangement; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E19: Poverty in Households in the Past 12 Months (59 variables)
 
@@ -921,16 +920,16 @@ Code | Name | Variable Count |
 🆔 B17017_007E: Income in the past 12 months below poverty level: Family households: Married-couple family: Householder 45 to 64 years; 
 🆔 B17017_008E: Income in the past 12 months below poverty level: Family households: Married-couple family: Householder 65 years and over; 
 🆔 B17017_009E: Income in the past 12 months below poverty level: Family households: Other family; 
-🆔 B17017_010E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no spouse present; 
-🆔 B17017_011E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no spouse present: Householder under 25 years; 
-🆔 B17017_012E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no spouse present: Householder 25 to 44 years; 
-🆔 B17017_013E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no spouse present: Householder 45 to 64 years; 
-🆔 B17017_014E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no spouse present: Householder 65 years and over; 
-🆔 B17017_015E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no spouse present; 
-🆔 B17017_016E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no spouse present: Householder under 25 years; 
-🆔 B17017_017E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no spouse present: Householder 25 to 44 years; 
-🆔 B17017_018E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no spouse present: Householder 45 to 64 years; 
-🆔 B17017_019E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no spouse present: Householder 65 years and over; 
+🆔 B17017_010E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no wife present; 
+🆔 B17017_011E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no wife present: Householder under 25 years; 
+🆔 B17017_012E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no wife present: Householder 25 to 44 years; 
+🆔 B17017_013E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no wife present: Householder 45 to 64 years; 
+🆔 B17017_014E: Income in the past 12 months below poverty level: Family households: Other family: Male householder no wife present: Householder 65 years and over; 
+🆔 B17017_015E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no husband present; 
+🆔 B17017_016E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no husband present: Householder under 25 years; 
+🆔 B17017_017E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no husband present: Householder 25 to 44 years; 
+🆔 B17017_018E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no husband present: Householder 45 to 64 years; 
+🆔 B17017_019E: Income in the past 12 months below poverty level: Family households: Other family: Female householder no husband present: Householder 65 years and over; 
 🆔 B17017_020E: Income in the past 12 months below poverty level: Non-family households; 
 🆔 B17017_021E: Income in the past 12 months below poverty level: Non-family households: Male householder; 
 🆔 B17017_022E: Income in the past 12 months below poverty level: Non-family households: Male householder: Householder under 25 years; 
@@ -950,16 +949,16 @@ Code | Name | Variable Count |
 🆔 B17017_036E: Income in the past 12 months at or above poverty level: Family households: Married-couple family: Householder 45 to 64 years; 
 🆔 B17017_037E: Income in the past 12 months at or above poverty level: Family households: Married-couple family: Householder 65 years and over; 
 🆔 B17017_038E: Income in the past 12 months at or above poverty level: Family households: Other family; 
-🆔 B17017_039E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no spouse present; 
-🆔 B17017_040E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no spouse present: Householder under 25 years; 
-🆔 B17017_041E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no spouse present: Householder 25 to 44 years; 
-🆔 B17017_042E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no spouse present: Householder 45 to 64 years; 
-🆔 B17017_043E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no spouse present: Householder 65 years and over; 
-🆔 B17017_044E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no spouse present; 
-🆔 B17017_045E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no spouse present: Householder under 25 years; 
-🆔 B17017_046E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no spouse present: Householder 25 to 44 years; 
-🆔 B17017_047E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no spouse present: Householder 45 to 64 years; 
-🆔 B17017_048E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no spouse present: Householder 65 years and over; 
+🆔 B17017_039E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no wife present; 
+🆔 B17017_040E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no wife present: Householder under 25 years; 
+🆔 B17017_041E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no wife present: Householder 25 to 44 years; 
+🆔 B17017_042E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no wife present: Householder 45 to 64 years; 
+🆔 B17017_043E: Income in the past 12 months at or above poverty level: Family households: Other family: Male householder no wife present: Householder 65 years and over; 
+🆔 B17017_044E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no husband present; 
+🆔 B17017_045E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no husband present: Householder under 25 years; 
+🆔 B17017_046E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no husband present: Householder 25 to 44 years; 
+🆔 B17017_047E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no husband present: Householder 45 to 64 years; 
+🆔 B17017_048E: Income in the past 12 months at or above poverty level: Family households: Other family: Female householder no husband present: Householder 65 years and over; 
 🆔 B17017_049E: Income in the past 12 months at or above poverty level: Non-family households; 
 🆔 B17017_050E: Income in the past 12 months at or above poverty level: Non-family households: Male householder; 
 🆔 B17017_051E: Income in the past 12 months at or above poverty level: Non-family households: Male householder: Householder under 25 years; 
@@ -973,70 +972,70 @@ Code | Name | Variable Count |
 🆔 B17017_059E: Income in the past 12 months at or above poverty level: Non-family households: Female householder: Householder 65 years and over; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E20: Poverty Status by Family (41 variables)
 
 > 🆔 B17010_001E: All Families; 
 🆔 B17010_002E: Income in the past 12 months below poverty level; 
 🆔 B17010_003E: Income in the past 12 months below poverty level: Married-couple family; 
-🆔 B17010_004E: Income in the past 12 months below poverty level: Married-couple family: With related children of the householder under 18 years; 
-🆔 B17010_005E: Income in the past 12 months below poverty level: Married-couple family: With related children of the householder under 18 years: Under 5 years only; 
-🆔 B17010_006E: Income in the past 12 months below poverty level: Married-couple family: With related children of the householder under 18 years: Under 5 years and 5 to 17 years; 
-🆔 B17010_007E: Income in the past 12 months below poverty level: Married-couple family: With related children of the householder under 18 years: 5 to 17 years only; 
-🆔 B17010_008E: Income in the past 12 months below poverty level: Married-couple family: No related children of the householder under 18 years; 
+🆔 B17010_004E: Income in the past 12 months below poverty level: Married-couple family: With related children under 18 years; 
+🆔 B17010_005E: Income in the past 12 months below poverty level: Married-couple family: With related children under 18 years: Under 5 years only; 
+🆔 B17010_006E: Income in the past 12 months below poverty level: Married-couple family: With related children under 18 years: Under 5 years and 5 to 17 years; 
+🆔 B17010_007E: Income in the past 12 months below poverty level: Married-couple family: With related children under 18 years: 5 to 17 years only; 
+🆔 B17010_008E: Income in the past 12 months below poverty level: Married-couple family: No related children under 18 years; 
 🆔 B17010_009E: Income in the past 12 months below poverty level: Other family; 
-🆔 B17010_010E: Income in the past 12 months below poverty level: Other family: Male householder no spouse present; 
-🆔 B17010_011E: Income in the past 12 months below poverty level: Other family: Male householder no spouse present: With related children of the householder under 18 years; 
-🆔 B17010_012E: Income in the past 12 months below poverty level: Other family: Male householder no spouse present: With related children of the householder under 18 years: Under 5 years only; 
-🆔 B17010_013E: Income in the past 12 months below poverty level: Other family: Male householder no spouse present: With related children of the householder under 18 years: Under 5 years and 5 to 17 years; 
-🆔 B17010_014E: Income in the past 12 months below poverty level: Other family: Male householder no spouse present: With related children of the householder under 18 years: 5 to 17 years only; 
-🆔 B17010_015E: Income in the past 12 months below poverty level: Other family: Male householder no spouse present: No related children of the householder under 18 years; 
-🆔 B17010_016E: Income in the past 12 months below poverty level: Other family: Female householder no spouse present; 
-🆔 B17010_017E: Income in the past 12 months below poverty level: Other family: Female householder no spouse present: With related children of the householder under 18 years; 
-🆔 B17010_018E: Income in the past 12 months below poverty level: Other family: Female householder no spouse present: With related children of the householder under 18 years: Under 5 years only; 
-🆔 B17010_019E: Income in the past 12 months below poverty level: Other family: Female householder no spouse present: With related children of the householder under 18 years: Under 5 years and 5 to 17 years; 
-🆔 B17010_020E: Income in the past 12 months below poverty level: Other family: Female householder no spouse present: With related children of the householder under 18 years: 5 to 17 years only; 
-🆔 B17010_021E: Income in the past 12 months below poverty level: Other family: Female householder no spouse present: No related children of the householder under 18 years; 
+🆔 B17010_010E: Income in the past 12 months below poverty level: Other family: Male householder no wife present; 
+🆔 B17010_011E: Income in the past 12 months below poverty level: Other family: Male householder no wife present: With related children under 18 years; 
+🆔 B17010_012E: Income in the past 12 months below poverty level: Other family: Male householder no wife present: With related children under 18 years: Under 5 years only; 
+🆔 B17010_013E: Income in the past 12 months below poverty level: Other family: Male householder no wife present: With related children under 18 years: Under 5 years and 5 to 17 years; 
+🆔 B17010_014E: Income in the past 12 months below poverty level: Other family: Male householder no wife present: With related children under 18 years: 5 to 17 years only; 
+🆔 B17010_015E: Income in the past 12 months below poverty level: Other family: Male householder no wife present: No related children under 18 years; 
+🆔 B17010_016E: Income in the past 12 months below poverty level: Other family: Female householder no husband present; 
+🆔 B17010_017E: Income in the past 12 months below poverty level: Other family: Female householder no husband present: With related children under 18 years; 
+🆔 B17010_018E: Income in the past 12 months below poverty level: Other family: Female householder no husband present: With related children under 18 years: Under 5 years only; 
+🆔 B17010_019E: Income in the past 12 months below poverty level: Other family: Female householder no husband present: With related children under 18 years: Under 5 years and 5 to 17 years; 
+🆔 B17010_020E: Income in the past 12 months below poverty level: Other family: Female householder no husband present: With related children under 18 years: 5 to 17 years only; 
+🆔 B17010_021E: Income in the past 12 months below poverty level: Other family: Female householder no husband present: No related children under 18 years; 
 🆔 B17010_022E: Income in the past 12 months at or above poverty level; 
 🆔 B17010_023E: Income in the past 12 months at or above poverty level: Married-couple family; 
-🆔 B17010_024E: Income in the past 12 months at or above poverty level: Married-couple family: With related children of the householder under 18 years; 
-🆔 B17010_025E: Income in the past 12 months at or above poverty level: Married-couple family: With related children of the householder under 18 years: Under 5 years only; 
-🆔 B17010_026E: Income in the past 12 months at or above poverty level: Married-couple family: With related children of the householder under 18 years: Under 5 years and 5 to 17 years; 
-🆔 B17010_027E: Income in the past 12 months at or above poverty level: Married-couple family: With related children of the householder under 18 years: 5 to 17 years only; 
-🆔 B17010_028E: Income in the past 12 months at or above poverty level: Married-couple family: No related children of the householder under 18 years; 
+🆔 B17010_024E: Income in the past 12 months at or above poverty level: Married-couple family: With related children under 18 years; 
+🆔 B17010_025E: Income in the past 12 months at or above poverty level: Married-couple family: With related children under 18 years: Under 5 years only; 
+🆔 B17010_026E: Income in the past 12 months at or above poverty level: Married-couple family: With related children under 18 years: Under 5 years and 5 to 17 years; 
+🆔 B17010_027E: Income in the past 12 months at or above poverty level: Married-couple family: With related children under 18 years: 5 to 17 years only; 
+🆔 B17010_028E: Income in the past 12 months at or above poverty level: Married-couple family: No related children under 18 years; 
 🆔 B17010_029E: Income in the past 12 months at or above poverty level: Other family; 
-🆔 B17010_030E: Income in the past 12 months at or above poverty level: Other family: Male householder no spouse present; 
-🆔 B17010_031E: Income in the past 12 months at or above poverty level: Other family: Male householder no spouse present: With related children of the householder under 18 years; 
-🆔 B17010_032E: Income in the past 12 months at or above poverty level: Other family: Male householder no spouse present: With related children of the householder under 18 years: Under 5 years only; 
-🆔 B17010_033E: Income in the past 12 months at or above poverty level: Other family: Male householder no spouse present: With related children of the householder under 18 years: Under 5 years and 5 to 17 years; 
-🆔 B17010_034E: Income in the past 12 months at or above poverty level: Other family: Male householder no spouse present: With related children of the householder under 18 years: 5 to 17 years only; 
-🆔 B17010_035E: Income in the past 12 months at or above poverty level: Other family: Male householder no spouse present: No related children of the householder under 18 years; 
-🆔 B17010_036E: Income in the past 12 months at or above poverty level: Other family: Female householder no spouse present; 
-🆔 B17010_037E: Income in the past 12 months at or above poverty level: Other family: Female householder no spouse present: With related children of the householder under 18 years; 
-🆔 B17010_038E: Income in the past 12 months at or above poverty level: Other family: Female householder no spouse present: With related children of the householder under 18 years: Under 5 years only; 
-🆔 B17010_039E: Income in the past 12 months at or above poverty level: Other family: Female householder no spouse present: With related children of the householder under 18 years: Under 5 years and 5 to 17 years; 
-🆔 B17010_040E: Income in the past 12 months at or above poverty level: Other family: Female householder no spouse present: With related children of the householder under 18 years: 5 to 17 years only; 
-🆔 B17010_041E: Income in the past 12 months at or above poverty level: Other family: Female householder no spouse present: No related children of the householder under 18 years; 
+🆔 B17010_030E: Income in the past 12 months at or above poverty level: Other family: Male householder no wife present; 
+🆔 B17010_031E: Income in the past 12 months at or above poverty level: Other family: Male householder no wife present: With related children under 18 years; 
+🆔 B17010_032E: Income in the past 12 months at or above poverty level: Other family: Male householder no wife present: With related children under 18 years: Under 5 years only; 
+🆔 B17010_033E: Income in the past 12 months at or above poverty level: Other family: Male householder no wife present: With related children under 18 years: Under 5 years and 5 to 17 years; 
+🆔 B17010_034E: Income in the past 12 months at or above poverty level: Other family: Male householder no wife present: With related children under 18 years: 5 to 17 years only; 
+🆔 B17010_035E: Income in the past 12 months at or above poverty level: Other family: Male householder no wife present: No related children under 18 years; 
+🆔 B17010_036E: Income in the past 12 months at or above poverty level: Other family: Female householder no husband present; 
+🆔 B17010_037E: Income in the past 12 months at or above poverty level: Other family: Female householder no husband present: With related children under 18 years; 
+🆔 B17010_038E: Income in the past 12 months at or above poverty level: Other family: Female householder no husband present: With related children under 18 years: Under 5 years only; 
+🆔 B17010_039E: Income in the past 12 months at or above poverty level: Other family: Female householder no husband present: With related children under 18 years: Under 5 years and 5 to 17 years; 
+🆔 B17010_040E: Income in the past 12 months at or above poverty level: Other family: Female householder no husband present: With related children under 18 years: 5 to 17 years only; 
+🆔 B17010_041E: Income in the past 12 months at or above poverty level: Other family: Female householder no husband present: No related children under 18 years; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E21: Aggregate Income Deficit in Dollars for Families (5 variables)
 
 > 🆔 B17011_001E: Aggregate income deficit in the past 12 months; 
 🆔 B17011_002E: Aggregate income deficit in the past 12 months: Married-couple family; 
 🆔 B17011_003E: Aggregate income deficit in the past 12 months: Other family; 
-🆔 B17011_004E: Aggregate income deficit in the past 12 months: Other family: Male householder no spouse present; 
-🆔 B17011_005E: Aggregate income deficit in the past 12 months: Other family: Female householder no spouse present; 
+🆔 B17011_004E: Aggregate income deficit in the past 12 months: Other family: Male householder no wife present; 
+🆔 B17011_005E: Aggregate income deficit in the past 12 months: Other family: Female householder no husband present; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 
 
 
-## 📚 Housing Characteristics (26 sections, 449 variables)
+## 📚 Housing Characteristics (26 sections, 427 variables)
 
 The demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.
 
@@ -1046,7 +1045,7 @@ Code | Name | Variable Count |
 | [H02](#️-h02-housing-tenure-3-variables) | Housing Tenure | 3 |
 | [H03](#️-h03-units-in-structure-11-variables) | Units in Structure | 11 |
 | [H04](#️-h04-population-in-occupied-housing-units-by-tenure-13-variables) | Population in Occupied Housing Units by Tenure | 13 |
-| [H05](#️-h05-year-structure-built-12-variables) | Year Structure Built | 12 |
+| [H05](#️-h05-year-structure-built-11-variables) | Year Structure Built | 11 |
 | [H06](#️-h06-rooms-12-variables) | Rooms | 12 |
 | [H07](#️-h07-bedrooms-19-variables) | Bedrooms | 19 |
 | [H08](#️-h08-housing-tenure-by-householder-race-28-variables) | Housing Tenure by Householder Race | 28 |
@@ -1060,13 +1059,13 @@ Code | Name | Variable Count |
 | [H16](#️-h16-house-heating-fuel-10-variables) | House Heating Fuel | 10 |
 | [H17](#️-h17-selected-characteristics-20-variables) | Selected Characteristics | 20 |
 | [H18](#️-h18-occupants-per-room-13-variables) | Occupants per Room | 13 |
-| [H19](#️-h19-housing-value-34-variables) | Housing Value | 34 |
-| [H20](#️-h20-price-asked-28-variables) | Price Asked | 28 |
-| [H21](#️-h21-mortgage-status-10-variables) | Mortgage Status | 10 |
-| [H22](#️-h22-selected-monthly-owner-costs-48-variables) | Selected Monthly Owner Costs | 48 |
+| [H19](#️-h19-housing-value-32-variables) | Housing Value | 32 |
+| [H20](#️-h20-price-asked-26-variables) | Price Asked | 26 |
+| [H21](#️-h21-mortgage-status-9-variables) | Mortgage Status | 9 |
+| [H22](#️-h22-selected-monthly-owner-costs-38-variables) | Selected Monthly Owner Costs | 38 |
 | [H23](#️-h23-selected-monthly-owner-costs-as-percentage-of-household-income-26-variables) | Selected Monthly Owner Costs as Percentage of Household Income | 26 |
-| [H24](#️-h24-contract-rent-distribution-31-variables) | Contract Rent Distribution | 31 |
-| [H25](#️-h25-gross-rent-38-variables) | Gross Rent | 38 |
+| [H24](#️-h24-contract-rent-distribution-28-variables) | Contract Rent Distribution | 28 |
+| [H25](#️-h25-gross-rent-35-variables) | Gross Rent | 35 |
 | [H26](#️-h26-gross-rent-percentage-of-household-income-12-variables) | Gross Rent Percentage of Household Income | 12 |
 
 
@@ -1079,7 +1078,7 @@ Code | Name | Variable Count |
 🆔 B25002_003E: Vacant; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H02: Housing Tenure (3 variables)
 
@@ -1088,7 +1087,7 @@ Code | Name | Variable Count |
 🆔 B25003_003E: Renter occupied; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H03: Units in Structure (11 variables)
 
@@ -1105,7 +1104,7 @@ Code | Name | Variable Count |
 🆔 B25024_011E: Boat RV van etc; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H04: Population in Occupied Housing Units by Tenure (13 variables)
 
@@ -1124,25 +1123,24 @@ Code | Name | Variable Count |
 🆔 B25033_013E: Renter occupied: Boat RV van etc; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
-### 🏷️ H05: Year Structure Built (12 variables)
+### 🏷️ H05: Year Structure Built (11 variables)
 
 > 🆔 B25034_001E: Total; 
-🆔 B25034_002E: Built 2020 or later; 
-🆔 B25034_003E: Built 2010 to 2019; 
-🆔 B25034_004E: Built 2000 to 2009; 
-🆔 B25034_005E: Built 1990 to 1999; 
-🆔 B25034_006E: Built 1980 to 1989; 
-🆔 B25034_007E: Built 1970 to 1979; 
-🆔 B25034_008E: Built 1960 to 1969; 
-🆔 B25034_009E: Built 1950 to 1959; 
-🆔 B25034_010E: Built 1940 to 1949; 
-🆔 B25034_011E: Built 1939 or earlier; 
+🆔 B25034_002E: Built 2010 or later; 
+🆔 B25034_003E: Built 2000 to 2009; 
+🆔 B25034_004E: Built 1990 to 1999; 
+🆔 B25034_005E: Built 1980 to 1989; 
+🆔 B25034_006E: Built 1970 to 1979; 
+🆔 B25034_007E: Built 1960 to 1969; 
+🆔 B25034_008E: Built 1950 to 1959; 
+🆔 B25034_009E: Built 1940 to 1949; 
+🆔 B25034_010E: Built 1939 or earlier; 
 🆔 B25035_001E: Median year structure built; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H06: Rooms (12 variables)
 
@@ -1160,7 +1158,7 @@ Code | Name | Variable Count |
 🆔 B25019_001E: Aggregate number of rooms; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H07: Bedrooms (19 variables)
 
@@ -1185,7 +1183,7 @@ Code | Name | Variable Count |
 🆔 B25042_015E: Renter occupied: 5 or more bedrooms; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H08: Housing Tenure by Householder Race (28 variables)
 
@@ -1219,7 +1217,7 @@ Code | Name | Variable Count |
 🆔 B25003I_003E: Renter occupied: Hispanic or Latino householder; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H09: Housing Tenure by Householder Age (21 variables)
 
@@ -1246,7 +1244,7 @@ Code | Name | Variable Count |
 🆔 B25007_021E: Renter occupied: Householder 85 years and over; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H10: Average Household Size of Occupied Housing Units (3 variables)
 
@@ -1255,7 +1253,7 @@ Code | Name | Variable Count |
 🆔 B25010_003E: Average household size: Renter occupied; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H11: Population in Occupied Housing Units by Tenure (3 variables)
 
@@ -1264,7 +1262,7 @@ Code | Name | Variable Count |
 🆔 B25008_003E: Renter occupied; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H12: Vacancy Status (8 variables)
 
@@ -1278,7 +1276,7 @@ Code | Name | Variable Count |
 🆔 B25004_008E: Other vacant; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H13: Race of Householder (10 variables)
 
@@ -1294,31 +1292,31 @@ Code | Name | Variable Count |
 🆔 B25006_010E: Householder who is Two or more races: Householder who is Two races excluding Some other race and three or more races; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H14: Year Householder Moved into Unit (18 variables)
 
 > 🆔 B25038_001E: Occupied Housing Units; 
 🆔 B25038_002E: Owner occupied; 
-🆔 B25038_003E: Owner occupied: Moved in 2023 or later; 
-🆔 B25038_004E: Owner occupied: Moved in 2020 to 2022; 
-🆔 B25038_005E: Owner occupied: Moved in 2010 to 2019; 
-🆔 B25038_006E: Owner occupied: Moved in 2000 to 2009; 
-🆔 B25038_007E: Owner occupied: Moved in 1990 to 1999; 
-🆔 B25038_008E: Owner occupied: Moved in 1989 or earlier; 
+🆔 B25038_003E: Owner occupied: Moved in 2010 or later; 
+🆔 B25038_004E: Owner occupied: Moved in 2000 to 2009; 
+🆔 B25038_005E: Owner occupied: Moved in 1990 to 1999; 
+🆔 B25038_006E: Owner occupied: Moved in 1980 to 1989; 
+🆔 B25038_007E: Owner occupied: Moved in 1970 to 1979; 
+🆔 B25038_008E: Owner occupied: Moved in 1969 or earlier; 
 🆔 B25038_009E: Renter occupied; 
-🆔 B25038_010E: Renter occupied: Moved in 2023 or later; 
-🆔 B25038_011E: Renter occupied: Moved in 2020 to 2022; 
-🆔 B25038_012E: Renter occupied: Moved in 2010 to 2019; 
-🆔 B25038_013E: Renter occupied: Moved in 2000 to 2009; 
-🆔 B25038_014E: Renter occupied: Moved in 1990 to 1999; 
-🆔 B25038_015E: Renter occupied: Moved in 1989 or earlier; 
+🆔 B25038_010E: Renter occupied: Moved in 2010 or later; 
+🆔 B25038_011E: Renter occupied: Moved in 2000 to 2009; 
+🆔 B25038_012E: Renter occupied: Moved in 1990 to 1999; 
+🆔 B25038_013E: Renter occupied: Moved in 1980 to 1989; 
+🆔 B25038_014E: Renter occupied: Moved in 1970 to 1979; 
+🆔 B25038_015E: Renter occupied: Moved in 1969 or earlier; 
 🆔 B25039_001E: Median year householder moved into unit: Total; 
 🆔 B25039_002E: Median year householder moved into unit: Owner occupied; 
 🆔 B25039_003E: Median year householder moved into unit: Renter occupied; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H15: Vehicles Available (15 variables)
 
@@ -1339,13 +1337,13 @@ Code | Name | Variable Count |
 🆔 B25044_015E: Renter occupied: 5 or more vehicles available; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H16: House Heating Fuel (10 variables)
 
 > 🆔 B25040_001E: Occupied Housing Units; 
 🆔 B25040_002E: Utility gas; 
-🆔 B25040_003E: Bottled or tank gas propane butane etc; 
+🆔 B25040_003E: Bottled tank or LP gas; 
 🆔 B25040_004E: Electricity; 
 🆔 B25040_005E: Fuel oil kerosene etc; 
 🆔 B25040_006E: Coal or coke; 
@@ -1355,7 +1353,7 @@ Code | Name | Variable Count |
 🆔 B25040_010E: No fuel used; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H17: Selected Characteristics (20 variables)
 
@@ -1381,7 +1379,7 @@ Code | Name | Variable Count |
 🆔 B25053_007E: Renter occupied: Lacking complete kitchen facilities; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H18: Occupants per Room (13 variables)
 
@@ -1400,9 +1398,9 @@ Code | Name | Variable Count |
 🆔 B25014_013E: Renter occupied: 2.01 or more occupants per room; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
-### 🏷️ H19: Housing Value (34 variables)
+### 🏷️ H19: Housing Value (32 variables)
 
 > 🆔 B25075_001E: Owner-occupied units; 
 🆔 B25075_002E: Less than $10,000; 
@@ -1428,9 +1426,7 @@ Code | Name | Variable Count |
 🆔 B25075_022E: $400,000 to $499,999; 
 🆔 B25075_023E: $500,000 to $749,999; 
 🆔 B25075_024E: $750,000 to $999,999; 
-🆔 B25075_025E: $1,000,000 to $1,499,999; 
-🆔 B25075_026E: $1,500,000 to $1,999,999; 
-🆔 B25075_027E: $2,000,000 or more; 
+🆔 B25075_025E: $1,000,000 or more; 
 🆔 B25076_001E: Lower value quartile dollars; 
 🆔 B25077_001E: Median value dollars; 
 🆔 B25078_001E: Upper value quartile dollars; 
@@ -1440,9 +1436,9 @@ Code | Name | Variable Count |
 🆔 B25083_001E: Median value dollars for mobile homes; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
-### 🏷️ H20: Price Asked (28 variables)
+### 🏷️ H20: Price Asked (26 variables)
 
 > 🆔 B25085_001E: Total vacant for-sale only and sold, not occupied housing units; 
 🆔 B25085_002E: Less than $10,000; 
@@ -1468,31 +1464,28 @@ Code | Name | Variable Count |
 🆔 B25085_022E: $400,000 to $499,999; 
 🆔 B25085_023E: $500,000 to $749,999; 
 🆔 B25085_024E: $750,000 to $999,999; 
-🆔 B25085_025E: $1,000,000 to $1,499,999; 
-🆔 B25085_026E: $1,500,000 to $1,999,999; 
-🆔 B25085_027E: $2,000,000 or more; 
+🆔 B25085_025E: $1,000,000 or more; 
 🆔 B25086_001E: Aggregate price asked dollars; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
-### 🏷️ H21: Mortgage Status (10 variables)
+### 🏷️ H21: Mortgage Status (9 variables)
 
 > 🆔 B25081_001E: Owner-occupied units; 
 🆔 B25081_002E: Housing units with a mortgage; 
-🆔 B25081_003E: Housing units with a mortgage: Housing units with no second mortgage and no home equity loan; 
-🆔 B25081_004E: Housing units with a mortgage: Housing units with multiple mortgages; 
-🆔 B25081_005E: Housing units with a mortgage: Housing units with multiple mortgages: Mortgage with both second mortgage and home equity loan; 
-🆔 B25081_006E: Housing units with a mortgage: Housing units with multiple mortgages: Mortgage with only home equity loan; 
-🆔 B25081_007E: Housing units with a mortgage: Housing units with multiple mortgages: Mortgage with only second mortgage; 
-🆔 B25081_008E: Housing units with a mortgage: Home equity loan without a primary mortgage; 
-🆔 B25081_009E: Housing units without a mortgage; 
+🆔 B25081_003E: Housing units with a mortgage: With either a second mortgage or home equity loan but not both; 
+🆔 B25081_004E: Housing units with a mortgage: With either a second mortgage or home equity loan but not both: Second mortgage only; 
+🆔 B25081_005E: Housing units with a mortgage: With either a second mortgage or home equity loan but not both: Home equity loan only; 
+🆔 B25081_006E: Housing units with a mortgage: Both second mortgage and home equity loan; 
+🆔 B25081_007E: Housing units with a mortgage: No second mortgage and no home equity loan; 
+🆔 B25081_008E: Housing units without a mortgage; 
 🆔 B25082_001E: Aggregate value dollars; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
-### 🏷️ H22: Selected Monthly Owner Costs (48 variables)
+### 🏷️ H22: Selected Monthly Owner Costs (38 variables)
 
 > 🆔 B25087_001E: Owner-occupied housing units; 
 🆔 B25087_002E: Housing units with a mortgage; 
@@ -1510,29 +1503,19 @@ Code | Name | Variable Count |
 🆔 B25087_014E: Housing units with a mortgage: $1,500 to $1,999; 
 🆔 B25087_015E: Housing units with a mortgage: $2,000 to $2,499; 
 🆔 B25087_016E: Housing units with a mortgage: $2,500 to $2,999; 
-🆔 B25087_017E: Housing units with a mortgage: $3,000 to $3,499; 
-🆔 B25087_018E: Housing units with a mortgage: $3,500 to $3,999; 
-🆔 B25087_019E: Housing units with a mortgage: $4,000 or more; 
-🆔 B25087_020E: Housing units without a mortgage; 
-🆔 B25087_021E: Housing units without a mortgage: Less than $100; 
-🆔 B25087_022E: Housing units without a mortgage: $100 to $149; 
-🆔 B25087_023E: Housing units without a mortgage: $150 to $199; 
-🆔 B25087_024E: Housing units without a mortgage: $200 to $249; 
-🆔 B25087_025E: Housing units without a mortgage: $250 to $299; 
-🆔 B25087_026E: Housing units without a mortgage: $300 to $349; 
-🆔 B25087_027E: Housing units without a mortgage: $350 to $399; 
-🆔 B25087_028E: Housing units without a mortgage: $400 to $499; 
-🆔 B25087_029E: Housing units without a mortgage: $500 to $599; 
-🆔 B25087_030E: Housing units without a mortgage: $600 to $699; 
-🆔 B25087_031E: Housing units without a mortgage: $700 to $799; 
-🆔 B25087_032E: Housing units without a mortgage: $800 to $899; 
-🆔 B25087_033E: Housing units without a mortgage: $900 to $999; 
-🆔 B25087_034E: Housing units without a mortgage: $1,000 to $1,099; 
-🆔 B25087_035E: Housing units without a mortgage: $1,100 to $1,199; 
-🆔 B25087_036E: Housing units without a mortgage: $1,200 to $1,299; 
-🆔 B25087_037E: Housing units without a mortgage: $1,300 to $1,399; 
-🆔 B25087_038E: Housing units without a mortgage: $1,400 to $1,499; 
-🆔 B25087_039E: Housing units without a mortgage: $1,500 or more; 
+🆔 B25087_017E: Housing units with a mortgage: $3,000 or more; 
+🆔 B25087_018E: Housing units without a mortgage; 
+🆔 B25087_019E: Housing units without a mortgage: Less than $100; 
+🆔 B25087_020E: Housing units without a mortgage: $100 to $149; 
+🆔 B25087_021E: Housing units without a mortgage: $150 to $199; 
+🆔 B25087_022E: Housing units without a mortgage: $200 to $249; 
+🆔 B25087_023E: Housing units without a mortgage: $250 to $299; 
+🆔 B25087_024E: Housing units without a mortgage: $300 to $349; 
+🆔 B25087_025E: Housing units without a mortgage: $350 to $399; 
+🆔 B25087_026E: Housing units without a mortgage: $400 to $499; 
+🆔 B25087_027E: Housing units without a mortgage: $500 to $599; 
+🆔 B25087_028E: Housing units without a mortgage: $600 to $699; 
+🆔 B25087_029E: Housing units without a mortgage: $700 or more; 
 🆔 B25088_001E: Median selected monthly owner costs dollars: Total; 
 🆔 B25088_002E: Median selected monthly owner costs dollars: Housing units with a mortgage dollars; 
 🆔 B25088_003E: Median selected monthly owner costs dollars: Housing units without a mortgage dollars; 
@@ -1544,7 +1527,7 @@ Code | Name | Variable Count |
 🆔 B25090_003E: Aggregate real estate taxes paid dollars: Aggregate real estate taxes paid for units without a mortgage dollars; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H23: Selected Monthly Owner Costs as Percentage of Household Income (26 variables)
 
@@ -1576,9 +1559,9 @@ Code | Name | Variable Count |
 🆔 B25092_003E: Median selected monthly owner costs as a percentage of household income in the past 12 months: Housing units without a mortgage; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
-### 🏷️ H24: Contract Rent Distribution (31 variables)
+### 🏷️ H24: Contract Rent Distribution (28 variables)
 
 > 🆔 B25056_001E: Renter-occupied housing units; 
 🆔 B25056_002E: With cash rent; 
@@ -1602,20 +1585,17 @@ Code | Name | Variable Count |
 🆔 B25056_020E: With cash rent: $1,000 to $1,249; 
 🆔 B25056_021E: With cash rent: $1,250 to $1,499; 
 🆔 B25056_022E: With cash rent: $1,500 to $1,999; 
-🆔 B25056_023E: With cash rent: $2,000 to $2,499; 
-🆔 B25056_024E: With cash rent: $2,500 to $2,999; 
-🆔 B25056_025E: With cash rent: $3,000 to $3,499; 
-🆔 B25056_026E: With cash rent: $3,500 or more; 
-🆔 B25056_027E: No cash rent; 
+🆔 B25056_023E: With cash rent: $2,000 or more; 
+🆔 B25056_024E: No cash rent; 
 🆔 B25057_001E: Lower contract rent quartile; 
 🆔 B25058_001E: Median contract rent; 
 🆔 B25059_001E: Upper contract rent quartile; 
 🆔 B25060_001E: Aggregate contract rent; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
-### 🏷️ H25: Gross Rent (38 variables)
+### 🏷️ H25: Gross Rent (35 variables)
 
 > 🆔 B25063_001E: Occupied units paying rent; 
 🆔 B25063_002E: With cash rent; 
@@ -1639,11 +1619,8 @@ Code | Name | Variable Count |
 🆔 B25063_020E: With cash rent: $1,000 to $1,249; 
 🆔 B25063_021E: With cash rent: $1,250 to $1,499; 
 🆔 B25063_022E: With cash rent: $1,500 to $1,999; 
-🆔 B25063_023E: With cash rent: $2,000 to $2,499; 
-🆔 B25063_024E: With cash rent: $2,500 to $2,999; 
-🆔 B25063_025E: With cash rent: $3,000 to $3,499; 
-🆔 B25063_026E: With cash rent: $3,500 or more; 
-🆔 B25063_027E: No cash rent; 
+🆔 B25063_023E: With cash rent: $2,000 or more; 
+🆔 B25063_024E: No cash rent; 
 🆔 B25064_001E: Median gross rent; 
 🆔 B25065_001E: Aggregate gross rent; 
 🆔 B25066_002E: Aggregate gross rent: 1 detached or attached unit; 
@@ -1657,7 +1634,7 @@ Code | Name | Variable Count |
 🆔 B25067_003E: Aggregate gross rent: No meals included in rent; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 ### 🏷️ H26: Gross Rent Percentage of Household Income (12 variables)
 
@@ -1675,12 +1652,12 @@ Code | Name | Variable Count |
 🆔 B25071_001E: Median gross rent as a percentage of household income; 
 
 
-[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-449-variables)
+[<div align="right"><< Back to Sections</div>](#-housing-characteristics-26-sections-427-variables)
 
 
 
 
-## 📚 Social Characteristics (27 sections, 700 variables)
+## 📚 Social Characteristics (22 sections, 651 variables)
 
 The demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.
 
@@ -1688,7 +1665,7 @@ Code | Name | Variable Count |
 | --- | --- | --- |
 | [S01](#️-s01-households-by-type-9-variables) | Households by Type | 9 |
 | [S02](#️-s02-families-by-type-20-variables) | Families by Type | 20 |
-| [S03](#️-s03-household-relationships-25-variables) | Household Relationships | 25 |
+| [S03](#️-s03-household-relationships-37-variables) | Household Relationships | 37 |
 | [S04](#️-s04-marital-status-19-variables) | Marital Status | 19 |
 | [S05](#️-s05-fertility-characteristics-19-variables) | Fertility Characteristics | 19 |
 | [S06](#️-s06-grandparent-relationships-22-variables) | Grandparent Relationships | 22 |
@@ -1700,18 +1677,13 @@ Code | Name | Variable Count |
 | [S12](#️-s12-disability-status-and-health-insurance-coverage-30-variables) | Disability Status and Health Insurance Coverage | 30 |
 | [S13](#️-s13-food-stamps-households-10-variables) | Food Stamps Households | 10 |
 | [S14](#️-s14-residence-1-year-ago-5-variables) | Residence 1 year ago | 5 |
-| [S15](#️-s15-place-of-birth-27-variables) | Place of Birth | 27 |
+| [S15](#️-s15-place-of-birth-15-variables) | Place of Birth | 15 |
 | [S16](#️-s16-citizenship-status-5-variables) | Citizenship Status | 5 |
 | [S17](#️-s17-citizenship-status-by-year-of-entry-21-variables) | Citizenship Status by Year of Entry | 21 |
 | [S18](#️-s18-world-region-of-birth-of-foreign-born-population-25-variables) | World Region of Birth of Foreign Born Population | 25 |
-| [S19](#️-s19-language-spoken-in-households-13-variables) | Language Spoken in Households | 13 |
 | [S20](#️-s20-language-spoken-at-home-67-variables) | Language Spoken at Home | 67 |
 | [S21](#️-s21-ancestry-6-variables) | Ancestry | 6 |
 | [S22](#️-s22-people-reporting-ancestry-109-variables) | People Reporting Ancestry | 109 |
-| [S23](#️-s23-types-of-computers-in-household-11-variables) | Types of Computers in Household | 11 |
-| [S24](#️-s24-computers-and-internet-use-10-variables) | Computers and Internet Use | 10 |
-| [S25](#️-s25-computers-in-household-7-variables) | Computers in Household | 7 |
-| [S26](#️-s26-subscriptions-in-household-8-variables) | Subscriptions in Household | 8 |
 | [S27](#️-s27-geographical-mobility-19-variables) | Geographical Mobility | 19 |
 
 
@@ -1723,71 +1695,83 @@ Code | Name | Variable Count |
 🆔 B11001_002E: Family households; 
 🆔 B11001_003E: Family households: Married-couple family; 
 🆔 B11001_004E: Family households: Other family; 
-🆔 B11001_005E: Family households: Other family: Male householder no spouse present; 
-🆔 B11001_006E: Family households: Other family: Female householder no spouse present; 
+🆔 B11001_005E: Family households: Other family: Male householder no wife present; 
+🆔 B11001_006E: Family households: Other family: Female householder no husband present; 
 🆔 B11001_007E: Non-family households; 
 🆔 B11001_008E: Non-family households: Householder living alone; 
 🆔 B11001_009E: Non-family households: Householder not living alone; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S02: Families by Type (20 variables)
 
 > 🆔 B11003_001E: Total Families; 
 🆔 B11003_002E: Married-couple family; 
-🆔 B11003_003E: Married-couple family: With own children of the householder under 18 years; 
-🆔 B11003_004E: Married-couple family: With own children of the householder under 18 years: Under 6 years only; 
-🆔 B11003_005E: Married-couple family: With own children of the householder under 18 years: Under 6 years and 6 to 17 years; 
-🆔 B11003_006E: Married-couple family: With own children of the householder under 18 years: 6 to 17 years only; 
-🆔 B11003_007E: Married-couple family: No own children of the householder under 18 years; 
+🆔 B11003_003E: Married-couple family: With own children under 18 years; 
+🆔 B11003_004E: Married-couple family: With own children under 18 years: Under 6 years only; 
+🆔 B11003_005E: Married-couple family: With own children under 18 years: Under 6 years and 6 to 17 years; 
+🆔 B11003_006E: Married-couple family: With own children under 18 years: 6 to 17 years only; 
+🆔 B11003_007E: Married-couple family: No own children under 18 years; 
 🆔 B11003_008E: Other family; 
-🆔 B11003_009E: Other family: Male householder no spouse present; 
-🆔 B11003_010E: Other family: Male householder no spouse present: With own children of the householder under 18 years; 
-🆔 B11003_011E: Other family: Male householder no spouse present: With own children of the householder under 18 years: Under 6 years only; 
-🆔 B11003_012E: Other family: Male householder no spouse present: With own children of the householder under 18 years: Under 6 years and 6 to 17 years; 
-🆔 B11003_013E: Other family: Male householder no spouse present: With own children of the householder under 18 years: 6 to 17 years only; 
-🆔 B11003_014E: Other family: Male householder no spouse present: No own children of the householder under 18 years; 
-🆔 B11003_015E: Other family: Female householder no spouse present; 
-🆔 B11003_016E: Other family: Female householder no spouse present: With own children of the householder under 18 years; 
-🆔 B11003_017E: Other family: Female householder no spouse present: With own children of the householder under 18 years: Under 6 years only; 
-🆔 B11003_018E: Other family: Female householder no spouse present: With own children of the householder under 18 years: Under 6 years and 6 to 17 years; 
-🆔 B11003_019E: Other family: Female householder no spouse present: With own children of the householder under 18 years: 6 to 17 years only; 
-🆔 B11003_020E: Other family: Female householder no spouse present: No own children of the householder under 18 years; 
+🆔 B11003_009E: Other family: Male householder no wife present; 
+🆔 B11003_010E: Other family: Male householder no wife present: With own children under 18 years; 
+🆔 B11003_011E: Other family: Male householder no wife present: With own children under 18 years: Under 6 years only; 
+🆔 B11003_012E: Other family: Male householder no wife present: With own children under 18 years: Under 6 years and 6 to 17 years; 
+🆔 B11003_013E: Other family: Male householder no wife present: With own children under 18 years: 6 to 17 years only; 
+🆔 B11003_014E: Other family: Male householder no wife present: No own children under 18 years; 
+🆔 B11003_015E: Other family: Female householder no husband present; 
+🆔 B11003_016E: Other family: Female householder no husband present: With own children under 18 years; 
+🆔 B11003_017E: Other family: Female householder no husband present: With own children under 18 years: Under 6 years only; 
+🆔 B11003_018E: Other family: Female householder no husband present: With own children under 18 years: Under 6 years and 6 to 17 years; 
+🆔 B11003_019E: Other family: Female householder no husband present: With own children under 18 years: 6 to 17 years only; 
+🆔 B11003_020E: Other family: Female householder no husband present: No own children under 18 years; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
-### 🏷️ S03: Household Relationships (25 variables)
+### 🏷️ S03: Household Relationships (37 variables)
 
 > 🆔 B09019_002E: Population in Households; 
-🆔 B09019_003E: In households: Householder; 
-🆔 B09019_004E: In households: Householder: Male; 
-🆔 B09019_005E: In households: Householder: Male: Living alone; 
-🆔 B09019_006E: In households: Householder: Male: Not living alone; 
-🆔 B09019_007E: In households: Householder: Female; 
-🆔 B09019_008E: In households: Householder: Female: Living alone; 
-🆔 B09019_009E: In households: Householder: Female: Not living alone; 
-🆔 B09019_010E: In households: Opposite-sex spouse; 
-🆔 B09019_011E: In households: Same-sex spouse; 
-🆔 B09019_012E: In households: Opposite-sex unmarried partner; 
-🆔 B09019_013E: In households: Same-sex unmarried partner; 
-🆔 B09019_014E: In households: Child; 
-🆔 B09019_015E: In households: Child: Biological child; 
-🆔 B09019_016E: In households: Child: Adopted child; 
-🆔 B09019_017E: In households: Child: Stepchild; 
-🆔 B09019_018E: In households: Grandchild; 
-🆔 B09019_019E: In households: Brother or sister; 
-🆔 B09019_020E: In households: Parent; 
-🆔 B09019_021E: In households: Parent-in-law; 
-🆔 B09019_022E: In households: Son-in-law or daughter-in-law; 
-🆔 B09019_023E: In households: Other relatives; 
-🆔 B09019_024E: In households: Foster child; 
-🆔 B09019_025E: In households: Other Non-relatives; 
-🆔 B09019_026E: In group quarters; 
+🆔 B09019_003E: In households: In family households; 
+🆔 B09019_004E: In households: In family households: Householder; 
+🆔 B09019_005E: In households: In family households: Householder: Male; 
+🆔 B09019_006E: In households: In family households: Householder: Female; 
+🆔 B09019_007E: In households: In family households: Spouse; 
+🆔 B09019_008E: In households: In family households: Child; 
+🆔 B09019_009E: In households: In family households: Child: Biological child; 
+🆔 B09019_010E: In households: In family households: Child: Adopted child; 
+🆔 B09019_011E: In households: In family households: Child: Stepchild; 
+🆔 B09019_012E: In households: In family households: Grandchild; 
+🆔 B09019_013E: In households: In family households: Brother or sister; 
+🆔 B09019_014E: In households: In family households: Parent; 
+🆔 B09019_015E: In households: In family households: Parent-in-law; 
+🆔 B09019_016E: In households: In family households: Son-in-law or daughter-in-law; 
+🆔 B09019_017E: In households: In family households: Other relatives; 
+🆔 B09019_018E: In households: In family households: Non-relatives; 
+🆔 B09019_019E: In households: In family households: Non-relatives: Roomer or boarder; 
+🆔 B09019_020E: In households: In family households: Non-relatives: Housemate or roommate; 
+🆔 B09019_021E: In households: In family households: Non-relatives: Unmarried partner; 
+🆔 B09019_022E: In households: In family households: Non-relatives: Foster child; 
+🆔 B09019_023E: In households: In family households: Non-relatives: Other Non-relatives; 
+🆔 B09019_024E: In households: In Non-family households; 
+🆔 B09019_025E: In households: In Non-family households: Householder; 
+🆔 B09019_026E: In households: In Non-family households: Householder: Male; 
+🆔 B09019_027E: In households: In Non-family households: Householder: Male: Living alone; 
+🆔 B09019_028E: In households: In Non-family households: Householder: Male: Not living alone; 
+🆔 B09019_029E: In households: In Non-family households: Householder: Female; 
+🆔 B09019_030E: In households: In Non-family households: Householder: Female: Living alone; 
+🆔 B09019_031E: In households: In Non-family households: Householder: Female: Not living alone; 
+🆔 B09019_032E: In households: In Non-family households: Non-relatives; 
+🆔 B09019_033E: In households: In Non-family households: Non-relatives: Roomer or boarder; 
+🆔 B09019_034E: In households: In Non-family households: Non-relatives: Housemate or roommate; 
+🆔 B09019_035E: In households: In Non-family households: Non-relatives: Unmarried partner; 
+🆔 B09019_036E: In households: In Non-family households: Non-relatives: Foster child; 
+🆔 B09019_037E: In households: In Non-family households: Non-relatives: Other Non-relatives; 
+🆔 B09019_038E: In group quarters; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S04: Marital Status (19 variables)
 
@@ -1812,7 +1796,7 @@ Code | Name | Variable Count |
 🆔 B12001_019E: Female, 15+ years: Divorced; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S05: Fertility Characteristics (19 variables)
 
@@ -1837,7 +1821,7 @@ Code | Name | Variable Count |
 🆔 B13002_019E: Women who did not have a birth in the past 12 months: Unmarried never married widowed and divorced: 35 to 50 years old; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S06: Grandparent Relationships (22 variables)
 
@@ -1865,7 +1849,7 @@ Code | Name | Variable Count |
 🆔 B10057_008E: Unmarried never married widowed and divorced: Grandparent responsible for own grandchildren under 18 years; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S07: School Enrollment (58 variables)
 
@@ -1929,7 +1913,7 @@ Code | Name | Variable Count |
 🆔 B14002_049E: Female: Not enrolled in school; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S08: Educational Attainment (59 variables)
 
@@ -1994,7 +1978,7 @@ Code | Name | Variable Count |
 🆔 B15003_025E: Doctorate degree; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S09: Veteran Status (7 variables)
 
@@ -2007,7 +1991,7 @@ Code | Name | Variable Count |
 🆔 B21001_024E: Female: Non-veteran; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S10: Veteran Disability (9 variables)
 
@@ -2022,7 +2006,7 @@ Code | Name | Variable Count |
 🆔 B21100_009E: Has a service-connected disability rating: Rating not reported; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S11: Disability Status and Type (80 variables)
 
@@ -2108,30 +2092,30 @@ Code | Name | Variable Count |
 🆔 B18140_007E: No disability: Female; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S12: Disability Status and Health Insurance Coverage (30 variables)
 
-> 🆔 B18135_003E: Under 19 years: With a disability; 
-🆔 B18135_004E: Under 19 years: With a disability: With health insurance coverage; 
-🆔 B18135_005E: Under 19 years: With a disability: With health insurance coverage: With private health insurance coverage; 
-🆔 B18135_006E: Under 19 years: With a disability: With health insurance coverage: With public health coverage; 
-🆔 B18135_007E: Under 19 years: With a disability: No health insurance coverage; 
-🆔 B18135_008E: Under 19 years: No disability; 
-🆔 B18135_009E: Under 19 years: No disability: With health insurance coverage; 
-🆔 B18135_010E: Under 19 years: No disability: With health insurance coverage: With private health insurance coverage; 
-🆔 B18135_011E: Under 19 years: No disability: With health insurance coverage: With public health coverage; 
-🆔 B18135_012E: Under 19 years: No disability: No health insurance coverage; 
-🆔 B18135_014E: 19 to 64 years: With a disability; 
-🆔 B18135_015E: 19 to 64 years: With a disability: With health insurance coverage; 
-🆔 B18135_016E: 19 to 64 years: With a disability: With health insurance coverage: With private health insurance coverage; 
-🆔 B18135_017E: 19 to 64 years: With a disability: With health insurance coverage: With public health coverage; 
-🆔 B18135_018E: 19 to 64 years: With a disability: No health insurance coverage; 
-🆔 B18135_019E: 19 to 64 years: No disability; 
-🆔 B18135_020E: 19 to 64 years: No disability: With health insurance coverage; 
-🆔 B18135_021E: 19 to 64 years: No disability: With health insurance coverage: With private health insurance coverage; 
-🆔 B18135_022E: 19 to 64 years: No disability: With health insurance coverage: With public health coverage; 
-🆔 B18135_023E: 19 to 64 years: No disability: No health insurance coverage; 
+> 🆔 B18135_003E: Under 18 years: With a disability; 
+🆔 B18135_004E: Under 18 years: With a disability: With health insurance coverage; 
+🆔 B18135_005E: Under 18 years: With a disability: With health insurance coverage: With private health insurance coverage; 
+🆔 B18135_006E: Under 18 years: With a disability: With health insurance coverage: With public health coverage; 
+🆔 B18135_007E: Under 18 years: With a disability: No health insurance coverage; 
+🆔 B18135_008E: Under 18 years: No disability; 
+🆔 B18135_009E: Under 18 years: No disability: With health insurance coverage; 
+🆔 B18135_010E: Under 18 years: No disability: With health insurance coverage: With private health insurance coverage; 
+🆔 B18135_011E: Under 18 years: No disability: With health insurance coverage: With public health coverage; 
+🆔 B18135_012E: Under 18 years: No disability: No health insurance coverage; 
+🆔 B18135_014E: 18 to 64 years: With a disability; 
+🆔 B18135_015E: 18 to 64 years: With a disability: With health insurance coverage; 
+🆔 B18135_016E: 18 to 64 years: With a disability: With health insurance coverage: With private health insurance coverage; 
+🆔 B18135_017E: 18 to 64 years: With a disability: With health insurance coverage: With public health coverage; 
+🆔 B18135_018E: 18 to 64 years: With a disability: No health insurance coverage; 
+🆔 B18135_019E: 18 to 64 years: No disability; 
+🆔 B18135_020E: 18 to 64 years: No disability: With health insurance coverage; 
+🆔 B18135_021E: 18 to 64 years: No disability: With health insurance coverage: With private health insurance coverage; 
+🆔 B18135_022E: 18 to 64 years: No disability: With health insurance coverage: With public health coverage; 
+🆔 B18135_023E: 18 to 64 years: No disability: No health insurance coverage; 
 🆔 B18135_025E: 65 years and over: With a disability; 
 🆔 B18135_026E: 65 years and over: With a disability: With health insurance coverage; 
 🆔 B18135_027E: 65 years and over: With a disability: With health insurance coverage: With private health insurance coverage; 
@@ -2144,7 +2128,7 @@ Code | Name | Variable Count |
 🆔 B18135_034E: 65 years and over: No disability: No health insurance coverage; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S13: Food Stamps Households (10 variables)
 
@@ -2160,7 +2144,7 @@ Code | Name | Variable Count |
 🆔 B22003_004E: Household received Food StampsSNAP in the past 12 months: Income in the past 12 months at or above poverty level; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S14: Residence 1 year ago (5 variables)
 
@@ -2171,9 +2155,9 @@ Code | Name | Variable Count |
 🆔 B07001_081E: Residence: Moved from abroad; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
-### 🏷️ S15: Place of Birth (27 variables)
+### 🏷️ S15: Place of Birth (15 variables)
 
 > 🆔 B05002_001E: Population (Place of Birth); 
 🆔 B05002_002E: Native; 
@@ -2187,24 +2171,12 @@ Code | Name | Variable Count |
 🆔 B05002_010E: Native: Born outside the United States: Puerto Rico; 
 🆔 B05002_011E: Native: Born outside the United States: US Island Areas; 
 🆔 B05002_012E: Native: Born outside the United States: Born abroad of American parents; 
-🆔 B05002_013E: Foreign-born; 
-🆔 B05002_014E: Foreign-born: Naturalized US citizen; 
-🆔 B05002_015E: Foreign-born: Naturalized US citizen: Europe; 
-🆔 B05002_016E: Foreign-born: Naturalized US citizen: Asia; 
-🆔 B05002_017E: Foreign-born: Naturalized US citizen: Africa; 
-🆔 B05002_018E: Foreign-born: Naturalized US citizen: Oceania; 
-🆔 B05002_019E: Foreign-born: Naturalized US citizen: Latin America; 
-🆔 B05002_020E: Foreign-born: Naturalized US citizen: Northern America; 
-🆔 B05002_021E: Foreign-born: Not a US citizen; 
-🆔 B05002_022E: Foreign-born: Not a US citizen: Europe; 
-🆔 B05002_023E: Foreign-born: Not a US citizen: Asia; 
-🆔 B05002_024E: Foreign-born: Not a US citizen: Africa; 
-🆔 B05002_025E: Foreign-born: Not a US citizen: Oceania; 
-🆔 B05002_026E: Foreign-born: Not a US citizen: Latin America; 
-🆔 B05002_027E: Foreign-born: Not a US citizen: Northern America; 
+🆔 B05002_013E: Foreign born; 
+🆔 B05002_014E: Foreign born: Naturalized US citizen; 
+🆔 B05002_015E: Foreign born: Not a US citizen; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S16: Citizenship Status (5 variables)
 
@@ -2215,34 +2187,34 @@ Code | Name | Variable Count |
 🆔 B05001_006E: Not a US citizen; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S17: Citizenship Status by Year of Entry (21 variables)
 
 > 🆔 B05005_001E: Population born outside the US; 
 🆔 B05005_002E: Entered 2010 or later; 
 🆔 B05005_003E: Entered 2010 or later: Native; 
-🆔 B05005_004E: Entered 2010 or later: Foreign-born; 
-🆔 B05005_005E: Entered 2010 or later: Foreign-born: Naturalized US citizen; 
-🆔 B05005_006E: Entered 2010 or later: Foreign-born: Not a US citizen; 
+🆔 B05005_004E: Entered 2010 or later: Foreign born; 
+🆔 B05005_005E: Entered 2010 or later: Foreign born: Naturalized US citizen; 
+🆔 B05005_006E: Entered 2010 or later: Foreign born: Not a US citizen; 
 🆔 B05005_007E: Entered 2000 to 2009; 
 🆔 B05005_008E: Entered 2000 to 2009: Native; 
-🆔 B05005_009E: Entered 2000 to 2009: Foreign-born; 
-🆔 B05005_010E: Entered 2000 to 2009: Foreign-born: Naturalized US citizen; 
-🆔 B05005_011E: Entered 2000 to 2009: Foreign-born: Not a US citizen; 
+🆔 B05005_009E: Entered 2000 to 2009: Foreign born; 
+🆔 B05005_010E: Entered 2000 to 2009: Foreign born: Naturalized US citizen; 
+🆔 B05005_011E: Entered 2000 to 2009: Foreign born: Not a US citizen; 
 🆔 B05005_012E: Entered 1990 to 1999; 
 🆔 B05005_013E: Entered 1990 to 1999: Native; 
-🆔 B05005_014E: Entered 1990 to 1999: Foreign-born; 
-🆔 B05005_015E: Entered 1990 to 1999: Foreign-born: Naturalized US citizen; 
-🆔 B05005_016E: Entered 1990 to 1999: Foreign-born: Not a US citizen; 
+🆔 B05005_014E: Entered 1990 to 1999: Foreign born; 
+🆔 B05005_015E: Entered 1990 to 1999: Foreign born: Naturalized US citizen; 
+🆔 B05005_016E: Entered 1990 to 1999: Foreign born: Not a US citizen; 
 🆔 B05005_017E: Entered before 1990; 
 🆔 B05005_018E: Entered before 1990: Native; 
-🆔 B05005_019E: Entered before 1990: Foreign-born; 
-🆔 B05005_020E: Entered before 1990: Foreign-born: Naturalized US citizen; 
-🆔 B05005_021E: Entered before 1990: Foreign-born: Not a US citizen; 
+🆔 B05005_019E: Entered before 1990: Foreign born; 
+🆔 B05005_020E: Entered before 1990: Foreign born: Naturalized US citizen; 
+🆔 B05005_021E: Entered before 1990: Foreign born: Not a US citizen; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S18: World Region of Birth of Foreign Born Population (25 variables)
 
@@ -2255,44 +2227,25 @@ Code | Name | Variable Count |
 🆔 B05006_047E: Asia; 
 🆔 B05006_048E: Asia: Eastern Asia; 
 🆔 B05006_056E: Asia: South Central Asia; 
-🆔 B05006_068E: Asia: South Eastern Asia; 
-🆔 B05006_079E: Asia: Western Asia; 
-🆔 B05006_095E: Africa; 
-🆔 B05006_096E: Africa: Eastern Africa; 
-🆔 B05006_105E: Africa: Middle Africa; 
-🆔 B05006_110E: Africa: Northern Africa; 
-🆔 B05006_116E: Africa: Southern Africa; 
-🆔 B05006_119E: Africa: Western Africa; 
-🆔 B05006_130E: Oceania; 
-🆔 B05006_131E: Oceania: Australia and New Zealand Subregion; 
-🆔 B05006_138E: Americas; 
-🆔 B05006_139E: Americas: Latin America; 
-🆔 B05006_140E: Americas: Latin America: Caribbean; 
-🆔 B05006_154E: Americas: Latin America: Central America; 
-🆔 B05006_164E: Americas: Latin America: South America; 
-🆔 B05006_176E: Americas: Northern America; 
+🆔 B05006_067E: Asia: South Eastern Asia; 
+🆔 B05006_078E: Asia: Western Asia; 
+🆔 B05006_091E: Africa; 
+🆔 B05006_092E: Africa: Eastern Africa; 
+🆔 B05006_097E: Africa: Middle Africa; 
+🆔 B05006_100E: Africa: Northern Africa; 
+🆔 B05006_105E: Africa: Southern Africa; 
+🆔 B05006_108E: Africa: Western Africa; 
+🆔 B05006_116E: Oceania; 
+🆔 B05006_117E: Oceania: Australia and New Zealand Subregion; 
+🆔 B05006_122E: Americas; 
+🆔 B05006_123E: Americas: Latin America; 
+🆔 B05006_124E: Americas: Latin America: Caribbean; 
+🆔 B05006_137E: Americas: Latin America: Central America; 
+🆔 B05006_147E: Americas: Latin America: South America; 
+🆔 B05006_159E: Americas: Northern America; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
-
-### 🏷️ S19: Language Spoken in Households (13 variables)
-
-> 🆔 C16002_002E: English only households; 
-🆔 C16002_003E: Spanish households; 
-🆔 C16002_004E: Spanish: Limited English speaking household; 
-🆔 C16002_005E: Spanish: Not a limited English speaking household; 
-🆔 C16002_006E: Other Indo-European languages; 
-🆔 C16002_007E: Other Indo-European languages: Limited English speaking household; 
-🆔 C16002_008E: Other Indo-European languages: Not a limited English speaking household; 
-🆔 C16002_009E: Asian and Pacific Island languages; 
-🆔 C16002_010E: Asian and Pacific Island languages: Limited English speaking household; 
-🆔 C16002_011E: Asian and Pacific Island languages: Not a limited English speaking household; 
-🆔 C16002_012E: Other languages; 
-🆔 C16002_013E: Other languages: Limited English speaking household; 
-🆔 C16002_014E: Other languages: Not a limited English speaking household; 
-
-
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S20: Language Spoken at Home (67 variables)
 
@@ -2365,7 +2318,7 @@ Code | Name | Variable Count |
 🆔 B16004_067E: 65 years and over: Speak other languages: Speak English not at all; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S21: Ancestry (6 variables)
 
@@ -2377,7 +2330,7 @@ Code | Name | Variable Count |
 🆔 B04007_007E: Ancestry not specified: Ancestry not reported; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S22: People Reporting Ancestry (109 variables)
 
@@ -2434,7 +2387,7 @@ Code | Name | Variable Count |
 🆔 B04006_051E: Italian; 
 🆔 B04006_052E: Latvian; 
 🆔 B04006_053E: Lithuanian; 
-🆔 B04006_054E: Luxembourger; 
+🆔 B04006_054E: Luxemburger; 
 🆔 B04006_055E: Macedonian; 
 🆔 B04006_056E: Maltese; 
 🆔 B04006_057E: New Zealander; 
@@ -2492,67 +2445,7 @@ Code | Name | Variable Count |
 🆔 B04006_109E: Unclassified or not reported; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
-
-### 🏷️ S23: Types of Computers in Household (11 variables)
-
-> 🆔 B28001_001E: Households; 
-🆔 B28001_002E: Has one or more types of computing devices; 
-🆔 B28001_003E: Has one or more types of computing devices: Desktop or laptop; 
-🆔 B28001_004E: Has one or more types of computing devices: Desktop or laptop: Desktop or laptop with no other type of computing device; 
-🆔 B28001_005E: Has one or more types of computing devices: Smartphone; 
-🆔 B28001_006E: Has one or more types of computing devices: Smartphone: Smartphone with no other type of computing device; 
-🆔 B28001_007E: Has one or more types of computing devices: Tablet or other portable wireless computer; 
-🆔 B28001_008E: Has one or more types of computing devices: Tablet or other portable wireless computer: Tablet or other portable wireless computer with no other type of computing device; 
-🆔 B28001_009E: Has one or more types of computing devices: Other computer; 
-🆔 B28001_010E: Has one or more types of computing devices: Other computer: Other computer with no other type of computing device; 
-🆔 B28001_011E: No Computer; 
-
-
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
-
-### 🏷️ S24: Computers and Internet Use (10 variables)
-
-> 🆔 B28008_001E: Population in Households; 
-🆔 B28008_002E: Has a computer; 
-🆔 B28008_003E: Has a computer: With dial-up Internet subscription alone; 
-🆔 B28008_004E: Has a computer: With a broadband subscription; 
-🆔 B28008_005E: Has a computer: With a broadband subscription: With a fixed broadband Internet subscription; 
-🆔 B28008_006E: Has a computer: With a broadband subscription: With a fixed broadband Internet subscription: With a cellular data plan; 
-🆔 B28008_007E: Has a computer: With a broadband subscription: With a fixed broadband Internet subscription: Without a cellular data plan; 
-🆔 B28008_008E: Has a computer: With a broadband subscription: Cellular data plan alone or with dial-up; 
-🆔 B28008_009E: Has a computer: Without Internet subscription; 
-🆔 B28008_010E: No Computer; 
-
-
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
-
-### 🏷️ S25: Computers in Household (7 variables)
-
-> 🆔 B28010_001E: Households (Computers); 
-🆔 B28010_002E: Has one or more types of computing devices; 
-🆔 B28010_003E: Has one or more types of computing devices: Desktop or laptop; 
-🆔 B28010_004E: Has one or more types of computing devices: Desktop or laptop: Desktop or laptop alone; 
-🆔 B28010_005E: Has one or more types of computing devices: Smartphone tablet or other portable wireless computer or other computer; 
-🆔 B28010_006E: Has one or more types of computing devices: Smartphone tablet or other portable wireless computer or other computer: Smartphone tablet or other portable wireless computer or other computer no desktop or laptop; 
-🆔 B28010_007E: No Computer; 
-
-
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
-
-### 🏷️ S26: Subscriptions in Household (8 variables)
-
-> 🆔 B28011_001E: Households (Subscriptions); 
-🆔 B28011_002E: With an Internet subscription; 
-🆔 B28011_003E: With an Internet subscription: Dial-up alone; 
-🆔 B28011_004E: With an Internet subscription: Broadband such as cable fiber optic or DSL; 
-🆔 B28011_005E: With an Internet subscription: Satellite Internet service; 
-🆔 B28011_006E: With an Internet subscription: Other service; 
-🆔 B28011_007E: Internet access without a subscription; 
-🆔 B28011_008E: No Internet access; 
-
-
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 ### 🏷️ S27: Geographical Mobility (19 variables)
 
@@ -2577,7 +2470,7 @@ Code | Name | Variable Count |
 🆔 B07003_018E: Moved from abroad: Female; 
 
 
-[<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
+[<div align="right"><< Back to Sections</div>](#-social-characteristics-22-sections-651-variables)
 
 
 ---

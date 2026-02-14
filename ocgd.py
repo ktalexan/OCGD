@@ -3656,7 +3656,7 @@ class OCACS(OCGD):
 
         if write_to_file:
             # Write the master dictionary to a JSON file in the codebook directory with the name "ocacs_cb_vars_{version}.json", where the version number is the version attribute of the class with dots replaced by zeros (e.g. version 2026.1 should be "ocacs_cb_vars_202601.json").
-            output_file_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars.json")
+            output_file_path = os.path.join(self.prj_dirs["codebook"], "ocacs_cb_vars.json")
             with open(output_file_path, "w", encoding = "utf-8") as json_file:
                 json.dump(cb_master, json_file, indent=4)
             print(f"Master variables dictionary written to {output_file_path}")
@@ -3698,7 +3698,7 @@ class OCACS(OCGD):
                     raise ValueError(f"Year must be one of the following: {years}")
 
         # Load the master JSON variables codebook
-        ocacs_cb_vars_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars.json")
+        ocacs_cb_vars_path = os.path.join(self.prj_dirs["codebook"], "ocacs_cb_vars.json")
         if os.path.exists(ocacs_cb_vars_path):
             with open(ocacs_cb_vars_path, "r", encoding = "utf-8") as f:
                 ocacs_cb_vars = json.load(f)
@@ -3867,6 +3867,58 @@ class OCACS(OCGD):
         print(df_cb.head())
 
         print(f"- Variable dictionary and data frame construction for {year} complete.\n")
+
+        # Create a markdown document with the variable information for the current year
+        md_path = os.path.join(self.prj_dirs["documentation"], f"ocacs_cb_vars_{year}.md")
+        with open(md_path, "w", encoding = "utf-8") as f:
+            f.write("""<img align="left" src="../graphics/ocacs_logo_demographic.jpg" width="200" hspace="25" vspace="15">\n\n""")
+            f.write(f"# Orange County Geodemographics<br>{year} ACS 5-Year Data Documentation\n\n")
+            f.write(f"*Orange County American Community Survey (ACS) Geodemographic Repository <br> Dr. Kostas Alexandridis, GISP. OC Public Works Geospatial Services*<br>Version: {self.version}, Date: {datetime.datetime.now().strftime('%B %Y')}")
+            f.write("\n\n[<div align=\"right\"><< Back to ReadMe.md</div>](../README.md)\n\n")
+            f.write("\n\n## Geodemographic Tables by Group\n")
+            f.write("\nFor each of the geographies described in the previous section, four categories of geodemographic characteristics are available:\n\n")    
+            for level in df_cb["level"].unique():
+                count_sections = len(df_cb[df_cb["level"] == level]["section"].dropna().unique())
+                count_level = len(df_cb[df_cb["level"] == level])
+                level_name = f"{level} Characteristics ({count_sections} sections, {count_level} variables)"
+                level_link = level_name.replace(",", "").replace("(", "").replace(")", "").replace(" ", "-").lower()
+                f.write(f"- [**{level_name}**](#-{level_link})\n")
+            f.write("\nEach of the geographies is represented by a separate geodatabase structure. Within of each of the geographic level geodatabases, each of the four characteristics is represented by a _feature class_ respectively. In order to easily identify each of the sub-groups within each category, the name of the original census table field was adjusted by prepending to it the subgroup identification code. For example, the original field B01001e1 would become D01_B01001e1 in the new feature class for the demographic characteristics.\n")
+            f.write("\nMore detailed description of each sub-group within each of the four feature classes representing the ACS table characteristics is provided below. The table's columns represent: the subgroup's code; its descriptive name;the universe (summative) level of the reference; the ACS Census table in which the original fields are located; the fields/variables of the data, and; how many fields are included in the subgroup.\n")
+            f.write("\n---\n")
+            for level in df_cb["level"].unique():
+                count_sections = len(df_cb[df_cb["level"] == level]["section"].dropna().unique())
+                count_level = len(df_cb[df_cb["level"] == level])
+                level_header = f"\n\n\n## 📚 {level} Characteristics ({count_sections} sections, {count_level} variables)\n"
+                f.write(level_header)
+                f.write("\nThe demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.\n")
+                f.write("\nCode | Name | Variable Count |\n| --- | --- | --- |\n")
+                for section in df_cb[df_cb["level"] == level]["section"].dropna().unique():
+                    # find the section_name for the current level and section
+                    section_name = df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)]["section_name"].dropna().unique()[0]
+                    count_section = len(df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)])
+
+                    section_link = f"#️-{section.lower()}-{section_name.replace(" ", "-").lower()}-{count_section}-variables"
+                    f.write(f"| [{section}]({section_link}) | {section_name} | {count_section} |\n")
+                f.write("\n\n[<div align=\"right\"><< Back to Tables</div>](#geodemographic-tables-by-group)\n\n")
+
+                for section in df_cb[df_cb["level"] == level]["section"].dropna().unique():
+                    # find the section_name for the current level and section
+                    section_name = df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)]["section_name"].dropna().unique()[0]
+                    count_section = len(df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)])
+                    section_header = f"### 🏷️ {section}: {section_name} ({count_section} variables)\n"
+                    f.write(section_header)
+                    f.write("\n> ")
+                    for markdown in df_cb[(df_cb["level"] == level) & (df_cb["section"] == section)]["markdown"].unique():
+                        f.write(f"{markdown}; ")
+                        f.write("\n")
+                
+                    f.write(f"\n\n[<div align=\"right\"><< Back to Sections</div>](#-{level.lower()}-characteristics-{count_sections}-sections-{count_level}-variables)\n\n")
+            f.write("\n")
+            f.write("---\n\n")
+            f.close()
+
+            print(f"- Markdown documentation for {year} created at {md_path}\n")
 
         return cb, df_cb
 

@@ -1,6 +1,6 @@
 <img align="left" src="../graphics/ocacs_logo_demographic.jpg" width="200" hspace="25" vspace="15">
 
-# Orange County Geodemographics<br>2024 ACS 5-Year Data Documentation
+# Orange County Geodemographics<br>2022 ACS 5-Year Data Documentation
 
 *Orange County American Community Survey (ACS) Geodemographic Repository <br> Dr. Kostas Alexandridis, GISP. OC Public Works Geospatial Services*<br>Version: 2026.1, Date: February 2026
 
@@ -13,7 +13,7 @@
 For each of the geographies described in the previous section, four categories of geodemographic characteristics are available:
 
 - [**Demographic Characteristics (8 sections, 140 variables)**](#-demographic-characteristics-8-sections-140-variables)
-- [**Economic Characteristics (21 sections, 642 variables)**](#-economic-characteristics-21-sections-642-variables)
+- [**Economic Characteristics (21 sections, 641 variables)**](#-economic-characteristics-21-sections-641-variables)
 - [**Housing Characteristics (26 sections, 449 variables)**](#-housing-characteristics-26-sections-449-variables)
 - [**Social Characteristics (27 sections, 700 variables)**](#-social-characteristics-27-sections-700-variables)
 
@@ -37,8 +37,8 @@ Code | Name | Variable Count |
 | [D04](#️-d04-race-10-variables) | Race | 10 |
 | [D05](#️-d05-race-alone-or-in-combination-with-other-races-6-variables) | Race Alone or in Combination with Other Races | 6 |
 | [D06](#️-d06-hispanic-or-latino-21-variables) | Hispanic or Latino | 21 |
-| [D07](#️-d07-hispanic-or-latino-by-origin-32-variables) | Hispanic or Latino by Origin | 32 |
-| [D08](#️-d08-citizen-voting-age-population-9-variables) | Citizen Voting Age Population | 9 |
+| [D07](#️-d07-hispanic-or-latino-by-origin-31-variables) | Hispanic or Latino by Origin | 31 |
+| [D08](#️-d08-citizen-voting-age-population-10-variables) | Citizen Voting Age Population | 10 |
 
 
 [<div align="right"><< Back to Tables</div>](#geodemographic-tables-by-group)
@@ -178,7 +178,7 @@ Code | Name | Variable Count |
 
 [<div align="right"><< Back to Sections</div>](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D07: Hispanic or Latino by Origin (32 variables)
+### 🏷️ D07: Hispanic or Latino by Origin (31 variables)
 
 > 🆔 B03001_001E: Total Population (Hispanic or Latino by Origin); 
 🆔 B03001_002E: Not Hispanic or Latino; 
@@ -211,22 +211,22 @@ Code | Name | Variable Count |
 🆔 B03001_029E: Hispanic or Latino: Other Hispanic or Latino: Spanish; 
 🆔 B03001_030E: Hispanic or Latino: Other Hispanic or Latino: Spanish American; 
 🆔 B03001_031E: Hispanic or Latino: Other Hispanic or Latino: All other Hispanic or Latino; 
-🆔 B05003_023E: Female: 18 years and over: Foreign-born: Not a US citizen; 
 
 
 [<div align="right"><< Back to Sections</div>](#-demographic-characteristics-8-sections-140-variables)
 
-### 🏷️ D08: Citizen Voting Age Population (9 variables)
+### 🏷️ D08: Citizen Voting Age Population (10 variables)
 
 > 🆔 B05003_008E: Male: 18 years and over; 
 🆔 B05003_009E: Male: 18 years and over: Native; 
-🆔 B05003_010E: Male: 18 years and over: Foreign-born; 
-🆔 B05003_011E: Male: 18 years and over: Foreign-born: Naturalized US citizen; 
-🆔 B05003_012E: Male: 18 years and over: Foreign-born: Not a US citizen; 
+🆔 B05003_010E: Male: 18 years and over: Foreign born; 
+🆔 B05003_011E: Male: 18 years and over: Foreign born: Naturalized US citizen; 
+🆔 B05003_012E: Male: 18 years and over: Foreign born: Not a US citizen; 
 🆔 B05003_019E: Female: 18 years and over; 
 🆔 B05003_020E: Female: 18 years and over: Native; 
-🆔 B05003_021E: Female: 18 years and over: Foreign-born; 
-🆔 B05003_022E: Female: 18 years and over: Foreign-born: Naturalized US citizen; 
+🆔 B05003_021E: Female: 18 years and over: Foreign born; 
+🆔 B05003_022E: Female: 18 years and over: Foreign born: Naturalized US citizen; 
+🆔 B05003_023E: Female: 18 years and over: Foreign born: Not a US citizen; 
 
 
 [<div align="right"><< Back to Sections</div>](#-demographic-characteristics-8-sections-140-variables)
@@ -234,7 +234,7 @@ Code | Name | Variable Count |
 
 
 
-## 📚 Economic Characteristics (21 sections, 642 variables)
+## 📚 Economic Characteristics (21 sections, 641 variables)
 
 The demographic characteristics selected for spatial representation can be found in ACS data tables X1-X5. They are divided in 8 subgroups: total population, sex and age, median age by sex and race, race, race alone or in combination with other races, hispanic or latino, and citizen voting age population.
 
@@ -243,7 +243,7 @@ Code | Name | Variable Count |
 | [E01](#️-e01-employment-status-7-variables) | Employment Status | 7 |
 | [E02](#️-e02-work-status-by-age-of-worker-36-variables) | Work Status by Age of Worker | 36 |
 | [E03](#️-e03-occupation-by-median-earnings-23-variables) | Occupation by Median Earnings | 23 |
-| [E04](#️-e04-means-of-transportation-to-work-11-variables) | Means of Transportation to Work | 11 |
+| [E04](#️-e04-means-of-transportation-to-work-10-variables) | Means of Transportation to Work | 10 |
 | [E05](#️-e05-travel-time-to-work-14-variables) | Travel Time to Work | 14 |
 | [E06](#️-e06-vehicles-available-for-workers-8-variables) | Vehicles Available for Workers | 8 |
 | [E07](#️-e07-vehicles-available-by-sex-of-workers-16-variables) | Vehicles Available by Sex of Workers | 16 |
@@ -276,7 +276,7 @@ Code | Name | Variable Count |
 🆔 B23025_007E: Not in labor force; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E02: Work Status by Age of Worker (36 variables)
 
@@ -318,7 +318,7 @@ Code | Name | Variable Count |
 🆔 B23027_036E: 70 years and over: Did not work in the past 12 months; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E03: Occupation by Median Earnings (23 variables)
 
@@ -347,16 +347,15 @@ Code | Name | Variable Count |
 🆔 B24011_036E: Production transportation and material moving occupations: Material moving occupations; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
-### 🏷️ E04: Means of Transportation to Work (11 variables)
+### 🏷️ E04: Means of Transportation to Work (10 variables)
 
 > 🆔 B08301_001E: Workers, 16+ years; 
 🆔 B08301_002E: Car truck or van; 
 🆔 B08301_003E: Car truck or van: Drove alone; 
 🆔 B08301_004E: Car truck or van: Carpooled; 
-🆔 B08301_010E: Public transportation; 
-🆔 B08301_016E: Taxi or ride-hailing services; 
+🆔 B08301_016E: Taxicab; 
 🆔 B08301_017E: Motorcycle; 
 🆔 B08301_018E: Bicycle; 
 🆔 B08301_019E: Walked; 
@@ -364,7 +363,7 @@ Code | Name | Variable Count |
 🆔 B08301_021E: Worked from home; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E05: Travel Time to Work (14 variables)
 
@@ -384,7 +383,7 @@ Code | Name | Variable Count |
 🆔 B08013_001E: Aggregate travel time to work in minutes; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E06: Vehicles Available for Workers (8 variables)
 
@@ -398,7 +397,7 @@ Code | Name | Variable Count |
 🆔 B08015_001E: Aggregate number of vehicles car truck or van used in commuting; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E07: Vehicles Available by Sex of Workers (16 variables)
 
@@ -420,89 +419,89 @@ Code | Name | Variable Count |
 🆔 B08015_003E: Aggregate number of vehicles car truck or van used in commuting: Female; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E08: Median Age by Means of Transportation to Work (7 variables)
 
 > 🆔 B08103_001E: Median age: Workers, 16+ years; 
 🆔 B08103_002E: Median age: Car truck or van-drove alone; 
 🆔 B08103_003E: Median age: Car truck or van-carpooled; 
-🆔 B08103_004E: Median age: Public transportation; 
+🆔 B08103_004E: Median age: Public transportation excluding taxicab; 
 🆔 B08103_005E: Median age: Walked; 
-🆔 B08103_006E: Median age: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08103_006E: Median age: Taxicab motorcycle bicycle or other means; 
 🆔 B08103_007E: Median age: Worked from home; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E09: Means of Transportation to Work by Race (63 variables)
 
 > 🆔 B08105A_001E: White alone; 
 🆔 B08105A_002E: Car truck or van-drove alone; 
 🆔 B08105A_003E: Car truck or van-carpooled; 
-🆔 B08105A_004E: Public transportation; 
+🆔 B08105A_004E: Public transportation excluding taxicab; 
 🆔 B08105A_005E: Walked; 
-🆔 B08105A_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08105A_006E: Taxicab motorcycle bicycle or other means; 
 🆔 B08105A_007E: Worked from home; 
 🆔 B08105B_001E: Black or African American alone; 
 🆔 B08105B_002E: Car truck or van-drove alone; 
 🆔 B08105B_003E: Car truck or van-carpooled; 
-🆔 B08105B_004E: Public transportation; 
+🆔 B08105B_004E: Public transportation excluding taxicab; 
 🆔 B08105B_005E: Walked; 
-🆔 B08105B_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08105B_006E: Taxicab motorcycle bicycle or other means; 
 🆔 B08105B_007E: Worked from home; 
 🆔 B08105C_001E: American Indian and Alaska Native alone; 
 🆔 B08105C_002E: Car truck or van-drove alone; 
 🆔 B08105C_003E: Car truck or van-carpooled; 
-🆔 B08105C_004E: Public transportation; 
+🆔 B08105C_004E: Public transportation excluding taxicab; 
 🆔 B08105C_005E: Walked; 
-🆔 B08105C_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08105C_006E: Taxicab motorcycle bicycle or other means; 
 🆔 B08105C_007E: Worked from home; 
 🆔 B08105D_001E: Asian alone; 
 🆔 B08105D_002E: Car truck or van-drove alone; 
 🆔 B08105D_003E: Car truck or van-carpooled; 
-🆔 B08105D_004E: Public transportation; 
+🆔 B08105D_004E: Public transportation excluding taxicab; 
 🆔 B08105D_005E: Walked; 
-🆔 B08105D_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08105D_006E: Taxicab motorcycle bicycle or other means; 
 🆔 B08105D_007E: Worked from home; 
 🆔 B08105E_001E: Native Hawaiian and Other Pacific Islander alone; 
 🆔 B08105E_002E: Car truck or van-drove alone; 
 🆔 B08105E_003E: Car truck or van-carpooled; 
-🆔 B08105E_004E: Public transportation; 
+🆔 B08105E_004E: Public transportation excluding taxicab; 
 🆔 B08105E_005E: Walked; 
-🆔 B08105E_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08105E_006E: Taxicab motorcycle bicycle or other means; 
 🆔 B08105E_007E: Worked from home; 
 🆔 B08105F_001E: Some Other Race alone; 
 🆔 B08105F_002E: Car truck or van-drove alone; 
 🆔 B08105F_003E: Car truck or van-carpooled; 
-🆔 B08105F_004E: Public transportation; 
+🆔 B08105F_004E: Public transportation excluding taxicab; 
 🆔 B08105F_005E: Walked; 
-🆔 B08105F_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08105F_006E: Taxicab motorcycle bicycle or other means; 
 🆔 B08105F_007E: Worked from home; 
 🆔 B08105G_001E: Two or More Races; 
 🆔 B08105G_002E: Car truck or van-drove alone; 
 🆔 B08105G_003E: Car truck or van-carpooled; 
-🆔 B08105G_004E: Public transportation; 
+🆔 B08105G_004E: Public transportation excluding taxicab; 
 🆔 B08105G_005E: Walked; 
-🆔 B08105G_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08105G_006E: Taxicab motorcycle bicycle or other means; 
 🆔 B08105G_007E: Worked from home; 
 🆔 B08105H_001E: White alone, not Hispanic or Latino; 
 🆔 B08105H_002E: Car truck or van-drove alone; 
 🆔 B08105H_003E: Car truck or van-carpooled; 
-🆔 B08105H_004E: Public transportation; 
+🆔 B08105H_004E: Public transportation excluding taxicab; 
 🆔 B08105H_005E: Walked; 
-🆔 B08105H_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08105H_006E: Taxicab motorcycle bicycle or other means; 
 🆔 B08105H_007E: Worked from home; 
 🆔 B08105I_001E: Hispanic or Latino; 
 🆔 B08105I_002E: Car truck or van-drove alone; 
 🆔 B08105I_003E: Car truck or van-carpooled; 
-🆔 B08105I_004E: Public transportation; 
+🆔 B08105I_004E: Public transportation excluding taxicab; 
 🆔 B08105I_005E: Walked; 
-🆔 B08105I_006E: Taxi or ride-hailing services motorcycle bicycle or other means; 
+🆔 B08105I_006E: Taxicab motorcycle bicycle or other means; 
 🆔 B08105I_007E: Worked from home; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E10: Occupation (73 variables)
 
@@ -581,7 +580,7 @@ Code | Name | Variable Count |
 🆔 C24010_073E: Female: Production transportation and material moving occupations: Material moving occupations; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E11: Industry (55 variables)
 
@@ -642,7 +641,7 @@ Code | Name | Variable Count |
 🆔 C24030_055E: Female: Public administration; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E12: Class of Worker (21 variables)
 
@@ -669,7 +668,7 @@ Code | Name | Variable Count |
 🆔 B24080_021E: Female: Unpaid family workers; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E13: Household Income and Earnings in the Past 12 Months (46 variables)
 
@@ -690,8 +689,8 @@ Code | Name | Variable Count |
 🆔 B19001_015E: $125,000 to $149,999; 
 🆔 B19001_016E: $150,000 to $199,999; 
 🆔 B19001_017E: $200,000 or more; 
-🆔 B19013_001E: Median household income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19025_001E: Aggregate household income in the past 12 months in 2024 inflation-adjusted dollars; 
+🆔 B19013_001E: Median household income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19025_001E: Aggregate household income in the past 12 months in 2022 inflation-adjusted dollars; 
 🆔 B19051_002E: With earnings; 
 🆔 B19051_003E: No earnings; 
 🆔 B19052_002E: With wage or salary income; 
@@ -721,44 +720,44 @@ Code | Name | Variable Count |
 🆔 B19083_001E: Gini Index; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E14: Income and Earnings in Dollars (31 variables)
 
-> 🆔 B19061_001E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19062_001E: Aggregate wage or salary income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19063_001E: Aggregate self-employment income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19064_001E: Aggregate interest dividends or net rental income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19065_001E: Aggregate Social Security income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19066_001E: Aggregate Supplemental Security Income SSI in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19067_001E: Aggregate public assistance income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19069_001E: Aggregate retirement income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19070_001E: Aggregate other types of income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19113_001E: Median family income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19202_001E: Median Non-family household income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19214_001E: Aggregate Non-family household income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301A_001E: White alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301B_001E: Black or African American alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301C_001E: American Indian and Alaska Native alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301D_001E: Asian alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301E_001E: Native Hawaiian and Other Pacific Islander alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301F_001E: Some Other Race alone: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301G_001E: Two or More Races: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301H_001E: White alone, not Hispanic or Latino: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301I_001E: Hispanic or Latino: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19301_001E: Per capita income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B19313_001E: Aggregate income in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B20002_001E: Median earnings in the past 12 months in 2024 inflation-adjusted dollars: Total; 
-🆔 B20002_002E: Median earnings in the past 12 months in 2024 inflation-adjusted dollars: Male; 
-🆔 B20002_003E: Median earnings in the past 12 months in 2024 inflation-adjusted dollars: Female; 
-🆔 B20003_001E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars; 
-🆔 B20003_002E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars: Male; 
-🆔 B20003_003E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars: Male: Worked full-time year-round in the past 12 months; 
-🆔 B20003_005E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars: Female; 
-🆔 B20003_006E: Aggregate earnings in the past 12 months in 2024 inflation-adjusted dollars: Female: Worked full-time year-round in the past 12 months; 
+> 🆔 B19061_001E: Aggregate earnings in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19062_001E: Aggregate wage or salary income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19063_001E: Aggregate self-employment income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19064_001E: Aggregate interest dividends or net rental income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19065_001E: Aggregate Social Security income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19066_001E: Aggregate Supplemental Security Income SSI in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19067_001E: Aggregate public assistance income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19069_001E: Aggregate retirement income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19070_001E: Aggregate other types of income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19113_001E: Median family income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19202_001E: Median Non-family household income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19214_001E: Aggregate Non-family household income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301A_001E: White alone: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301B_001E: Black or African American alone: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301C_001E: American Indian and Alaska Native alone: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301D_001E: Asian alone: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301E_001E: Native Hawaiian and Other Pacific Islander alone: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301F_001E: Some Other Race alone: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301G_001E: Two or More Races: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301H_001E: White alone, not Hispanic or Latino: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301I_001E: Hispanic or Latino: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19301_001E: Per capita income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B19313_001E: Aggregate income in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B20002_001E: Median earnings in the past 12 months in 2022 inflation-adjusted dollars: Total; 
+🆔 B20002_002E: Median earnings in the past 12 months in 2022 inflation-adjusted dollars: Male; 
+🆔 B20002_003E: Median earnings in the past 12 months in 2022 inflation-adjusted dollars: Female; 
+🆔 B20003_001E: Aggregate earnings in the past 12 months in 2022 inflation-adjusted dollars; 
+🆔 B20003_002E: Aggregate earnings in the past 12 months in 2022 inflation-adjusted dollars: Male; 
+🆔 B20003_003E: Aggregate earnings in the past 12 months in 2022 inflation-adjusted dollars: Male: Worked full-time year-round in the past 12 months; 
+🆔 B20003_005E: Aggregate earnings in the past 12 months in 2022 inflation-adjusted dollars: Female; 
+🆔 B20003_006E: Aggregate earnings in the past 12 months in 2022 inflation-adjusted dollars: Female: Worked full-time year-round in the past 12 months; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E15: Family Income in Dollars (17 variables)
 
@@ -781,7 +780,7 @@ Code | Name | Variable Count |
 🆔 B19101_017E: $200,000 or more; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E16: Health Insurance Coverage by Age (66 variables)
 
@@ -853,7 +852,7 @@ Code | Name | Variable Count |
 🆔 B27010_066E: 65 years and over: No health insurance coverage; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E17: Ratio of Income to Poverty Level (8 variables)
 
@@ -867,7 +866,7 @@ Code | Name | Variable Count |
 🆔 C17002_008E: 200 and over; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E18: Poverty in Population in the Past 12 Months (35 variables)
 
@@ -908,7 +907,7 @@ Code | Name | Variable Count |
 🆔 B17021_035E: Income in the past 12 months at or above poverty level: In non-family households and other living arrangement: Other living arrangement; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E19: Poverty in Households in the Past 12 Months (59 variables)
 
@@ -973,7 +972,7 @@ Code | Name | Variable Count |
 🆔 B17017_059E: Income in the past 12 months at or above poverty level: Non-family households: Female householder: Householder 65 years and over; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E20: Poverty Status by Family (41 variables)
 
@@ -1020,7 +1019,7 @@ Code | Name | Variable Count |
 🆔 B17010_041E: Income in the past 12 months at or above poverty level: Other family: Female householder no spouse present: No related children of the householder under 18 years; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 ### 🏷️ E21: Aggregate Income Deficit in Dollars for Families (5 variables)
 
@@ -1031,7 +1030,7 @@ Code | Name | Variable Count |
 🆔 B17011_005E: Aggregate income deficit in the past 12 months: Other family: Female householder no spouse present; 
 
 
-[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-642-variables)
+[<div align="right"><< Back to Sections</div>](#-economic-characteristics-21-sections-641-variables)
 
 
 
@@ -1300,16 +1299,16 @@ Code | Name | Variable Count |
 
 > 🆔 B25038_001E: Occupied Housing Units; 
 🆔 B25038_002E: Owner occupied; 
-🆔 B25038_003E: Owner occupied: Moved in 2023 or later; 
-🆔 B25038_004E: Owner occupied: Moved in 2020 to 2022; 
-🆔 B25038_005E: Owner occupied: Moved in 2010 to 2019; 
+🆔 B25038_003E: Owner occupied: Moved in 2021 or later; 
+🆔 B25038_004E: Owner occupied: Moved in 2018 to 2020; 
+🆔 B25038_005E: Owner occupied: Moved in 2010 to 2017; 
 🆔 B25038_006E: Owner occupied: Moved in 2000 to 2009; 
 🆔 B25038_007E: Owner occupied: Moved in 1990 to 1999; 
 🆔 B25038_008E: Owner occupied: Moved in 1989 or earlier; 
 🆔 B25038_009E: Renter occupied; 
-🆔 B25038_010E: Renter occupied: Moved in 2023 or later; 
-🆔 B25038_011E: Renter occupied: Moved in 2020 to 2022; 
-🆔 B25038_012E: Renter occupied: Moved in 2010 to 2019; 
+🆔 B25038_010E: Renter occupied: Moved in 2021 or later; 
+🆔 B25038_011E: Renter occupied: Moved in 2018 to 2020; 
+🆔 B25038_012E: Renter occupied: Moved in 2010 to 2017; 
 🆔 B25038_013E: Renter occupied: Moved in 2000 to 2009; 
 🆔 B25038_014E: Renter occupied: Moved in 1990 to 1999; 
 🆔 B25038_015E: Renter occupied: Moved in 1989 or earlier; 
@@ -1345,7 +1344,7 @@ Code | Name | Variable Count |
 
 > 🆔 B25040_001E: Occupied Housing Units; 
 🆔 B25040_002E: Utility gas; 
-🆔 B25040_003E: Bottled or tank gas propane butane etc; 
+🆔 B25040_003E: Bottled tank or LP gas; 
 🆔 B25040_004E: Electricity; 
 🆔 B25040_005E: Fuel oil kerosene etc; 
 🆔 B25040_006E: Coal or coke; 
@@ -2187,21 +2186,21 @@ Code | Name | Variable Count |
 🆔 B05002_010E: Native: Born outside the United States: Puerto Rico; 
 🆔 B05002_011E: Native: Born outside the United States: US Island Areas; 
 🆔 B05002_012E: Native: Born outside the United States: Born abroad of American parents; 
-🆔 B05002_013E: Foreign-born; 
-🆔 B05002_014E: Foreign-born: Naturalized US citizen; 
-🆔 B05002_015E: Foreign-born: Naturalized US citizen: Europe; 
-🆔 B05002_016E: Foreign-born: Naturalized US citizen: Asia; 
-🆔 B05002_017E: Foreign-born: Naturalized US citizen: Africa; 
-🆔 B05002_018E: Foreign-born: Naturalized US citizen: Oceania; 
-🆔 B05002_019E: Foreign-born: Naturalized US citizen: Latin America; 
-🆔 B05002_020E: Foreign-born: Naturalized US citizen: Northern America; 
-🆔 B05002_021E: Foreign-born: Not a US citizen; 
-🆔 B05002_022E: Foreign-born: Not a US citizen: Europe; 
-🆔 B05002_023E: Foreign-born: Not a US citizen: Asia; 
-🆔 B05002_024E: Foreign-born: Not a US citizen: Africa; 
-🆔 B05002_025E: Foreign-born: Not a US citizen: Oceania; 
-🆔 B05002_026E: Foreign-born: Not a US citizen: Latin America; 
-🆔 B05002_027E: Foreign-born: Not a US citizen: Northern America; 
+🆔 B05002_013E: Foreign born; 
+🆔 B05002_014E: Foreign born: Naturalized US citizen; 
+🆔 B05002_015E: Foreign born: Naturalized US citizen: Europe; 
+🆔 B05002_016E: Foreign born: Naturalized US citizen: Asia; 
+🆔 B05002_017E: Foreign born: Naturalized US citizen: Africa; 
+🆔 B05002_018E: Foreign born: Naturalized US citizen: Oceania; 
+🆔 B05002_019E: Foreign born: Naturalized US citizen: Latin America; 
+🆔 B05002_020E: Foreign born: Naturalized US citizen: Northern America; 
+🆔 B05002_021E: Foreign born: Not a US citizen; 
+🆔 B05002_022E: Foreign born: Not a US citizen: Europe; 
+🆔 B05002_023E: Foreign born: Not a US citizen: Asia; 
+🆔 B05002_024E: Foreign born: Not a US citizen: Africa; 
+🆔 B05002_025E: Foreign born: Not a US citizen: Oceania; 
+🆔 B05002_026E: Foreign born: Not a US citizen: Latin America; 
+🆔 B05002_027E: Foreign born: Not a US citizen: Northern America; 
 
 
 [<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
@@ -2222,24 +2221,24 @@ Code | Name | Variable Count |
 > 🆔 B05005_001E: Population born outside the US; 
 🆔 B05005_002E: Entered 2010 or later; 
 🆔 B05005_003E: Entered 2010 or later: Native; 
-🆔 B05005_004E: Entered 2010 or later: Foreign-born; 
-🆔 B05005_005E: Entered 2010 or later: Foreign-born: Naturalized US citizen; 
-🆔 B05005_006E: Entered 2010 or later: Foreign-born: Not a US citizen; 
+🆔 B05005_004E: Entered 2010 or later: Foreign born; 
+🆔 B05005_005E: Entered 2010 or later: Foreign born: Naturalized US citizen; 
+🆔 B05005_006E: Entered 2010 or later: Foreign born: Not a US citizen; 
 🆔 B05005_007E: Entered 2000 to 2009; 
 🆔 B05005_008E: Entered 2000 to 2009: Native; 
-🆔 B05005_009E: Entered 2000 to 2009: Foreign-born; 
-🆔 B05005_010E: Entered 2000 to 2009: Foreign-born: Naturalized US citizen; 
-🆔 B05005_011E: Entered 2000 to 2009: Foreign-born: Not a US citizen; 
+🆔 B05005_009E: Entered 2000 to 2009: Foreign born; 
+🆔 B05005_010E: Entered 2000 to 2009: Foreign born: Naturalized US citizen; 
+🆔 B05005_011E: Entered 2000 to 2009: Foreign born: Not a US citizen; 
 🆔 B05005_012E: Entered 1990 to 1999; 
 🆔 B05005_013E: Entered 1990 to 1999: Native; 
-🆔 B05005_014E: Entered 1990 to 1999: Foreign-born; 
-🆔 B05005_015E: Entered 1990 to 1999: Foreign-born: Naturalized US citizen; 
-🆔 B05005_016E: Entered 1990 to 1999: Foreign-born: Not a US citizen; 
+🆔 B05005_014E: Entered 1990 to 1999: Foreign born; 
+🆔 B05005_015E: Entered 1990 to 1999: Foreign born: Naturalized US citizen; 
+🆔 B05005_016E: Entered 1990 to 1999: Foreign born: Not a US citizen; 
 🆔 B05005_017E: Entered before 1990; 
 🆔 B05005_018E: Entered before 1990: Native; 
-🆔 B05005_019E: Entered before 1990: Foreign-born; 
-🆔 B05005_020E: Entered before 1990: Foreign-born: Naturalized US citizen; 
-🆔 B05005_021E: Entered before 1990: Foreign-born: Not a US citizen; 
+🆔 B05005_019E: Entered before 1990: Foreign born; 
+🆔 B05005_020E: Entered before 1990: Foreign born: Naturalized US citizen; 
+🆔 B05005_021E: Entered before 1990: Foreign born: Not a US citizen; 
 
 
 [<div align="right"><< Back to Sections</div>](#-social-characteristics-27-sections-700-variables)
