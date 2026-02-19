@@ -39,7 +39,7 @@ import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import OCCR
+from ocgd_old import OCCR
 
 # Load environment variables from .env file
 load_dotenv()

@@ -30,7 +30,7 @@ import pandas as pd
 import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
-from ocgd import OCTL
+from ocgd_old import OCTL
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,6 +51,9 @@ octl = OCTL(part = 2, version = 2026.1)
 # Get the project metadata and directories from the OCTL class object
 prj_meta = octl.prj_meta
 prj_dirs = octl.prj_dirs
+
+
+
 # Get the master codebook (load from JSON file)
 cb = octl.master_codebook(create = False)
 

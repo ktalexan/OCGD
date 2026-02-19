@@ -17,7 +17,7 @@ import json
 import re
 import logging
 import unicodedata
-from typing import List, Union, Optional, Dict, Any
+from typing import Union, Optional, Dict, Any
 import wmi
 import pytz
 import pandas as pd
@@ -28,14 +28,14 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Dual Output: Define the class for logging ----
+# Define the DualOutput class for logging ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class DualOutput:
     """
     A class to duplicate console output to a log file.
     """
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## DualOutput fx: Class initialization ----
+    ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, filename: Optional[str] = None, meta: Optional[dict] = None):
         self._orig = None
@@ -53,7 +53,7 @@ class DualOutput:
         self.project_author: Optional[str] = meta.get("author") if meta else None
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## DualOutput fx: Open log file ----
+    ## fx: Open log file ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def _open_log(self, meta: dict, filename: str):
         # From the filename, determine if it's a .log, .txt, or .md file
@@ -83,7 +83,7 @@ class DualOutput:
         return open(path, "a", encoding="utf-8")
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## DualOutput fx: Enable logging ----
+    ## fx: Enable logging ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def enable(self, meta: Optional[dict] = None, filename: Optional[str] = None, replace: bool = False):
         log_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -130,7 +130,7 @@ class DualOutput:
             print(f"Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n\n")
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## DualOutput fx: Disable logging ----
+    ## fx: Disable logging ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def disable(self):
         self._end_time = datetime.datetime.now()
@@ -192,7 +192,7 @@ class DualOutput:
             self._log = None
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## DualOutput fx: Context manager enter ----
+    ## fx: Context manager enter ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __enter__(self):
         # Use stored metadata when entering context if available
@@ -200,13 +200,13 @@ class DualOutput:
         return self
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## DualOutput fx: Context manager exit ----
+    ## fx: Context manager exit ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __exit__(self, exc_type, exc, tb):
         self.disable()
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## DualOutput fx: Write output ----
+    ## fx: Write output ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def write(self, message):
         if self._orig:
@@ -219,7 +219,7 @@ class DualOutput:
                 pass
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## DualOutput fx: Flush output ----
+    ## fx: Flush output ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def flush(self):
         if self._orig:
@@ -233,7 +233,7 @@ class DualOutput:
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# OCGD: Define the Main Class ----
+# Define the OCGD Class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class OCGD:
@@ -243,7 +243,7 @@ class OCGD:
     """
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCGD fx: Initialize project structure ----
+    ## fx: Initialize project structure ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
@@ -296,7 +296,7 @@ class OCGD:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCGD fx: Project directories ----
+    ## fx: Project directories ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def project_directories(self, silent: bool = False) -> dict:
         """
@@ -368,7 +368,7 @@ class OCGD:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCGD fx: Get available census years ----
+    ## fx: Get available census years ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
     def get_census_years(self, dataset: str = "acs5") -> list[int]:
         """
@@ -406,7 +406,7 @@ class OCGD:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCGD fx: Load ArcGIS Pro Project ----
+    ## fx: Load ArcGIS Pro Project ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def load_aprx(self, aprx_path: str, gdb_path: str, add_to_map: bool = False) -> tuple:
         """
@@ -440,7 +440,7 @@ class OCGD:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCGD fx: Crawl TIGERweb REST API ----
+    ## fx: Crawl TIGERweb REST API ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def crawl_tigerweb(self, export: bool = False) -> dict:
         """
@@ -853,7 +853,7 @@ class OCGD:
         return inventory
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCGD fx: Create OCTL master codebook from TIGERweb inventory ----
+    ## fx: Create OCTL master codebook from TIGERweb inventory ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create_octl_master_cb(self, cb: dict = None) -> dict:
         """
@@ -1004,7 +1004,7 @@ class OCGD:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCGD fx: Create GDB from TIGERweb REST API ----
+    ## fx: Create GDB from TIGERweb REST API ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create_gdb_from_twr(self, year: int, level: str = "ACS", out_gdb: str = None):
         """
@@ -1063,7 +1063,9 @@ class OCGD:
         cb_layers = cb["layers"]
         cb_counties = None
 
-        print("\n--- Creating geodatabase (feature classes will be placed in GDB root) ---")
+        print("\n--- Creating geodatabase and feature datasets ---")
+
+        feature_datasets = ["Places", "Census", "Statistical", "Urban", "Legislative", "Schools", "Transportation", "Hydro", "LandUse"]
 
         # If out_gdb is None, create a scratch geodatabase
         if out_gdb is None:
@@ -1098,10 +1100,11 @@ class OCGD:
             print(f"✅ Geodatabase created: {out_gdb}")
 
         
-        # Note: feature datasets are NOT created; all layers will be written to the root of the geodatabase
-
-        # track the counties feature class name so other layers can reference it for spatial selections
-        county_fc_name = None
+        # create feature dataset for the layer from the feature_dataset list
+        for fd in feature_datasets:
+            if fd not in arcpy.ListDatasets():
+                arcpy.CreateFeatureDataset_management(out_gdb, fd, self.sr)
+                print(f"- Created feature dataset: {fd}")
 
         # Part 1: Create Counties feature class as reference
         print("\n--- Processing layer: Counties ---")
@@ -1125,10 +1128,10 @@ class OCGD:
         layer_code = cb_counties["code"]    # The output feature class name (same as layer code)
         out_fc_name = layer_code
         layer_method = cb_counties["ocgd_method"]
-        # layer_group = cb_counties["group"]  # The feature dataset name to use for this layer
+        layer_group = cb_counties["group"]  # The feature dataset name to use for this layer
 
-        # Output path is the geodatabase root (no feature datasets)
-        out_path = out_gdb
+        # Update the output geodatabase path to include the feature dataset for this layer
+        out_path = os.path.join(out_gdb, layer_group)
 
         # Define the query to run
         query = "STATE = '06' AND COUNTY = '059'"  # Orange County, CA
@@ -1169,9 +1172,6 @@ class OCGD:
                 arcpy.AlterAliasName(out_fc_path, layer_alias)
 
             print(f"✅ Feature class created: {out_fc_path}")
-
-            # store counties feature class name for later spatial selections
-            county_fc_name = out_fc_name
 
             # Update the County layer metadata
             if "Counties" in master_cb:
@@ -1218,16 +1218,13 @@ class OCGD:
             layer_alias = cb_layer["alias"]
             layer_code = cb_layer["code"]    # The output feature class name (same as layer code)
             layer_method = cb_layer["ocgd_method"]
-            # layer_group = cb_layer["group"]  # The feature dataset name to use for this layer
+            layer_group = cb_layer["group"]  # The feature dataset name to use for this layer
 
             # Define the path to the Counties feature class for spatial selection (the one created earlier)
-            if county_fc_name:
-                county_path = os.path.join(out_gdb, county_fc_name)
-            else:
-                county_path = os.path.join(out_gdb, "CO")
+            county_path = os.path.join(out_gdb, "Places", "CO")
 
-            # Output path is the geodatabase root (no feature datasets)
-            out_path = out_gdb
+            # Update the output geodatabase path to include the feature dataset for this layer
+            out_path = os.path.join(out_gdb, layer_group)
 
             # Define output feature class name and path
             out_fc_name = layer_code
@@ -1380,7 +1377,7 @@ class OCGD:
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# OCTL: Define the main class ----
+# Define the OCTL main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class OCTL(OCGD):
     """Class Containing the Orange County Tiger/Line (OCTL) Processing Workflow Functions.
@@ -1391,7 +1388,7 @@ class OCTL(OCGD):
     """
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Class initialization ----
+    ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
@@ -1405,7 +1402,57 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Project metadata ----
+    ## fx: Get remote path ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def get_remote_path(self, label_name: str) -> str | None:
+        """
+        Get the remote path based on the drive label name.
+        Args:
+            label_name (str): The label name of the drive to search for.
+        Returns:
+            str | None: The remote path if found, otherwise None.
+        Raises:
+            ValueError: If label_name is not a string.
+        Example:
+            >>> remote_path = get_remote_path("DRKWD02")
+        Notes:
+            This function uses the WMI library to query the system's logical disks
+            and find the drive with the specified label name. If found, it constructs
+            and returns the remote path; otherwise, it returns None.
+        """
+        # Validate input
+        if not isinstance(label_name, str):
+            raise ValueError("label_name must be a string")
+        # Query WMI for logical disks
+        c = wmi.WMI()
+        # Iterate through logical disks to find the one with the specified label
+        for drive in c.Win32_LogicalDisk():
+            # VolumeName is the disk label (e.g., "Backup", "USB_DRIVE")
+            if drive.VolumeName == label_name:
+                # Returns network path or drive letter
+                drive_letter = drive.ProviderName if drive.ProviderName else drive.DeviceID
+                # Construct the remote path
+                remote_path = f"{drive_letter}\\Professional\\OCPW Projects\\ocgd\\octl\\tl_raw"
+                # Return the remote path
+                return remote_path
+        # If no drive is found, return None
+        return None
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Print arcpy messages ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def arcpy_messages(self, text = None) -> None:
+        """Print arcpy messages."""
+        for message in arcpy.GetMessages().splitlines():
+            if text:
+                print(f"{text} {message}")
+            else:
+                print(message)
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Project metadata ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
     def project_metadata(self, silent: bool = False) -> dict:
         """
@@ -1463,7 +1510,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Codebook metadata ----
+    ## fx: Codebook metadata ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def codebook_metadata(self, year: int, layers_metadata: dict) -> dict:
         """
@@ -1481,7 +1528,7 @@ class OCTL(OCGD):
             This function assumes that the input dictionary contains all necessary keys for each layer.
         """
         # Create standard entry values
-        entry_gdb = f"octl{year}.gdb"
+        entry_gdb = f"tl{year}.gdb"
         entry_tags = "Orange County, California, OCTL, TigerLines"
         entry_credits = "Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services"
         entry_access = """The feed data and associated resources (maps, apps, endpoints) can be used under a <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons CC-SA-BY</a> License, providing attribution to OC Public Works, OC Survey Geospatial Services. <div><br /></div><div>We make every effort to provide the most accurate and up-to-date data and information. Nevertheless the data feed is provided, 'as is' and OC Public Work's standard <a href="https://www.ocgov.com/contact-county/disclaimer" target="_blank">Disclaimer</a> applies.</div><div><br /></div><div>For any inquiries, suggestions or questions, please contact:</div><div><br /></div><div style="text-align:center;"><a href="https://www.linkedin.com/in/ktalexan/" target="_blank"><b>Dr. Kostas Alexandridis, GISP</b></a><br /></div><div style="text-align:center;">GIS Analyst | Spatial Complex Systems Scientist</div><div style="text-align:center;">OC Public Works/OC Survey Geospatial Applications</div><div style="text-align:center;"><div>601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701</div><div>Email: <a href="mailto:kostas.alexandridis@ocpw.ocgov.com" target="_blank">kostas.alexandridis@ocpw.ocgov.com</a> | Phone: (714) 967-0826</div></div>"""
@@ -2355,7 +2402,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Folder metadata ----
+    ## fx: Folder metadata ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def folder_metadata(self, year: int, remote: bool = True, export: bool = False) -> dict:
         """
@@ -2536,7 +2583,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Load codebook ----
+    ## fx: Load codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def load_cb(self, year: int, cbdf: bool = False) -> tuple:
         """
@@ -2571,7 +2618,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Scratch geodatabase ----
+    ## fx: Scratch geodatabase ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def scratch_gdb(self, method: str = "create"):
         """
@@ -2614,7 +2661,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Create geodatabase ----
+    ## fx: Create geodatabase ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create_gdb(self, year: int) -> str:
         """
@@ -2648,7 +2695,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Process raw data ----
+    ## fx: Process raw data ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def process_raw_data(self, year: int, remote: bool = True, export: bool = False, logging = False) -> dict:
         """
@@ -2934,7 +2981,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Get gdb dictionary ----
+    ## fx: Get gdb dictionary ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def get_gdb_dict(self) -> dict:
         """
@@ -2995,7 +3042,7 @@ class OCTL(OCGD):
         return gdb_dict
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Map metadata ----
+    ## fx: Map metadata ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def map_metadata(self, year: int) -> dict:
         """Function to get the map metadata for a given year.
@@ -3029,7 +3076,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Write dictionary to JSON ----
+    ## fx: Write dictionary to JSON ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def write_dict_to_json(self, data: dict, dict_type: str) -> str:
         """
@@ -3066,7 +3113,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Master codebook ----
+    ## fx: Master codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def master_codebook(self, create: bool = False) -> dict:
         """
@@ -3130,7 +3177,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Get feature list ----
+    ## fx: Get feature list ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def get_feature_list(self) -> dict:
         """
@@ -3231,7 +3278,7 @@ class OCTL(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCTL fx: Get OCTL geodatabase structure ----
+    ## fx: Get OCTL geodatabase structure ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def get_octl_gdb_structure(self) -> dict:
         """
@@ -3320,7 +3367,7 @@ class OCTL(OCGD):
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# OCDC: Define the main class ----
+# Define the OCDC main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class OCDC(OCGD):
     """
@@ -3344,11 +3391,11 @@ class OCDC(OCGD):
     """
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCDC fx: Class initialization ----
+    ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
-        Initializes the OCDC class.
+        Initializes the OCGD class.
         """
         # Initialize the OCGD class with provided part/version
         super().__init__(part, version)
@@ -3362,11 +3409,11 @@ class OCDC(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCDC fx: Project metadata ----
+    ## fx: Project metadata ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def project_metadata(self, silent: bool = False) -> dict:
         """
-        Function to generate project metadata for the OCDC data processing project.
+        Function to generate project metadata for the OCUP data processing project.
         Args:
             silent (bool, optional): Whether to print the metadata information. Defaults to False.
         Returns:
@@ -3422,7 +3469,7 @@ class OCDC(OCGD):
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# OCACS: Define the main class ----
+# Define the OCACS main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class OCACS(OCGD):
     """
@@ -3446,13 +3493,13 @@ class OCACS(OCGD):
     """
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: Class initialization ----
+    ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
-        Initializes the OCACS class.
+        Initializes the OCacs class.
         """
-        # Initialize the OCACS class with provided part/version
+        # Initialize the OCGD class with provided part/version
         super().__init__(part, version)
 
         # Create a prj_meta variable calling the project_metadata function
@@ -3463,38 +3510,33 @@ class OCACS(OCGD):
 
         # Define the geographies list
         self.geographies = [
-            "BG",  # Block Group
-            "CA",  # Combined Statistical Areas
-            "CD",  # Congressional District
             "CO",  # County
-            "CP",  # Incorporated Places
             "CS",  # County Subdivision
-            "DP",  # Designated Places
+            "PL",  # Cities or Places
+            "ZC",  # Zip Code Tabulation Area
+            "CD",  # Congressional District
             "LL",  # State Assembly Legislative Districts (Lower)
             "LU",  # State Senate Legislative Districts (Upper)
-            "MD",  # Metropolitan Division
-            "MS",  # Metropolitan Statistical Area
-            "PL",  # Cities or Places
-            "PU",  # Public Use Microdata Area
             "SE",  # Elementary School District
             "SS",  # Secondary School District
             "SU",  # Unified School District
-            "TR",  # Census Tract
             "UA",  # Urban Area
-            "UR",  # Urbanized Area
-            "ZC"  # Zip Code Tabulation Area
+            "PU",  # Public Use Microdata Area
+            "BG",  # Block Group
+            "TR"   # Census Tract
         ]
+        
 
         # Load the codebook
         #self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
         #self.cb, self.df_cb = self.load_cb(silent = False)
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: Project metadata ----
+    ## fx: Project metadata ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def project_metadata(self, silent: bool = False) -> dict:
         """
-        Function to generate project metadata for the OCACS data processing project.
+        Function to generate project metadata for the OCUP data processing project.
         Args:
             silent (bool, optional): Whether to print the metadata information. Defaults to False.
         Returns:
@@ -3504,7 +3546,7 @@ class OCACS(OCGD):
         Example:
             >>> metadata = project_metadata(1, 1)
         Notes:
-            The project_metadata function is used to generate project metadata for the OCACS data processing project.
+            The project_metadata function is used to generate project metadata for the OCUP data processing project.
         """
         
         # Match the part to a specific step and description (with default case)
@@ -3550,7 +3592,7 @@ class OCACS(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: Construct master variables dictionary ----
+    ## fx: Construct master variables dictionary ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def construct_master_variables_dict(self, write_to_file: bool = True) -> dict:
         # Get the list of ACS5 years
@@ -3624,7 +3666,7 @@ class OCACS(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: ACS variables codebook ----
+    ## fx: ACS variables codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def acs_cb_variables(self, year: int, write_to_disk: Optional[bool] = False) -> pd.DataFrame:
         """
@@ -3878,56 +3920,7 @@ class OCACS(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: Construct geodatabases dictionary ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def octl_ocacs_dict(self) -> Dict[int, Dict[str, Any]]:
-        """
-            Constructs a dictionary containing information about the OCACS geodatabases for each year.
-            Args:
-                None
-            Returns:
-                Dict[int, Dict[str, Any]]: A dictionary containing information about the OCACS geodatabases for each year.
-            Raises:
-                None
-            Example:
-                >>> ocacs_dict = ocacs.octl_ocacs_dict()
-                >>> print(ocacs_dict)
-            Note:
-                The function assumes that the OCACS geodatabases are stored in the "gis" directory specified in the project directories.
-                It looks for geodatabases that match the pattern "octl_ocacs*.gdb" and extracts information such as the year, name, path, and feature classes contained within each geodatabase.
-        """
-        # Get the base directory for the geodatabases from the project directories
-        base = self.prj_dirs["gis"]
-
-        # List all geodatabases in the base directory that match the pattern "octl_ocacs*.gdb" and sort them
-        gdbs = sorted(Path(base).glob("octl_ocacs*.gdb"))
-
-        # Initialize an empty dictionary to store information about the OCACS geodatabases
-        out_dict = {}
-
-        # Iterate through each geodatabase found and extract relevant information
-        for gdb in gdbs:
-            # Extract the year from the geodatabase name
-            year = gdb.stem.split("_")[-1].replace("ocacs", "")
-            # Extract the name of the geodatabase
-            name = gdb.name
-            # Set the workspace to the current geodatabase
-            arcpy.env.workspace = gdb.as_posix()
-            # List all feature classes and their geography codes (first two characters of the feature class name) in the geodatabase
-            fcs = {fc[:2]: fc for fc in arcpy.ListFeatureClasses()}
-
-            # fc_list = [fc for fc in arcpy.ListFeatureClasses()]
-            # Sort the list of geography codes
-            # geo_list = sorted([fc[:2] for fc in arcpy.ListFeatureClasses()])
-            # Store the extracted information in the dictionary with the year as the key
-            out_dict[year] = {"name": name, "path": gdb.as_posix(), "layers": fcs}
-        
-        # Return the constructed dictionary containing information about the OCACS geodatabases
-        return out_dict
-
-
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: Get ACS variable list ----
+    ## fx: Get ACS variable list ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def get_var_list(self, year: int, category: str, output_format: str = "json") -> Union[Dict[str, Any], pd.DataFrame, list]:
         """
@@ -3960,7 +3953,6 @@ class OCACS(OCGD):
         cb_vars_path = os.path.join(self.prj_dirs["codebook"], "ocacs_cb_vars.json")
 
         # Open the JSON file and load the data into a dictionary
-        cb_vars = {}
         if os.path.exists(cb_vars_path):
             with open(cb_vars_path, "r", encoding = "utf-8") as f:
                 cb_vars = json.load(f)[str(year)].get(category, {}).get("all_variables", [])
@@ -3981,7 +3973,7 @@ class OCACS(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: Get geoids ----
+    ## fx: Get geoids ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def get_geoids(self, year: str, fc: str):
         """
@@ -4008,21 +4000,23 @@ class OCACS(OCGD):
         arcpy.env.workspace = gdb_path
         arcpy.env.overwriteOutput = True
 
-        fc_match = None
-        fc_match = next((s for s in arcpy.ListFeatureClasses() if s.startswith(fc)), None)
-        if fc_match:
-            print(f"Found feature class {fc_match} at the root of the geodatabase.")
-        if not fc_match:
+        for dataset in arcpy.ListDatasets(feature_type = "Feature"):
+            if fc in arcpy.ListFeatureClasses(feature_dataset = dataset):
+                fc_path = os.path.join(dataset, fc)
+                fc_dataset = dataset
+                print(f"Found feature class {fc} in dataset {dataset}.")
+                break
+        if not fc_path:
             raise ValueError(f"Feature class {fc} does not exist in any feature dataset in geodatabase {gdb_path}.")
 
         # Loop through the fields in the feature class to find the GEOID field
-        for f in arcpy.ListFields(fc_match):
+        for f in arcpy.ListFields(fc_path):
             # Check if the field name contains "GEOID"
             if f.name.startswith("GEOID"):
                 geoid_field = f.name
                 geoids = set()
                 # Get the unique values for the GEOID field
-                with arcpy.da.SearchCursor(fc_match, geoid_field) as cursor:
+                with arcpy.da.SearchCursor(fc_path, geoid_field) as cursor:
                     # Loop through the rows in the cursor
                     for row in cursor:
                         geoids.add(row[0])
@@ -4030,12 +4024,12 @@ class OCACS(OCGD):
                 geoids = sorted(list(geoids))
 
                 # Return the GEOID field name and unique values
-                return {"field": geoid_field, "values": geoids}
-        raise ValueError(f"No GEOID field found in feature class {fc_match}.")
+                return {"dataset": fc_dataset, "field": geoid_field, "values": geoids}
+        raise ValueError(f"No GEOID field found in feature class {fc_path}.")
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: Fetch ACS tables ----
+    ## fx: Fetch ACS tables ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def fetch_acs_tables(self, year: int, variables: list[str], geography: str = "CO") -> pd.DataFrame:
         """
@@ -4091,6 +4085,41 @@ class OCACS(OCGD):
         in_clause: Union[str, list[str]] = ""
         print(f"Fetching data for geography: {geography}")
         match geography:
+            case "CO":
+                print("Fetching county data")
+                geoids = self.get_geoids(str(year), "CO")
+                for_clause = "county:059"
+                in_clause = "state:06"
+            case "CS":
+                print("Fetching county subdivision data")
+                geoids = self.get_geoids(str(year), "CS")
+                for_clause = "county subdivision:*"
+                in_clause = ["state:06", "county:059"]
+            case "CP":
+                print("Fetching incorporated places data")
+                geoids = self.get_geoids(str(year), "CP")
+                for_clause = "place:*"
+                in_clause = "state:06"
+            case "DP":
+                print("Fetching designated places data")
+                geoids = self.get_geoids(str(year), "DP")
+                for_clause = "place:*"
+                in_clause = "state:06"
+            case "PU":
+                print("Fetching public use microdata area data")
+                geoids = self.get_geoids(str(year), "PU")
+                for_clause = "public use microdata area:*"
+                in_clause = "state:06"
+            case "ZC":
+                print("Fetching zip code tabulation areas data")
+                geoids = self.get_geoids(str(year), "ZC")
+                for_clause = "zip code tabulation area:*"
+                in_clause = ""
+            case "TR":
+                print("Fetching census tract data")
+                geoids = self.get_geoids(str(year), "TR")
+                for_clause = "tract:*"
+                in_clause = ["state:06", "county:059"]
             case "BG":
                 print("Fetching block group data")
                 geoids = self.get_geoids(str(year), "BG")
@@ -4100,92 +4129,52 @@ class OCACS(OCGD):
                 print("Fetching combined statistical area data")
                 geoids = self.get_geoids(str(year), "CA")
                 for_clause = "combined statistical area:*"
+                in_clause = "state:06"
+            case "MD":
+                print("Fetching metropolitan division data")
+                geoids = self.get_geoids(str(year), "MD")
+                for_clause = "metropolitan division:*"
+                in_clause = "state:06"
+            case "MS":
+                print("Fetching metropolitan statistical area data")
+                geoids = self.get_geoids(str(year), "MS")
+                for_clause = "metropolitan statistical area/micropolitan statistical area:*"
+                in_clause = "state (or part):06"
+            case "UR":
+                print("Fetching urbanized area data")
+                geoids = self.get_geoids(str(year), "UR")
+                for_clause = "urban area:*"
                 in_clause = ""
             case "CD":
                 print("Fetching congressional district data")
                 geoids = self.get_geoids(str(year), "CD")
                 for_clause = "congressional district:*"
                 in_clause = "state:06"
-            case "CO":
-                print("Fetching county data")
-                geoids = self.get_geoids(str(year), "CO")
-                for_clause = "county:059"
-                in_clause = "state:06"
-            case "CP":
-                print("Fetching incorporated places data")
-                geoids = self.get_geoids(str(year), "CP")
-                for_clause = "place:*"
-                in_clause = "state:06"
-            case "CS":
-                print("Fetching county subdivision data")
-                geoids = self.get_geoids(str(year), "CS")
-                for_clause = "county subdivision:*"
-                in_clause = ["state:06", "county:059"]
-            case "DP":
-                print("Fetching designated places data")
-                geoids = self.get_geoids(str(year), "DP")
-                for_clause = "place:*"
+            case "LU":
+                print("Fetching state senate legislative districts (upper) data")
+                geoids = self.get_geoids(str(year), "LU")
+                for_clause = "state legislative district (upper chamber):*"
                 in_clause = "state:06"
             case "LL":
                 print("Fetching state assembly legislative districts (lower) data")
                 geoids = self.get_geoids(str(year), "LL")
                 for_clause = "state legislative district (lower chamber):*"
                 in_clause = "state:06"
-            case "LU":
-                print("Fetching state senate legislative districts (upper) data")
-                geoids = self.get_geoids(str(year), "LU")
-                for_clause = "state legislative district (upper chamber):*"
-                in_clause = "state:06"
-            case "MD":
-                print("Fetching metropolitan division data")
-                geoids = self.get_geoids(str(year), "MD")
-                for_clause = "metropolitan division:*"
-                in_clause = "metropolitan statistical area/micropolitan statistical area:31080"
-            case "MS":
-                print("Fetching metropolitan statistical area data")
-                geoids = self.get_geoids(str(year), "MS")
-                for_clause = "metropolitan statistical area/micropolitan statistical area:*"
-                in_clause = ""
-            case "PU":
-                print("Fetching public use microdata area data")
-                geoids = self.get_geoids(str(year), "PU")
-                for_clause = "public use microdata area:*"
-                in_clause = "state:06"
-            case "SE":
-                print("Fetching elementary school district data")
-                geoids = self.get_geoids(str(year), "SE")
-                for_clause = "school district (elementary):*"
+            case "SU":
+                print("Fetching unified school district data")
+                geoids = self.get_geoids(str(year), "SU")
+                for_clause = "school district (unified):*"
                 in_clause = "state:06"
             case "SS":
                 print("Fetching secondary school district data")
                 geoids = self.get_geoids(str(year), "SS")
                 for_clause = "school district (secondary):*"
                 in_clause = "state:06"
-            case "SU":
-                print("Fetching unified school district data")
-                geoids = self.get_geoids(str(year), "SU")
-                for_clause = "school district (unified):*"
+            case "SE":
+                print("Fetching elementary school district data")
+                geoids = self.get_geoids(str(year), "SE")
+                for_clause = "school district (elementary):*"
                 in_clause = "state:06"
-            case "TR":
-                print("Fetching census tract data")
-                geoids = self.get_geoids(str(year), "TR")
-                for_clause = "tract:*"
-                in_clause = ["state:06", "county:059"]
-            case "UA":
-                print("Fetching urban area data")
-                geoids = self.get_geoids(str(year), "UA")
-                for_clause = "urban area:*"
-                in_clause = ""
-            case "UR":
-                print("Fetching urbanized area data")
-                geoids = self.get_geoids(str(year), "UR")
-                for_clause = "urban area:*"
-                in_clause = ""
-            case "ZC":
-                print("Fetching zip code tabulation areas data")
-                geoids = self.get_geoids(str(year), "ZC")
-                for_clause = "zip code tabulation area:*"
-                in_clause = ""
             case _:
                 raise ValueError(f"Unsupported geography: {geography}")
 
@@ -4221,8 +4210,7 @@ class OCACS(OCGD):
             try:
                 data = resp.json()
             except Exception as exc:
-                print(f"Error parsing JSON response: {exc}\n- Status Code: {resp.status_code}\n- Response Text (truncated): {resp.text[:500]}")
-                continue
+                raise RuntimeError(f"Invalid JSON response from Census API (status={resp.status_code}): {resp.text[:500]}") from exc
 
             if not data or len(data) < 2:
                 continue
@@ -4316,7 +4304,7 @@ class OCACS(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: OCTL to SDF ----
+    ## fx: OCTL to SDF ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def octl_to_sdf(self, year: int, geography: str):
         """
@@ -4343,14 +4331,8 @@ class OCACS(OCGD):
             arcpy.env.workspace = octl_gdb_path
             arcpy.env.overwriteOutput = True
 
-            gdb_geography = None
-            for fc in arcpy.ListFeatureClasses():
-                if fc.startswith(geography):
-                    gdb_geography = fc
-                    break
-
             # Load the OCTL feature class into a spatial data frame
-            octl_sdf = pd.DataFrame.spatial.from_featureclass(os.path.join(octl_gdb_path, gdb_geography))
+            octl_sdf = pd.DataFrame.spatial.from_featureclass(os.path.join(octl_gdb_path, geography))
         finally:
             arcpy.env.workspace = os.getcwd()
 
@@ -4359,40 +4341,29 @@ class OCACS(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCACS fx: Process ACS data ----
+    ## fx: Process ACS data ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def process_acs_data(self, process_year: list[int] = None, all_years: bool = False):
         """
         Process ACS data for all years, datasets, and geographies.
         Args:
-            process_year (list[int], optional): List of years to process. Defaults to None.
-            all_years (bool, optional): Process all years. Defaults to False.
+            None
         Returns:
             None
         Raises:
-            ValueError: If both process_year and all_years are specified, or if neither is specified.
+            None
         Example:
-            >>> process_acs_data(process_year = [2010, 2015])
-            >>> process_acs_data(all_years = True)
+            >>> process_acs_data()
         Notes:
             This function processes ACS data by creating geodatabases for each year, datasets, and geographies.
         """
-
-        # Import the full inventory JSON file (if not already in memory)
-        with open(os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json"), "r", encoding = "utf-8") as f:
-            cb = json.load(f)["series"]["ACS"]
-
-        # Get the octl OCACS geodatabases dictionary
-        gdb_dict = self.octl_ocacs_dict()
-
-        # Get the years available in the octl OCACS geodatabases
-        gdb_years = [int(y) for y in sorted(gdb_dict.keys())]
 
         # Determine the years to process
         years = []
         if process_year is None and all_years:
             print("Processing ACS data for all years...")
-            years = gdb_years
+            # Get the years to process
+            years = self.acs5_years
         elif process_year is not None and not all_years:
             # Check if year is an integer or a list of integers
             if isinstance(process_year, int):
@@ -4406,20 +4377,12 @@ class OCACS(OCGD):
 
         # Loop through each year
         for year in years:
-            # Get the acs variable codebook for that year
-            cb_layers = cb[str(year)]["layers"]
-
-            # Get the geographies available in the codebook for that year
-            geographies = list(gdb_dict[str(year)]["layers"].keys())
-            # Get the feature classes available in the geodatabase for that year
-            fcs = list(gdb_dict[str(year)]["layers"].values())
-
             print(f"\nProcessing ACS year: {year}")
             # Create a new geodatabase for each year
-            gdb_path = os.path.join(self.prj_dirs["gis"], f"ocacs{year}.gdb")
+            gdb_path = os.path.join(self.prj_dirs["gis"], f"acs{year}.gdb")
 
             # Get the acs variable codebook path for that year
-            cb_acs_path = os.path.join(self.prj_dirs["codebook"], f"ocacs_cb_vars_{year}.json")
+            cb_acs_path = os.path.join(self.prj_dirs["codebook"], f"acs_variables_{year}.json")
             # Load the ACS variables codebook for that year
             cb_acs = {}
             if os.path.exists(cb_acs_path):
@@ -4428,13 +4391,13 @@ class OCACS(OCGD):
             
             # Check if the geodatabase already exists; if so, delete it before creating a new one
             if not arcpy.Exists(gdb_path):
-                print(f"- Creating geodatabase: ocacs{year}.gdb")
-                arcpy.CreateFileGDB_management(self.prj_dirs["gis"], f"ocacs{year}.gdb")
+                print(f"- Creating geodatabase: acs{year}.gdb")
+                arcpy.CreateFileGDB_management(self.prj_dirs["gis"], f"acs{year}.gdb")
             else:
-                print(f"- Deleting existing geodatabase: ocacs{year}.gdb")
+                print(f"- Deleting existing geodatabase: acs{year}.gdb")
                 arcpy.Delete_management(gdb_path)
-                print(f"- Creating geodatabase: ocacs{year}.gdb")
-                arcpy.CreateFileGDB_management(self.prj_dirs["gis"], f"ocacs{year}.gdb")
+                print(f"- Creating geodatabase: acs{year}.gdb")
+                arcpy.CreateFileGDB_management(self.prj_dirs["gis"], f"acs{year}.gdb")
 
             # Within each geodatabase, create feature datasets for each dataset
             for fd in self.datasets:
@@ -4446,37 +4409,33 @@ class OCACS(OCGD):
                     print(f"\nCreating feature dataset: {fd}")
                     arcpy.CreateFeatureDataset_management(gdb_path, fd, spatial_reference = self.sr)
 
-                for geo in geographies:
-                    if geo not in [key["code"][:2] for key in cb_layers.values()]:
-                        print(f"\nGeography {geo} is not in the codebook for year {year}. Skipping...")
-                        continue
-
-                    print(f"\n--- Processing {year} geography: {geo} ---")
+                for geo in self.geographies:
+                    print(f"\nProcessing {year} geography: {geo}")
 
                     # Convert TL to SDF for the given year and geography
-                    octl_sdf = self.octl_to_sdf(year, geo)
+                    tl_sdf = self.tl_to_sdf(year, geo)
                     print(f"- Converted TL to SDF for geography: {geo}")
 
                     # Get the list of variables to process for the given dataset
-                    process_vars = self.get_var_list(year = year, category = fd, output_format = "list")
+                    process_vars = self.get_acs_list(year, fd)
                     print(f"- Retrieved {len(process_vars)} variables for dataset: {fd}")
 
                     # Fetch the ACS tables for the given year, variables, and geography
-                    ocacs_df = self.fetch_acs_tables(year = year, variables = process_vars, geography = geo)
+                    acs_df = self.fetch_acs_tables(year = year, variables = process_vars, geography = geo)
 
                     # Check if acs_df is None (no data returned)
-                    if ocacs_df is None:
+                    if acs_df is None:
                         print(f"- No ACS data returned for geography: {geo}. Skipping...")
                         continue
 
-                    print(f"- Fetched ACS tables for geography: {geo} with {len(ocacs_df)} records")
+                    print(f"- Fetched ACS tables for geography: {geo} with {len(acs_df)} records")
 
                     # Get the name of the tl_sdf column that contains the GEOID values
-                    octl_geoid_col = [col for col in octl_sdf.columns if "GEOID" in col][0]
-                    ocacs_geoid_col = [col for col in ocacs_df.columns if "GEOID" in col][0]
+                    tl_geoid_col = [col for col in tl_sdf.columns if "GEOID" in col][0]
+                    acs_geoid_col = [col for col in acs_df.columns if "GEOID" in col][0]
 
                     # Merge the demographic variables from acs_df (GEOID) to the tl_sdf (GEOID10)
-                    octl_sdf = octl_sdf.merge(ocacs_df, left_on = octl_geoid_col, right_on = ocacs_geoid_col, how="left")
+                    tl_sdf = tl_sdf.merge(acs_df, left_on = tl_geoid_col, right_on = acs_geoid_col, how="left")
                     print(f"- Merged ACS data with TL SDF for geography: {geo}")
 
                     # Define the output feature class path
@@ -4487,27 +4446,27 @@ class OCACS(OCGD):
                     arcpy.env.overwriteOutput = True
 
                     # Convert the merged DataFrame to a feature class in the geodatabase
-                    octl_sdf.spatial.to_featureclass(location = fc_path, overwrite = True, has_z = None, has_m = None, sanitize_columns = False)
+                    tl_sdf.spatial.to_featureclass(location = fc_path, overwrite = True, has_z = None, has_m = None, sanitize_columns = False)
                     print(f"- Converted merged DataFrame to feature class: {geo+fd[0]}")
 
                     # Set field aliases based on the codebook
-                    print(f"- Assigning field aliases to feature class fields: {geo+fd[0]}")
+                    print(f"- Setting field aliases for feature class: {geo+fd[0]}")
                     for field in arcpy.ListFields(fc_path):
                         # Find the variable in the codebook to get the alias
                         found = False
                         for vars_dict in cb_acs.values():
-                            if field.name in vars_dict["variable"]:
-                                field_alias = vars_dict["alias"]
+                            if field.name in vars_dict:
+                                field_alias = vars_dict[field.name]["alias"]
                                 found = True
                                 break
                         if found:
                             # Set the field alias
                             arcpy.AlterField_management(fc_path, field.name, new_field_alias = field_alias)
-                            print(f"  - Alias for field {field.name}: {field_alias}")
+                            print(f"  - Set alias for field {field.name} to {field_alias}")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# OCCR: Define the main class ----
+# Define the OCCR main class ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class OCCR(OCGD):
     """
@@ -4531,7 +4490,7 @@ class OCCR(OCGD):
     """
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCCR fx: Class initialization ----
+    ## fx: Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, part: int = 0, version: float = float(datetime.datetime.now().year)):
         """
@@ -4585,11 +4544,11 @@ class OCCR(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCCR fx: Project metadata ----
+    ## fx: Project metadata ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def project_metadata(self, silent: bool = False) -> dict:
         """
-        Function to generate project metadata for the OCCR data processing project.
+        Function to generate project metadata for the OCUP data processing project.
         Args:
             silent (bool, optional): Whether to print the metadata information. Defaults to False.
         Returns:
@@ -4599,7 +4558,7 @@ class OCCR(OCGD):
         Example:
             >>> metadata = project_metadata(1, 1)
         Notes:
-            The project_metadata function is used to generate project metadata for the OCCR data processing project.
+            The project_metadata function is used to generate project metadata for the OCUP data processing project.
         """
         
         # Match the part to a specific step and description (with default case)
@@ -4645,7 +4604,7 @@ class OCCR(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCCR fx: Load CR codebook ----
+    ## fx: Load CR codebook ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def generate_occr_codebook(self, year: int, write_to_file: bool = False) -> dict:
@@ -4696,7 +4655,7 @@ class OCCR(OCGD):
         return occr_cb
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCCR fx: Fetch OCCR tables ----
+    ## fx: Fetch OCCR tables ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def fetch_occr_tables(self, year: int) -> pd.DataFrame:
         """
@@ -4777,7 +4736,7 @@ class OCCR(OCGD):
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## OCCR fx: Create OCCR feature class ----
+    ## fx: Create OCCR feature class ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create_occr_feature_class(self, year: int):
         """
@@ -4835,8 +4794,8 @@ class OCCR(OCGD):
             print(f"Warning TL SDF has {-diff_count} fewer records ({octl_sdf.shape[0]}) than CR DB ({occr_db.shape[0]}).")
         
         print("- Joining CR data with TL SDF on GEOID...")
-        # Perform a left join: keep all octl_sdf records and add matching cr_db columns
-        # If there are overlapping column names besides `GEOID`, keep octl_sdf's versions
+        # Perform a left join: keep all tl_sdf records and add matching cr_db columns
+        # If there are overlapping column names besides `GEOID`, keep tl_sdf's versions
         cols_to_merge = [c for c in occr_db.columns if c != "GEOID"]
         octl_sdf = octl_sdf.merge(occr_db[ ["GEOID"] + cols_to_merge ], on="GEOID", how="left")
         print(f"- After join, octl_sdf shape: {octl_sdf.shape}")

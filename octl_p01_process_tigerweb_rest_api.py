@@ -8,6 +8,7 @@
 
 print("\nOrange County Tiger/Lines Processing (OCTL): Part 1: Raw Data Processing\n")
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 1.1 Preliminaries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,7 +126,8 @@ for year in range_acs_years:
     # Check if the year is available in the ACS series, if not, use the closest available year
     if str(year) not in acs_years:
         # find the closest year in acs_years to the current year
-        year_to_use = int(min(acs_years, key = lambda x: abs(int(x) - year)))
+        current_year = year
+        year_to_use = int(min(acs_years, key = lambda x, y = current_year: abs(int(x) - y)))
         print(f"Year {year} is not available in the ACS series. Using closest available year: {year_to_use}")
     else:
         year_to_use = year

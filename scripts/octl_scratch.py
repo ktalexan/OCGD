@@ -12,7 +12,7 @@ import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import OCTGL
+from ocgd import OCTL
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,33 +25,40 @@ arcpy.env.workspace = os.getcwd()
 arcpy.env.overwriteOutput = True
 
 # Initialize OCTL instance
-tgl = OCTGL(part= 1, version= 2026.1)
+octl = OCTL(part= 1, version= 2026.1)
+
 # Get the project metadata and directories from the OCTL class object
-prj_meta = tgl.prj_meta
-prj_dirs = tgl.prj_dirs
-# Get the master codebook (load from JSON file)
-cb = tgl.master_codebook(create = False)
+prj_meta = octl.prj_meta
+prj_dirs = octl.prj_dirs
 
-# Get the feature list from the OCTGL class object
-fl = tgl.get_feature_list()
-
-check_fields = ["TLID", "LINEARID", "TFID", "AREAID", "HYDROID"]
-
-check_list = dict()
-
-for f in check_fields:
-    print(f"Checking field: {f}")
-    check_list[f] = {}
-    for year, value in fl.items():
-        print(f"  Year: {year}")
-        for key, fc in value["features"].items():
-            fc_type = fc["type"]
-            fc_alias = fc["alias"]
-            for field, value in fc["fields"].items():
-                if field == f and fc_type == "Feature Class":
-                    print(f"      Field: {key}")
-                    check_list[f][key] = fc_alias
+# Get the logger from the OCTL class
+logger = octl.logger
 
 
-# Print the check list with proper indentation
-print(json.dumps(check_list, indent=4))
+# Import the full inventory JSON file (if not already in memory)
+with open(os.path.join(prj_dirs["codebook"], "octl_cb_twr.json"), "r", encoding = "utf-8") as f:
+    cb = json.load(f)
+
+# # Import the master codebook JSON file (if not already in memory)
+# with open(os.path.join(prj_dirs["codebook"], "octl_cb_master.json"), "r", encoding = "utf-8") as f:
+#     master_cb = json.load(f)
+
+
+# Extract the years available for the American Community Survey (ACS) from the codebook
+acs_years = list(cb["series"]["ACS"].keys())
+# census_years = list(cb["series"]["Census"].keys())
+# econ_years = list(cb["series"]["ECON"].keys())
+
+# Find the min and max years for the acs_years list
+range_acs_years = range(int(min(acs_years)), int(max(acs_years)) + 1)
+
+
+master_fc = []
+for year in acs_years:
+    gdb_path = os.path.join(prj_dirs["gis"], f"octl_ocacs{year}.gdb")
+    arcpy.env.workspace = gdb_path
+    for fc in arcpy.ListFeatureClasses():
+        if fc[:2] not in master_fc:
+            master_fc.append(fc[:2])
+
+

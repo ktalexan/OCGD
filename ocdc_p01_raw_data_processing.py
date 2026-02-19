@@ -19,7 +19,7 @@ import datetime
 import pytz
 import pandas as pd
 from dotenv import load_dotenv
-from ocgd import OCDC
+from ocgd_old import OCDC
 
 # Load environment variables from .env file
 load_dotenv()

@@ -18,7 +18,7 @@ import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import DualOutput, OCcre
+from ocgd_old import DualOutput, OCcre
 
 # Load environment variables from .env file
 load_dotenv()

@@ -12,7 +12,7 @@ import arcpy
 from arcpy import metadata as md
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import OCtgl, OCacs, OCucs
+from ocgd_old import OCtgl, OCacs, OCucs
 # Add new imports
 
 # Load environment variables from .env file

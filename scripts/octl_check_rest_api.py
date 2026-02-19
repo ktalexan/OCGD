@@ -15,7 +15,7 @@ from arcpy import metadata as md
 from arcgis.features import FeatureLayer # for REST API interaction
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from dotenv import load_dotenv
-from ocgd import OCTL
+from ocgd_old import OCTL
 
 # Load environment variables from .env file
 load_dotenv()
