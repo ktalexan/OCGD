@@ -725,13 +725,13 @@ Code | Name | Variable Count |
 ### 🏷️ E17: Ratio of Income to Poverty Level (8 variables) <a name='e17'></a>
 
 > 🆔 C17002_001E: Total population for whom poverty status is determined; 
-🆔 C17002_002E: Under 50; 
-🆔 C17002_003E: 50 to 99; 
-🆔 C17002_004E: 100 to 124; 
-🆔 C17002_005E: 125 to 149; 
-🆔 C17002_006E: 150 to 184; 
-🆔 C17002_007E: 185 to 199; 
-🆔 C17002_008E: 200 and over; 
+🆔 C17002_002E: Under 0.50; 
+🆔 C17002_003E: 0.50 to 0.99; 
+🆔 C17002_004E: 1.00 to 1.24; 
+🆔 C17002_005E: 1.25 to 1.49; 
+🆔 C17002_006E: 1.50 to 1.84; 
+🆔 C17002_007E: 1.85 to 1.99; 
+🆔 C17002_008E: 2.00 and over; 
 
 
 [🔙 Back to Sections](#economic)
@@ -1831,16 +1831,16 @@ Code | Name | Variable Count |
 
 ### 🏷️ S13: Food Stamps Households (10 variables) <a name='s13'></a>
 
-> 🆔 B22001_002E: Household received Food StampsSNAP in the past 12 months; 
-🆔 B22001_003E: Household received Food StampsSNAP in the past 12 months: At least one person in household 60 years or over; 
-🆔 B22001_004E: Household received Food StampsSNAP in the past 12 months: No people in household 60 years or over; 
-🆔 B22001_005E: Household did not receive Food StampsSNAP in the past 12 months; 
-🆔 B22001_006E: Household did not receive Food StampsSNAP in the past 12 months: At least one person in household 60 years or over; 
-🆔 B22001_007E: Household did not receive Food StampsSNAP in the past 12 months: No people in household 60 years or over; 
-🆔 B22002_003E: Household received Food StampsSNAP in the past 12 months: With children under 18 years; 
-🆔 B22002_009E: Household received Food StampsSNAP in the past 12 months: No children under 18 years; 
-🆔 B22003_003E: Household received Food StampsSNAP in the past 12 months: Income in the past 12 months below poverty level; 
-🆔 B22003_004E: Household received Food StampsSNAP in the past 12 months: Income in the past 12 months at or above poverty level; 
+> 🆔 B22001_002E: Household received Food Stamps-SNAP in the past 12 months; 
+🆔 B22001_003E: Household received Food Stamps-SNAP in the past 12 months: At least one person in household 60 years or over; 
+🆔 B22001_004E: Household received Food Stamps-SNAP in the past 12 months: No people in household 60 years or over; 
+🆔 B22001_005E: Household did not receive Food Stamps-SNAP in the past 12 months; 
+🆔 B22001_006E: Household did not receive Food Stamps-SNAP in the past 12 months: At least one person in household 60 years or over; 
+🆔 B22001_007E: Household did not receive Food Stamps-SNAP in the past 12 months: No people in household 60 years or over; 
+🆔 B22002_003E: Household received Food Stamps-SNAP in the past 12 months: With children under 18 years; 
+🆔 B22002_009E: Household received Food Stamps-SNAP in the past 12 months: No children under 18 years; 
+🆔 B22003_003E: Household received Food Stamps-SNAP in the past 12 months: Income in the past 12 months below poverty level; 
+🆔 B22003_004E: Household received Food Stamps-SNAP in the past 12 months: Income in the past 12 months at or above poverty level; 
 
 
 [🔙 Back to Sections](#social)

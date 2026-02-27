@@ -4209,7 +4209,7 @@ class OCACS(OCGD):
                 else:
                     params_list.append(("in", in_clause))
 
-            resp = requests.get(base_url, params = params_list, timeout = 60)
+            resp = requests.get(base_url, params = params_list, timeout = 120)
             if resp.status_code != 200:
                 print(f"Error fetching data: {resp.status_code} {resp.text}")
                 #resp.raise_for_status()
@@ -4381,6 +4381,9 @@ class OCACS(OCGD):
         # Import the full inventory JSON file (if not already in memory)
         with open(os.path.join(self.prj_dirs["codebook"], "octl_cb_twr.json"), "r", encoding = "utf-8") as f:
             cb = json.load(f)["series"]["ACS"]
+        
+        # Copy the 2019 codebook to 2020 since the TL geodatabase for 2020 is the same as 2019 and the variables codebook for 2020 is the same as 2019
+        cb[str(2020)] = cb[str(2019)]
 
         # Get the octl OCACS geodatabases dictionary
         gdb_dict = self.octl_ocacs_dict()

@@ -50,6 +50,10 @@ gdb_dict = ocacs.octl_ocacs_dict()
 # Get the years available in the octl OCACS geodatabases
 gdb_years = [int(y) for y in sorted(gdb_dict.keys())]
 
+# # Exclude 2012 from gdb_years
+# gdb_years = [year for year in gdb_years if year > 2023]
+
+# year = 2020
 for year in gdb_years:
     logger.enable(meta = prj_meta, filename = f"ocacs_data_processing_{year}.log", replace = True)
     print(f"OCACS {year} Geodatabase Processing Log\n")
